@@ -1,17 +1,28 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 
 const ImageContainer = styled.div`
   position: relative;
   width: 100%;
-  height: 100vh; /* Full viewport height */
+  max-width: ${(props) =>
+    props.isSmallScreen ? "100%" : "72rem"}; // 72rem = 6xl
+  margin: 0 auto;
   overflow: hidden;
+`;
+
+const ImageWrapper = styled.div`
+  position: relative;
+  width: 100%;
+  height: ${(props) => (props.isSmallScreen ? "auto" : "500px")};
+  transition: height 0.3s ease;
 `;
 
 const StyledImage = styled.img`
   width: 100%;
-  height: auto;
-  object-fit: cover; /* Ensures the image covers the container */
+  height: 100%;
+  object-fit: cover;
+  border-radius: ${(props) => (props.isSmallScreen ? "0" : "0.5rem")};
+  transition: all 0.3s ease;
   object-position: center; /* Centers the image content */
 `;
 
@@ -35,22 +46,24 @@ const ResponsiveImage = ({
 
   useEffect(() => {
     const checkScreenSize = () => {
-      setIsSmallScreen(window.innerWidth <= 768);
+      setIsSmallScreen(window.innerWidth <= 768); // Breakpoint for small screens
     };
 
     // Initial check
     checkScreenSize();
 
-    // Add resize listener
+    // Add resize event listener
     window.addEventListener("resize", checkScreenSize);
 
-    // Cleanup
+    // Cleanup on unmount
     return () => window.removeEventListener("resize", checkScreenSize);
   }, []);
 
   return (
-    <ImageContainer>
-      <StyledImage src={src} alt={alt} />
+    <ImageContainer isSmallScreen={isSmallScreen}>
+      <ImageWrapper isSmallScreen={isSmallScreen}>
+        <StyledImage src={src} alt={alt} isSmallScreen={isSmallScreen} />
+      </ImageWrapper>
       {showDeviceIndicator && (
         <DeviceIndicator>
           {isSmallScreen ? "Mobile" : "Desktop"}

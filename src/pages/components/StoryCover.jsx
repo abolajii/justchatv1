@@ -223,12 +223,12 @@ const StoryCover = ({ user, stories = [] }) => {
                 >
                   IMAGE
                 </Tab>
-                <Tab
+                {/* <Tab
                   isActive={activeTab === "Video"}
                   onClick={() => handleTabClick("Video")}
                 >
                   VIDEO
-                </Tab>
+                </Tab> */}
               </div>
               <div className="icon center">
                 <BiSend size={26} />

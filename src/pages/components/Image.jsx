@@ -29,7 +29,7 @@ const ReplyContainer = styled.div`
   position: absolute;
   bottom: 70px;
   max-width: 500px;
-  width: 90%;
+  width: 96%;
   background-color: transparent;
   border: 1px solid #838383;
   color: #fff;
