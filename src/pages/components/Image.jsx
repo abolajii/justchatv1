@@ -136,8 +136,9 @@ const Image = () => {
 
         img.onload = () => {
           console.log(img.width);
+          console.log(img.height);
           if (img.width !== undefined && img.width >= 700) {
-            setImageWidth(img.width / 2.5); // Dynamically set the width
+            setImageWidth(img.width / 1.5); // Dynamically set the width
           } else {
             setImageWidth(img.width * 1.65); // Set the default width if image width is less than 700
           }
