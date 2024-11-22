@@ -27,8 +27,8 @@ const ImageContainer = styled.div`
 const ReplyContainer = styled.div`
   position: absolute;
   bottom: 70px;
-  width: 500px;
-
+  max-width: 500px;
+  width: 90%;
   background-color: transparent;
   border: 1px solid #838383;
   color: #fff;
