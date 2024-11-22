@@ -23,6 +23,7 @@ const StyledImage = styled.img`
   object-fit: cover;
   border-radius: ${(props) => (props.isSmallScreen ? "0" : "0.5rem")};
   transition: all 0.3s ease;
+  object-position: center; /* Centers the image content */
 `;
 
 const DeviceIndicator = styled.div`
