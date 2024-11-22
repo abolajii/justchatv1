@@ -142,10 +142,10 @@ const TextArea = styled.textarea`
 const Tab = styled.div`
   font-size: 14px;
   cursor: pointer;
-  margin: 0 4px;
+  margin: 0px;
   color: ${({ isActive }) =>
     isActive ? "#fdfdfd" : "#ccc"}; /* Conditional background */
-  padding: 5px 10px;
+  padding-right: 9px;
   border-radius: 5px;
 
   &:hover {
@@ -208,7 +208,7 @@ const StoryCover = ({ user, stories = [] }) => {
           >
             {activeTab === "Text" && <Text />}
             {activeTab === "Image" && <Image />}
-            {activeTab === "Video" && <Image />}
+            {/* {activeTab === "Video" && <Image />} */}
             <div className="footer flex justify-between">
               <div className="flex">
                 <Tab
