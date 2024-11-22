@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { FaRegSmile, FaTrashAlt } from "react-icons/fa"; // Smiley icon for interaction
 import Emojis from "./Emojis";
+import ImageLoader from "./ImageLoader";
 
 const Background = styled.div`
   height: 100%;
@@ -107,6 +108,21 @@ const Image = () => {
   const [imageSelected, setImageSelected] = useState(null);
   const [imageWidth, setImageWidth] = useState(700); // Default width
   const [showEmoji, setShowEmoji] = useState(false);
+  const [isSmallScreen, setIsSmallScreen] = useState(false); // Responsive state
+
+  // Responsive check
+  useEffect(() => {
+    const checkScreenSize = () => {
+      setIsSmallScreen(window.innerWidth < 768);
+    };
+
+    checkScreenSize(); // Initial check
+    window.addEventListener("resize", checkScreenSize); // Add event listener
+
+    return () => {
+      window.removeEventListener("resize", checkScreenSize); // Cleanup
+    };
+  }, []);
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -140,10 +156,14 @@ const Image = () => {
     <Background>
       {/* File upload section */}
       {imageSelected ? (
-        <ImageContainer imageWidth={imageWidth}>
-          <img src={imageSelected} alt="Selected" />
-          <DeleteIcon onClick={handleDeleteImage} color="#df4141" size={30} />
-        </ImageContainer>
+        isSmallScreen ? (
+          <ImageLoader src={imageSelected} alt="Selected" />
+        ) : (
+          <ImageContainer imageWidth={imageWidth}>
+            <img src={imageSelected} alt="Selected" />
+            <DeleteIcon onClick={handleDeleteImage} />
+          </ImageContainer>
+        )
       ) : (
         <FileUploadContainer
           onClick={() => document.getElementById("file-input").click()}
