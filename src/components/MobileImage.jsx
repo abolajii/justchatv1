@@ -13,7 +13,7 @@ const ImageContainer = styled.div`
 const ImageWrapper = styled.div`
   position: relative;
   width: 100%;
-  height: ${(props) => (props.isSmallScreen ? "450px" : "500px")};
+  height: ${(props) => (props.isSmallScreen ? "auto" : "500px")};
   transition: height 0.3s ease;
 `;
 
