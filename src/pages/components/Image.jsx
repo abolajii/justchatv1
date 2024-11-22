@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { FaRegSmile, FaTrashAlt } from "react-icons/fa"; // Smiley icon for interaction
 import Emojis from "./Emojis";
-import ImageLoader from "./ImageLoader";
+import ResponsiveImage from "../../components/MobileImage";
 
 const Background = styled.div`
   height: 100%;
@@ -157,7 +157,7 @@ const Image = () => {
       {/* File upload section */}
       {imageSelected ? (
         isSmallScreen ? (
-          <ImageLoader src={imageSelected} alt="Selected" />
+          <ResponsiveImage src={imageSelected} alt="Selected" isSmallScreen />
         ) : (
           <ImageContainer imageWidth={imageWidth}>
             <img src={imageSelected} alt="Selected" />
