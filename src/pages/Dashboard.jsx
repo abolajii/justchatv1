@@ -42,7 +42,7 @@ const Dashboard = () => {
           </B>
         </MobileContainer>
       </MobileView> */}
-      <DesktopView>
+      <DesktopView className="no-select">
         <MainContainer>
           <MainDashboard />
         </MainContainer>

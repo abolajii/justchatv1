@@ -26,7 +26,12 @@ html {
 .cursor {
   cursor: pointer;
 }
-
+.no-select {
+  user-select: none; /* Standard syntax */
+  -webkit-user-select: none; /* Safari and Chrome */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* Older Internet Explorer */
+}
 body {
   font-family: "Arial", sans-serif;
   background-color: var(--background-color);
