@@ -37,13 +37,13 @@ const Story = () => {
 const Dashboard = () => {
   return (
     <div>
-      {/* <MobileView>
+      <MobileView>
         <MobileContainer>
           <B>
             <MainDashboard />
           </B>
         </MobileContainer>
-      </MobileView> */}
+      </MobileView>
       <DesktopView>
         <MainContainer>
           <MainDashboard />
