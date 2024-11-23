@@ -185,14 +185,13 @@ const StoryCover = ({ user, stories = [] }) => {
         await createStory(formData);
         closeModal();
         setText("");
+        setImage(null);
         setLoading(false);
-
         showAlert("success", "Story created successful! 👏"); // Trigger success alertx
       }
       setLoading(false);
     } catch (error) {
       showAlert("error", error.response.data.error); // Trigger success alert
-
       setLoading(false);
     }
   };
