@@ -23,6 +23,8 @@ const MobileView = styled.div`
 
 const DesktopView = styled.div`
   display: block;
+  user-select: none;
+
   /* Hide DesktopView on mobile */
 `;
 
