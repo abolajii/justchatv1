@@ -158,7 +158,7 @@ const Image = () => {
   return (
     <Background>
       {/* File upload section */}
-      {image ? (
+      {image || imageSelected ? (
         isSmallScreen ? (
           <ResponsiveImage src={imageSelected} alt="Selected" isSmallScreen />
         ) : (

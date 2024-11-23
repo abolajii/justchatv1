@@ -13,7 +13,7 @@ const spin = keyframes`
 const SpinnerWrapper = styled.div`
   display: inline-block;
   border: 3px solid #f3f3f3; /* Light gray */
-  border-top: 3px solid #3498db; /* Blue */
+  border-top: 3px solid #55deae; /* Blue */
   border-radius: 50%;
   animation: ${spin} 1s linear infinite;
   width: ${(props) => props.size || "40px"};

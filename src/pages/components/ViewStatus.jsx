@@ -78,6 +78,7 @@ const popUp = keyframes`
 
 const ModalInner = styled.div`
   user-select: none !important;
+
   background: ${({ bgColor }) => (bgColor ? bgColor : "#272727")};
   border-radius: 4px;
   width: 100%;
@@ -338,6 +339,7 @@ const ViewStatus = () => {
   const longPressTimeoutRef = useRef(null);
   const { closeModalStatus } = useModalStore();
   const { user } = useUserStore();
+  const [loading, setLoading] = useState(false);
   const duration = 5000; // Duration in milliseconds
 
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
@@ -634,7 +636,7 @@ const ViewStatus = () => {
                 />
               </div>
               <div className="center icon cursor">
-                <MdSend color="#fbfbfb" size={24} />
+                {loading ? "" : <MdSend color="#fbfbfb" size={24} />}
               </div>
             </InputContainer>
             {renderContent()}

@@ -10,6 +10,7 @@ import { BiSend } from "react-icons/bi";
 import useStoryStore from "../store/useStoryStore";
 import { createStory } from "../../api/request";
 import { useAlert } from "../../context/AlertContext";
+import { Spinner } from "../../components";
 // Modal content animation
 const dropDown = keyframes`
   from {
@@ -162,18 +163,21 @@ const StoryCover = ({ user, stories = [] }) => {
   const { activeTab, setActiveTab, text, image, fontFamily, bgColor, setText } =
     useStoryStore();
   const { showAlert } = useAlert();
+  const [loading, setLoading] = useState(false);
 
   const handleTabClick = (tab) => {
     setActiveTab(tab); // Set the active tab
   };
 
   const submitData = async () => {
+    setLoading(true);
     try {
       if (activeTab === "Text") {
         const response = await createStory({ text, fontFamily, bgColor });
         showAlert("success", "Story created successful! 👏"); // Trigger success alertx
         closeModal();
         setText("");
+        setLoading(false);
       } else {
         const formData = new FormData();
         formData.append("text", text);
@@ -181,10 +185,15 @@ const StoryCover = ({ user, stories = [] }) => {
         await createStory(formData);
         closeModal();
         setText("");
+        setLoading(false);
+
         showAlert("success", "Story created successful! 👏"); // Trigger success alertx
       }
+      setLoading(false);
     } catch (error) {
       showAlert("error", error.response.data.error); // Trigger success alert
+
+      setLoading(false);
     }
   };
 
@@ -222,7 +231,7 @@ const StoryCover = ({ user, stories = [] }) => {
                 </Tab> */}
               </div>
               <div className="icon center" onClick={submitData}>
-                <BiSend size={26} />
+                {loading ? <Spinner size="17px" /> : <BiSend size={26} />}
               </div>
             </div>
           </ModalInner>
