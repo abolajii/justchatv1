@@ -79,7 +79,7 @@ const CategoryHeader = styled.div`
   text-align: left;
 `;
 
-const Emojis = ({ showEmoji }) => {
+const Emojis = ({ showEmoji, onSelectEmoji }) => {
   const [search, setSearch] = useState("");
   const filteredEmojis = emojiList.filter(
     (emoji) =>

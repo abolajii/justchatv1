@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { FaRegSmile, FaTrashAlt } from "react-icons/fa"; // Smiley icon for interaction
 import Emojis from "./Emojis";
 import ResponsiveImage from "../../components/MobileImage";
+import useStoryStore from "../store/useStoryStore";
 
 const Background = styled.div`
   height: 100%;
@@ -109,7 +110,7 @@ const Image = () => {
   const [imageWidth, setImageWidth] = useState(700); // Default width
   const [showEmoji, setShowEmoji] = useState(false);
   const [isSmallScreen, setIsSmallScreen] = useState(false); // Responsive state
-
+  const { setImage, text, setText } = useStoryStore();
   // Responsive check
   useEffect(() => {
     const checkScreenSize = () => {
@@ -128,7 +129,7 @@ const Image = () => {
     const file = e.target.files[0];
     if (file && file.type.startsWith("image/")) {
       const reader = new FileReader();
-
+      setImage(file);
       reader.onload = () => {
         setImageSelected(reader.result); // Set the image for display
         const img = new window.Image(); // Create a new Image object
@@ -182,7 +183,11 @@ const Image = () => {
       {/* Show footer once image is selected */}
       {imageSelected && (
         <ReplyContainer>
-          <TextArea placeholder="Write a caption..." />
+          <TextArea
+            placeholder="Write a caption..."
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+          />
           <div className="center relative">
             <SmileyIcon
               color="#e3e3e3"

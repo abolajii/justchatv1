@@ -7,6 +7,9 @@ import Modal from "./Modal";
 import Text from "./Text";
 import Image from "./Image";
 import { BiSend } from "react-icons/bi";
+import useStoryStore from "../store/useStoryStore";
+import { createStory } from "../../api/request";
+import { useAlert } from "../../context/AlertContext";
 // Modal content animation
 const dropDown = keyframes`
   from {
@@ -20,8 +23,8 @@ const dropDown = keyframes`
 `;
 
 const UserAvi = styled.div`
-  height: 60px;
-  width: 60px;
+  height: 54px;
+  width: 54px;
   border-radius: 50%;
   position: relative; /* Allows positioning of the plus icon */
 
@@ -156,47 +159,35 @@ const Tab = styled.div`
 
 const StoryCover = ({ user, stories = [] }) => {
   const { openModal, closeModal } = useModalStore();
-  const [showEmoji, setShowEmoji] = useState(false);
-  const [bgColorIndex, setBgColorIndex] = useState(0); // Index of the current background color
-  const [fontFamily, setFontFamily] = useState("Roboto");
-  const [activeTab, setActiveTab] = useState("Text");
+  const { activeTab, setActiveTab, text, image, fontFamily, bgColor, setText } =
+    useStoryStore();
+  const { showAlert } = useAlert();
 
   const handleTabClick = (tab) => {
     setActiveTab(tab); // Set the active tab
   };
 
-  const colors = [
-    "#4D8456", // Darker Fresh Green
-    "#298F89", // Darker Aquatic Blue
-    "#CC462A", // Darker Vibrant Red-Orange
-    "#CC9E00", // Darker Bright Yellow
-    "#265ACC", // Darker Royal Blue
-    "#6A27CC", // Darker Vibrant Purple
-    "#B025CC", // Darker Neon Pink
-    "#861E5B",
-  ];
-
-  const fonts = [
-    "Arial",
-    "Helvetica Neue",
-    "Helvetica",
-    "Verdana",
-    "Georgia",
-    "Times New Roman",
-    "Times",
-    "Courier New",
-    "Courier",
-    "Palatino",
-    "Garamond",
-    "Bookman",
-    "Didot",
-    "Baskerville",
-  ];
-
-  // Function to update the background color
-  const setBackgroundColor = () => {
-    setBgColorIndex((prevIndex) => (prevIndex + 1) % colors.length);
+  const submitData = async () => {
+    try {
+      if (activeTab === "Text") {
+        const response = await createStory({ text, fontFamily, bgColor });
+        showAlert("success", "Story created successful! 👏"); // Trigger success alertx
+        closeModal();
+        setText("");
+      } else {
+        const formData = new FormData();
+        formData.append("text", text);
+        formData.append("image", image);
+        await createStory(formData);
+        closeModal();
+        setText("");
+        showAlert("success", "Story created successful! 👏"); // Trigger success alertx
+      }
+    } catch (error) {
+      showAlert("error", error.response.data.error); // Trigger success alert
+    }
   };
+
   if (stories.length === 0) {
     return (
       <UserAvi>
@@ -230,7 +221,7 @@ const StoryCover = ({ user, stories = [] }) => {
                   VIDEO
                 </Tab> */}
               </div>
-              <div className="icon center">
+              <div className="icon center" onClick={submitData}>
                 <BiSend size={26} />
               </div>
             </div>

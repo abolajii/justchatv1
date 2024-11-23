@@ -1,4 +1,4 @@
-/* src/styles/index.css */
+src/styles/index.css
 
 /* Colors */
 :root {
@@ -138,4 +138,10 @@ body {
 input {
   border: none;
   outline: none;
+}
+
+.icon:hover {
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 50%;
+  cursor: pointer;
 }

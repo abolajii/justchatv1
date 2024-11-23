@@ -6,6 +6,7 @@ import { MdClose } from "react-icons/md";
 import styled from "styled-components";
 import { Emojis } from "../../components";
 import useModalStore from "../store/useModalStore";
+import useStoryStore from "../store/useStoryStore";
 
 const Background = styled.div`
   height: 100%;
@@ -16,6 +17,7 @@ const Background = styled.div`
   justify-content: center; /* Center vertically */
 
   width: 100%;
+  font-family: ${({ fontFamily }) => fontFamily}; /* Dynamic background color */
   background: ${({ bgColor }) => bgColor}; /* Dynamic background color */
 `;
 const colors = [
@@ -31,7 +33,6 @@ const colors = [
 
 const fonts = [
   "Arial",
-  "Helvetica Neue",
   "Helvetica",
   "Verdana",
   "Georgia",
@@ -69,8 +70,9 @@ const TextArea = styled.textarea`
 const Text = () => {
   const [showEmoji, setShowEmoji] = useState(false);
   const [bgColorIndex, setBgColorIndex] = useState(0); // Index of the current background color
-  const [fontFamily, setFontFamily] = useState("Roboto");
+  const [fontFamilyIndex, setFontFamilyIndex] = useState(0); // Index of the current background color
   const { closeModal } = useModalStore();
+  const { text, setText, setFontFamily, setBgColor } = useStoryStore();
 
   const handleInput = (e) => {
     const target = e.target;
@@ -88,6 +90,7 @@ const Text = () => {
 
   const setBackgroundColor = () => {
     setBgColorIndex((prevIndex) => (prevIndex + 1) % colors.length);
+    setBgColor(colors[bgColorIndex]);
   };
 
   return (
@@ -98,7 +101,6 @@ const Text = () => {
         </div>
       </div>
 
-      {/* Right Icons */}
       <div className="icon-container right-icons">
         <div className="center relative">
           <FaSmile
@@ -106,9 +108,21 @@ const Text = () => {
             size={25}
             onClick={() => setShowEmoji((prev) => !prev)}
           />
-          <Emojis showEmoji={showEmoji} />
+          <Emojis
+            showEmoji={showEmoji}
+            onSelectEmoji={(emoji) => {
+              setText(text + emoji.emoji);
+              setShowEmoji(false);
+            }}
+          />
         </div>
-        <div className="center">
+        <div
+          className="center"
+          onClick={() => {
+            setFontFamilyIndex((prevIndex) => (prevIndex + 1) % colors.length);
+            setFontFamily(fonts[fontFamilyIndex]);
+          }}
+        >
           <BsFonts color="#fff" size={27} />
         </div>
         <div className="center" onClick={setBackgroundColor}>
@@ -119,10 +133,12 @@ const Text = () => {
         <TextArea
           style={{
             backgroundColor: colors[bgColorIndex],
+            fontFamily: fonts[fontFamilyIndex],
           }}
-          fontFamily={fontFamily}
           placeholder="Type something..."
           onInput={handleInput}
+          value={text}
+          onChange={(e) => setText(e.target.value)}
         />
       </div>
     </Background>

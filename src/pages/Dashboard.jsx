@@ -22,7 +22,8 @@ const MobileView = styled.div`
 `;
 
 const DesktopView = styled.div`
-  display: none; /* Hide DesktopView on mobile */
+  display: none;
+  /* Hide DesktopView on mobile */
 
   @media (min-width: 768px) {
     display: flex; /* Show DesktopView on desktop */
@@ -36,13 +37,13 @@ const Story = () => {
 const Dashboard = () => {
   return (
     <div>
-      <MobileView>
+      {/* <MobileView>
         <MobileContainer>
           <B>
             <MainDashboard />
           </B>
         </MobileContainer>
-      </MobileView>
+      </MobileView> */}
       <DesktopView>
         <MainContainer>
           <MainDashboard />
