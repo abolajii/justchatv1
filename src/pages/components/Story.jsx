@@ -16,6 +16,7 @@ const Container = styled.div`
   padding: 10px;
   height: 80px;
   align-items: center;
+  border-bottom: 1px solid #dbdbdb;
 `;
 
 const A = styled.div`

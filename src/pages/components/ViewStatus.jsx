@@ -371,7 +371,6 @@ const ViewStatus = () => {
     const hasViewed = currentStory?.views?.find((v) => v.user === user.id);
 
     if (!hasViewed) {
-      console.log("Viewing...");
       handleViewStory(storyId, user.id);
       viewStory(storyId);
 
