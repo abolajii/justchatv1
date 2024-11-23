@@ -110,8 +110,8 @@ const Image = () => {
   const [imageWidth, setImageWidth] = useState(700); // Default width
   const [showEmoji, setShowEmoji] = useState(false);
   const [isSmallScreen, setIsSmallScreen] = useState(false); // Responsive state
-  const { setImage, text, setText } = useStoryStore();
-  // Responsive check
+  const { setImage, text, setText, image } = useStoryStore();
+  // Responsive check, image
   useEffect(() => {
     const checkScreenSize = () => {
       setIsSmallScreen(window.innerWidth < 768);
@@ -129,7 +129,6 @@ const Image = () => {
     const file = e.target.files[0];
     if (file && file.type.startsWith("image/")) {
       const reader = new FileReader();
-      setImage(file);
       reader.onload = () => {
         setImageSelected(reader.result); // Set the image for display
         const img = new window.Image(); // Create a new Image object
@@ -147,6 +146,8 @@ const Image = () => {
       };
 
       reader.readAsDataURL(file); // Read the file as a Data URL
+
+      setImage(file);
     }
   };
 
@@ -157,13 +158,13 @@ const Image = () => {
   return (
     <Background>
       {/* File upload section */}
-      {imageSelected ? (
+      {image ? (
         isSmallScreen ? (
           <ResponsiveImage src={imageSelected} alt="Selected" isSmallScreen />
         ) : (
           <ImageContainer imageWidth={imageWidth}>
             <img src={imageSelected} alt="Selected" />
-            <DeleteIcon onClick={handleDeleteImage} />
+            {/* <DeleteIcon onClick={handleDeleteImage} /> */}
           </ImageContainer>
         )
       ) : (

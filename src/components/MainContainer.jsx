@@ -12,6 +12,10 @@ const A = styled.div`
   flex: 1.3;
   /* background-color: lightcoral; */
   /* width: 300px; */
+  @media (max-width: 768px) {
+    flex: 1; /* Show MobileView on desktop */
+    display: none; /* Hide MobileView on desktop */
+  }
 `;
 
 const B = styled.div`
@@ -22,6 +26,11 @@ const B = styled.div`
 const C = styled.div`
   flex: 1.6;
   /* background-color: lightgreen; */
+
+  @media (max-width: 768px) {
+    flex: 1; /* Show MobileView on desktop */
+    display: none; /* Hide MobileView on desktop */
+  }
 `;
 
 const MainContainer = ({ children }) => {

@@ -77,6 +77,7 @@ const popUp = keyframes`
 `;
 
 const ModalInner = styled.div`
+  user-select: none;
   background: ${({ bgColor }) => (bgColor ? bgColor : "#272727")};
   border-radius: 4px;
   width: 100%;
