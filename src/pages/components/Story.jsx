@@ -16,6 +16,7 @@ const Container = styled.div`
   height: 80px;
   align-items: center;
   border-bottom: 1px solid #dbdbdb;
+  background-color: #fff;
 `;
 
 const A = styled.div`
