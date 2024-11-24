@@ -197,3 +197,18 @@ export const updateProfile = async (data) => {
   const response = await chatAppAuth.put(`/me`, data);
   return response.data; // Re
 };
+
+export const createPoll = async (data) => {
+  const response = await chatAppAuth.post(`/poll/create`, data);
+  return response.data; // Re
+};
+
+export const votePoll = async (data) => {
+  const response = await chatAppAuth.post(`/poll/vote`, data);
+  return response.data; // Re
+};
+
+export const schedulePost = async (data) => {
+  const response = await chatAppAuth.post(`/schedule/post`, data);
+  return response.data; // Re
+};

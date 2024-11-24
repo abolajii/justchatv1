@@ -62,7 +62,7 @@ const CloseButton = styled(FaTimes)`
   cursor: pointer;
 `;
 
-const BottomIcons = ({ onSubmit, postContent, image, setImage }) => {
+const BottomIcons = ({ onSubmit, postContent, image, setImage, setFile }) => {
   const [showEmoji, setShowEmoji] = useState(false);
   const { openPollModal, openScheduleModal } = useModalStore();
 
@@ -72,6 +72,9 @@ const BottomIcons = ({ onSubmit, postContent, image, setImage }) => {
     fileInput.accept = "image/*";
     fileInput.onchange = (e) => {
       const file = e.target.files[0];
+      if (file) {
+        setFile(file);
+      }
       if (file) {
         const reader = new FileReader();
         reader.onload = (e) => setImage(e.target.result);
@@ -121,7 +124,6 @@ const BottomIcons = ({ onSubmit, postContent, image, setImage }) => {
               size={20}
               onClick={() => {
                 openPollModal();
-                console.log("clicked");
               }}
             />
             <Poll />
@@ -132,7 +134,6 @@ const BottomIcons = ({ onSubmit, postContent, image, setImage }) => {
               size={20}
               onClick={() => {
                 openScheduleModal();
-                console.log("clicked");
               }}
             />
             <Schedule />
@@ -142,9 +143,13 @@ const BottomIcons = ({ onSubmit, postContent, image, setImage }) => {
           <FaPaperPlane
             title="Send"
             size={20}
-            className={`send-icon ${!postContent.trim() ? "disabled" : ""}`}
+            className={`send-icon ${
+              !postContent.trim() && !image ? "disabled" : ""
+            }`}
             onClick={onSubmit}
-            style={{ cursor: postContent.trim() ? "pointer" : "not-allowed" }}
+            style={{
+              cursor: postContent.trim() || image ? "pointer" : "not-allowed",
+            }}
           />
         </div>
       </div>

@@ -4,6 +4,9 @@ import ReuseableModal from "./ResuableModal";
 import useModalStore from "../store/useModalStore";
 import { MdAdd } from "react-icons/md";
 import { FiMinus } from "react-icons/fi";
+import { createPoll } from "../../api/request";
+import { useAlert } from "../../context/AlertContext";
+import { Spinner } from "../../components";
 
 const PollContainer = styled.div`
   display: flex;
@@ -127,14 +130,13 @@ const SubmitButton = styled.button`
   padding: 10px 10px;
   color: #1d7937;
   border: none;
-  width: 100px;
   border-radius: 5px;
   font-size: 14px;
   background-color: transparent;
   border: 1px solid #1d7937;
   cursor: pointer;
   &:hover {
-    background-color: #b9f2c9;
+    background-color: #d8eadd;
   }
 `;
 
@@ -150,6 +152,9 @@ const Poll = () => {
     options: "",
     duration: "",
   });
+  const [isLoading, setIsLoading] = useState(false);
+
+  const { showAlert } = useAlert();
 
   const addOption = () => setOptions([...options, ""]);
 
@@ -186,37 +191,66 @@ const Poll = () => {
     return !hasError;
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (validatePoll()) {
-      console.log({
+      // Current date/time as the poll's start date
+      setIsLoading(true);
+      const startDate = new Date();
+
+      // Calculate poll duration
+      const pollDuration = `${pollDays} days, ${pollHours} hours, ${pollMinutes} minutes`;
+
+      // Compute the end date based on the duration
+      const pollEndDate = calculatePollEndDate(startDate, pollDuration);
+
+      // Log the data with the calculated end date
+      const data = {
         question,
         options,
-        pollDuration: {
-          days: pollDays,
-          hours: pollHours,
-          minutes: pollMinutes,
-        },
-      });
-      // closePollModal();
+        startTime: Date.now(),
+        endTime: pollEndDate,
+      };
 
-      // Validate poll duration (ensure it's at least 5 minutes from now if pollDays is 0)
-      const pollEndTime = new Date();
+      try {
+        const response = await createPoll(data);
+        console.log(response);
 
-      // If validation passes, log the data
-      console.log({
-        question,
-        options,
-        pollDuration: `${pollDays} days, ${pollHours} hours, ${pollMinutes} minutes`,
-        pollEndTime: pollEndTime.toLocaleString(),
-      });
+        showAlert("success", "Poll created successfully");
 
-      // Reset the form
-      setQuestion("");
-      setOptions([""]);
-      setPollDays(0);
-      setPollHours(0);
-      setPollMinutes(0);
+        closePollModal();
+
+        // Reset the form
+        setQuestion("");
+        setOptions([""]);
+        setPollDays(0);
+        setPollHours(0);
+        setPollMinutes(0);
+      } catch (error) {
+        showAlert("error", error.response.data.message);
+      } finally {
+        setIsLoading(false);
+      }
     }
+  };
+
+  // Helper function to calculate poll end date
+  const calculatePollEndDate = (startDate, pollDuration) => {
+    const start = new Date(startDate);
+
+    const durationParts = pollDuration.match(
+      /(\d+)\s*days?,\s*(\d+)\s*hours?,\s*(\d+)\s*minutes?/
+    );
+    if (!durationParts) {
+      throw new Error("Invalid poll duration format");
+    }
+
+    const [_, days, hours, minutes] = durationParts.map(Number);
+
+    start.setDate(start.getDate() + days);
+    start.setHours(start.getHours() + hours);
+    start.setMinutes(start.getMinutes() + minutes);
+
+    return start.toISOString(); // Return as ISO string
   };
 
   return (
@@ -315,7 +349,9 @@ const Poll = () => {
         </div>
         {errors.duration && <p className="error">{errors.duration}</p>}
 
-        <SubmitButton onClick={handleSubmit}>Create Poll</SubmitButton>
+        <SubmitButton onClick={handleSubmit}>
+          {isLoading ? <Spinner size="20px" /> : "Create Poll"}
+        </SubmitButton>
       </PollContainer>
     </ReuseableModal>
   );

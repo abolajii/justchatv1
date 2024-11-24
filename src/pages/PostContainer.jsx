@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import useUserStore from "../store/useUserStore";
 import BottomIcons from "../components/BottomIcons";
+import { createPost } from "../api/request";
+import { useAlert } from "../context/AlertContext";
+import usePostStore from "./store/usePostStore";
 
 const Container = styled.div`
   border-bottom: 1px solid #ebebeb;
@@ -59,45 +62,6 @@ const Container = styled.div`
   }
 `;
 
-const ModalOverlay = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  animation: ${(props) => (props.show ? "fadeIn 0.3s" : "fadeOut 0.3s")};
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
-  }
-  @keyframes fadeOut {
-    from {
-      opacity: 1;
-    }
-    to {
-      opacity: 0;
-    }
-  }
-`;
-
-const ModalContent = styled.div`
-  background: white;
-  padding: 20px;
-  height: 400px;
-  border-radius: 8px;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
-  transition: transform 0.3s ease, opacity 0.3s ease;
-  margin-top: 10px;
-  width: 390px;
-`;
-
 const UserAvi = styled.div`
   height: 35px;
   width: 35px;
@@ -115,13 +79,34 @@ const UserAvi = styled.div`
 
 const PostContainer = () => {
   const { user } = useUserStore();
-  const [postContent, setPostContent] = useState("");
-  const [image, setImage] = useState(null);
+  const { content, setContent, image, setImage, file, setFile } =
+    usePostStore();
 
-  const handleSendClick = () => {
-    if (!postContent.trim()) return;
-    console.log("Post sent:", postContent);
-    setPostContent("");
+  const { showAlert } = useAlert();
+
+  const handleSendClick = async () => {
+    console.log("Post sent:", content, file);
+    // Send the post to the server
+    const formData = new FormData();
+    formData.append("content", content);
+    if (file) {
+      formData.append("imagePost", file);
+    }
+
+    try {
+      const response = await createPost(formData);
+      console.log("Post created:", response);
+      showAlert("success", "Post created successful!"); // Trigger success alert
+    } catch (error) {
+      console.error("Error creating post:", error.message);
+      showAlert("error", error.response.data.message); // Trigger error alert
+    }
+
+    // Reset the state
+    setFile(null);
+    setImage(null);
+    setContent("");
+    // setPostContent("");
   };
 
   return (
@@ -133,15 +118,16 @@ const PostContainer = () => {
         <div className="flex-1 flex">
           <textarea
             placeholder="Share your thoughts..."
-            value={postContent}
-            onChange={(e) => setPostContent(e.target.value)}
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
           />
         </div>
       </div>
       <BottomIcons
         onSubmit={handleSendClick}
-        postContent={postContent}
+        postContent={content}
         image={image}
+        setFile={setFile}
         setImage={setImage}
       />
     </Container>
