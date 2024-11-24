@@ -10,7 +10,6 @@ import OtherUserStory from "./OtherUserStory";
 const Container = styled.div`
   position: sticky;
   top: 0;
-  /* height: 90px; */
   width: 100%;
   display: flex;
   padding: 10px;
@@ -61,9 +60,9 @@ const Story = () => {
   }, []);
   return (
     <Container>
-      <A>
+      {/* <A>
         <StoryCover user={user} />
-      </A>
+      </A> */}
       <B>
         {allStories.map((s, i) => {
           const stories = s.stories;
