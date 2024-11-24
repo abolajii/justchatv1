@@ -1,4 +1,5 @@
 import React from "react";
+import { MdClose } from "react-icons/md";
 import styled, { keyframes } from "styled-components";
 
 const fadeIn = keyframes`
@@ -74,20 +75,29 @@ const ModalContainer = styled.div`
 const CloseButton = styled.button`
   position: absolute;
   top: 10px;
-  right: 10px;
+  right: 15px;
   background: none;
   border: none;
   font-size: 16px;
   cursor: pointer;
+  font-size: 15px;
 `;
 
 const ReusableModal = ({ isOpen, closeModal, children }) => {
   return (
     <>
-      <Overlay isOpen={isOpen} onClick={closeModal} />
+      <Overlay
+        isOpen={isOpen}
+        onClick={(e) => {
+          e.stopPropagation();
+          closeModal();
+        }}
+      />
       {isOpen && (
         <ModalContainer isOpen={isOpen}>
-          <CloseButton onClick={closeModal}>&times;</CloseButton>
+          <CloseButton onClick={closeModal}>
+            <MdClose size={20} color="#000" />
+          </CloseButton>
           {children}
         </ModalContainer>
       )}

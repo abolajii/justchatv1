@@ -2,120 +2,134 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import ReuseableModal from "./ResuableModal";
 import useModalStore from "../store/useModalStore";
+import { MdAdd } from "react-icons/md";
+import { FiMinus } from "react-icons/fi";
 
 const PollContainer = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  padding: 20px;
+
+  .label {
+    font-size: 14px;
+    margin-bottom: 4px;
+    font-weight: 500;
+    color: #000;
+  }
+
+  .poll-length {
+    font-size: 14px;
+    font-weight: 500;
+    color: #000;
+  }
+
+  .poll-duration {
+    display: flex;
+  }
+
+  .flex {
+    display: flex;
+    gap: 10px;
+  }
+
+  .choices {
+    margin-top: 10px;
+  }
+
+  .title {
+    font-size: 13px;
+    font-weight: bold;
+    text-align: center;
+  }
+
+  .flex-1 {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+  }
+
+  .error {
+    color: red;
+    font-size: 12px;
+    margin-top: 4px;
+  }
 `;
 
 const PollHeader = styled.h2`
   font-size: 1.5rem;
   font-weight: bold;
   text-align: center;
+  margin-bottom: 16px;
 `;
 
 const Input = styled.input`
   width: 100%;
   padding: 10px;
   font-size: 1rem;
-  border: 1px solid #ccc;
+  border: 1px solid ${(props) => (props.hasError ? "red" : "#ccc")};
   border-radius: 8px;
   outline: none;
   &:focus {
-    border-color: #007bff;
-    box-shadow: 0px 0px 4px rgba(0, 123, 255, 0.5);
+    border-color: #097528; /* Green focus border */
+    box-shadow: 0px 0px 4px rgba(9, 117, 40, 0.5); /* Green shadow */
   }
 `;
 
 const OptionContainer = styled.div`
   display: flex;
-  gap: 8px;
-  align-items: center;
+  gap: 2px;
+  align-items: end;
+  margin-bottom: 8px;
 `;
 
 const OptionInput = styled(Input)`
   flex: 1;
 `;
 
-const AddOptionButton = styled.button`
-  background-color: #007bff;
-  color: white;
+const AddButton = styled.button`
   border: none;
-  padding: 10px 16px;
-  border-radius: 8px;
   cursor: pointer;
-  font-size: 1rem;
-  &:hover {
-    background-color: #0056b3;
-  }
-`;
-
-const SubmitButton = styled(AddOptionButton)`
-  width: 100%;
-  margin-top: 16px;
-`;
-
-const RemoveOptionButton = styled.button`
-  background-color: #ff4d4d;
-  color: white;
-  border: none;
-  padding: 8px;
-  border-radius: 50%;
-  cursor: pointer;
-  font-size: 0.9rem;
+  background-color: transparent;
   display: flex;
   justify-content: center;
   align-items: center;
   &:hover {
-    background-color: #cc0000;
+    color: #097528; /* Green hover effect */
   }
 `;
 
-const PollLengthContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-`;
-
-const TimeInput = styled.div`
-  display: flex;
-  justify-content: space-between;
-  gap: 16px;
-
-  input {
-    flex: 1;
-    padding: 10px;
-    font-size: 1rem;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    outline: none;
-
-    &:focus {
-      border-color: #007bff;
-      box-shadow: 0px 0px 4px rgba(0, 123, 255, 0.5);
-    }
+const Dropdown = styled.select`
+  width: 100%;
+  padding: 5px 10px;
+  font-size: 1rem;
+  border: 1px solid ${(props) => (props.hasError ? "red" : "#ccc")};
+  border-radius: 8px;
+  outline: none;
+  appearance: none;
+  background-color: white;
+  background-image: url("data:image/svg+xml;charset=UTF-8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 16px;
+  &:focus {
+    border-color: #097528; /* Green focus border */
+    box-shadow: 0px 0px 4px rgba(9, 117, 40, 0.5); /* Green shadow */
   }
 `;
 
-const PollResults = styled.div`
+const SubmitButton = styled.button`
   margin-top: 20px;
-  text-align: center;
-
-  h3 {
-    font-size: 1.3rem;
-    margin-bottom: 10px;
-  }
-
-  ul {
-    list-style: none;
-    padding: 0;
-
-    li {
-      padding: 8px 0;
-      font-size: 1rem;
-    }
+  padding: 10px 10px;
+  color: #1d7937;
+  border: none;
+  width: 100px;
+  border-radius: 5px;
+  font-size: 14px;
+  background-color: transparent;
+  border: 1px solid #1d7937;
+  cursor: pointer;
+  &:hover {
+    background-color: #b9f2c9;
   }
 `;
 
@@ -123,15 +137,16 @@ const Poll = () => {
   const { isPollModalOpen, closePollModal } = useModalStore();
   const [question, setQuestion] = useState("");
   const [options, setOptions] = useState([""]);
-  const [pollLength, setPollLength] = useState(1); // Default poll length is 1 day
-  const [pollHour, setPollHour] = useState("12"); // Default poll end hour
-  const [pollMinute, setPollMinute] = useState("00"); // Default poll end minute
-  const [isPollEnded, setPollEnded] = useState(false);
-  const [pollEndDate, setPollEndDate] = useState(null);
+  const [pollDays, setPollDays] = useState(0);
+  const [pollHours, setPollHours] = useState(0);
+  const [pollMinutes, setPollMinutes] = useState(0);
+  const [errors, setErrors] = useState({
+    question: "",
+    options: "",
+    duration: "",
+  });
 
-  const addOption = () => {
-    setOptions([...options, ""]);
-  };
+  const addOption = () => setOptions([...options, ""]);
 
   const updateOption = (index, value) => {
     const updatedOptions = [...options];
@@ -139,119 +154,163 @@ const Poll = () => {
     setOptions(updatedOptions);
   };
 
-  const removeOption = (index) => {
-    const updatedOptions = options.filter((_, i) => i !== index);
-    setOptions(updatedOptions);
-  };
+  const removeOption = (index) =>
+    setOptions(options.filter((_, i) => i !== index));
 
-  const calculatePollEndDate = () => {
-    const currentDate = new Date();
-    currentDate.setDate(currentDate.getDate() + pollLength);
-    currentDate.setHours(pollHour, pollMinute);
-    return currentDate.toLocaleString("en-US", {
-      weekday: "long",
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: true,
-    });
-  };
+  const validatePoll = () => {
+    let hasError = false;
+    const newErrors = { question: "", options: "", duration: "" };
 
-  const submitPoll = () => {
-    if (
-      question.trim() === "" ||
-      options.some((opt) => opt.trim() === "") ||
-      pollHour === "" ||
-      pollMinute === ""
-    ) {
-      alert("Please fill out all fields.");
-      return;
+    if (!question.trim()) {
+      newErrors.question = "Question is required.";
+      hasError = true;
     }
-    setPollEndDate(calculatePollEndDate());
-    setPollEnded(true);
+
+    if (options.length < 1 || options.some((opt) => !opt.trim())) {
+      newErrors.options = "At least one option is required.";
+      hasError = true;
+    }
+
+    const totalMinutes = pollDays * 24 * 60 + pollHours * 60 + pollMinutes;
+    if (totalMinutes < 5) {
+      newErrors.duration = "Poll duration must be at least 5 minutes.";
+      hasError = true;
+    }
+
+    setErrors(newErrors);
+    return !hasError;
+  };
+
+  const handleSubmit = () => {
+    if (validatePoll()) {
+      console.log({
+        question,
+        options,
+        pollDuration: {
+          days: pollDays,
+          hours: pollHours,
+          minutes: pollMinutes,
+        },
+      });
+      // closePollModal();
+
+      // Validate poll duration (ensure it's at least 5 minutes from now if pollDays is 0)
+      const pollEndTime = new Date();
+
+      // If validation passes, log the data
+      console.log({
+        question,
+        options,
+        pollDuration: `${pollDays} days, ${pollHours} hours, ${pollMinutes} minutes`,
+        pollEndTime: pollEndTime.toLocaleString(),
+      });
+
+      // Reset the form
+      setQuestion("");
+      setOptions([""]);
+      setPollDays(0);
+      setPollHours(0);
+      setPollMinutes(0);
+    }
   };
 
   return (
     <ReuseableModal isOpen={isPollModalOpen} closeModal={closePollModal}>
       <PollContainer>
-        {!isPollEnded ? (
-          <>
-            <PollHeader>Create a Poll</PollHeader>
-            <Input
-              placeholder="Enter your question"
-              value={question}
-              onChange={(e) => setQuestion(e.target.value)}
-            />
-            {options.map((option, index) => (
-              <OptionContainer key={index}>
-                <OptionInput
-                  placeholder={`Option ${index + 1}`}
-                  value={option}
-                  onChange={(e) => updateOption(index, e.target.value)}
-                />
-                {options.length > 1 && (
-                  <RemoveOptionButton onClick={() => removeOption(index)}>
-                    &times;
-                  </RemoveOptionButton>
-                )}
-              </OptionContainer>
-            ))}
-            <AddOptionButton onClick={addOption}>+ Add Option</AddOptionButton>
-            <PollLengthContainer>
-              <label>Poll Length (days):</label>
-              <Input
-                type="number"
-                min="1"
-                value={pollLength}
-                onChange={(e) => setPollLength(Number(e.target.value))}
+        <PollHeader>Create a Poll</PollHeader>
+
+        <p className="label">Question</p>
+        <Input
+          placeholder="Enter your question"
+          value={question}
+          onChange={(e) => {
+            setQuestion(e.target.value);
+            if (errors.question) setErrors({ ...errors, question: "" });
+          }}
+          hasError={!!errors.question}
+        />
+        {errors.question && <p className="error">{errors.question}</p>}
+
+        <div className="choices">
+          <p className="label">Options</p>
+          {options.map((option, index) => (
+            <OptionContainer key={index}>
+              <OptionInput
+                placeholder={`Option ${index + 1}`}
+                value={option}
+                onChange={(e) => {
+                  updateOption(index, e.target.value);
+                  if (errors.options) setErrors({ ...errors, options: "" });
+                }}
+                hasError={!!errors.options}
               />
-            </PollLengthContainer>
-            <PollLengthContainer>
-              <label>End Time:</label>
-              <TimeInput>
-                <input
-                  type="number"
-                  placeholder="HH"
-                  min="0"
-                  max="23"
-                  value={pollHour}
-                  onChange={(e) => setPollHour(e.target.value)}
-                />
-                <input
-                  type="number"
-                  placeholder="MM"
-                  min="0"
-                  max="59"
-                  value={pollMinute}
-                  onChange={(e) => setPollMinute(e.target.value)}
-                />
-              </TimeInput>
-            </PollLengthContainer>
-            <SubmitButton onClick={submitPoll}>Submit Poll</SubmitButton>
-          </>
-        ) : (
-          <PollResults>
-            <h3>Poll Results</h3>
-            <p>
-              <strong>Question:</strong> {question}
-            </p>
-            <p>
-              <strong>Poll Ends:</strong> {pollEndDate}
-            </p>
-            <ul>
-              {options.map((option, index) => (
-                <li key={index}>
-                  {index + 1}. {option} - 0 votes (dummy data)
-                </li>
+              <AddButton onClick={addOption}>
+                <MdAdd color="#097528" size={20} />
+              </AddButton>
+              {options.length > 1 && (
+                <AddButton onClick={() => removeOption(index)}>
+                  <FiMinus color="#e1491e" size={20} />
+                </AddButton>
+              )}
+            </OptionContainer>
+          ))}
+          {errors.options && <p className="error">{errors.options}</p>}
+        </div>
+
+        <p className="poll-length">Length of poll</p>
+        <div className="poll-duration flex">
+          <div className="flex-1">
+            <p className="title">Days</p>
+            <Dropdown
+              value={pollDays}
+              onChange={(e) => {
+                setPollDays(Number(e.target.value));
+                if (errors.duration) setErrors({ ...errors, duration: "" });
+              }}
+            >
+              {[...Array(8).keys()].map((day) => (
+                <option key={day} value={day}>
+                  {day}
+                </option>
               ))}
-            </ul>
-            <AddOptionButton onClick={() => setPollEnded(false)}>
-              Restart Poll
-            </AddOptionButton>
-          </PollResults>
-        )}
+            </Dropdown>
+          </div>
+          <div className="flex-1">
+            <p className="title">Hours</p>
+            <Dropdown
+              value={pollHours}
+              onChange={(e) => {
+                setPollHours(Number(e.target.value));
+                if (errors.duration) setErrors({ ...errors, duration: "" });
+              }}
+            >
+              {[...Array(24).keys()].map((hour) => (
+                <option key={hour} value={hour}>
+                  {hour}
+                </option>
+              ))}
+            </Dropdown>
+          </div>
+          <div className="flex-1">
+            <p className="title">Mins</p>
+            <Dropdown
+              value={pollMinutes}
+              onChange={(e) => {
+                setPollMinutes(Number(e.target.value));
+                if (errors.duration) setErrors({ ...errors, duration: "" });
+              }}
+            >
+              {[...Array(60).keys()].map((minute) => (
+                <option key={minute} value={minute}>
+                  {minute}
+                </option>
+              ))}
+            </Dropdown>
+          </div>
+        </div>
+        {errors.duration && <p className="error">{errors.duration}</p>}
+
+        <SubmitButton onClick={handleSubmit}>Create Poll</SubmitButton>
       </PollContainer>
     </ReuseableModal>
   );
