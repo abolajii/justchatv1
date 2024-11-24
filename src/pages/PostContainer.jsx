@@ -132,7 +132,7 @@ const PostContainer = () => {
         </UserAvi>
         <div className="flex-1 flex">
           <textarea
-            placeholder="Share your mind..."
+            placeholder="Share your thoughts..."
             value={postContent}
             onChange={(e) => setPostContent(e.target.value)}
           />
