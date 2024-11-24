@@ -111,6 +111,11 @@ const Dropdown = styled.select`
   background-repeat: no-repeat;
   background-position: right 12px center;
   background-size: 16px;
+  color: #000;
+
+  option {
+    color: #000;
+  }
   &:focus {
     border-color: #097528; /* Green focus border */
     box-shadow: 0px 0px 4px rgba(9, 117, 40, 0.5); /* Green shadow */
