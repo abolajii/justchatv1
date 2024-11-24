@@ -17,6 +17,7 @@ const Container = styled.div`
   align-items: center;
   border-bottom: 1px solid #dbdbdb;
   background-color: #fff;
+  z-index: 1000;
 `;
 
 const A = styled.div`
