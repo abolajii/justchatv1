@@ -1,9 +1,5 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { FaSmile, FaPaperclip, FaPaperPlane } from "react-icons/fa";
-import { RiCalendarScheduleFill } from "react-icons/ri";
-import { FaPollH } from "react-icons/fa";
-import { HiPhotograph } from "react-icons/hi";
 import useUserStore from "../store/useUserStore";
 import BottomIcons from "../components/BottomIcons";
 

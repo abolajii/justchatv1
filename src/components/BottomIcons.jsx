@@ -6,6 +6,7 @@ import styled from "styled-components";
 import useModalStore from "../pages/store/useModalStore";
 import Poll from "../pages/components/Poll";
 import Schedule from "../pages/components/Schedule";
+import Desktop from "../responsive/Desktop";
 
 const EmojiPopup = styled.div`
   position: absolute;
@@ -97,15 +98,18 @@ const BottomIcons = ({ onSubmit, postContent, image, setImage }) => {
         style={{ marginTop: "10px", position: "relative" }}
       >
         <div className="action-icons" style={{ display: "flex", gap: "10px" }}>
-          <div className="relative center">
-            <FaSmile title="Add Emoji" onClick={toggleEmojiPopup} size={20} />
-            {showEmoji && (
-              <EmojiPopup show={showEmoji}>
-                <p>Emoji Picker Here</p>
-                {/* Replace with actual emoji picker library */}
-              </EmojiPopup>
-            )}
-          </div>
+          <Desktop>
+            <div className="relative center">
+              <FaSmile title="Add Emoji" onClick={toggleEmojiPopup} size={20} />
+              {showEmoji && (
+                <EmojiPopup show={showEmoji}>
+                  <p>Emoji Picker Here</p>
+                  {/* Replace with actual emoji picker library */}
+                </EmojiPopup>
+              )}
+            </div>
+          </Desktop>
+
           <HiPhotograph
             title="Attach File"
             size={20}

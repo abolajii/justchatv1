@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 import styled from "styled-components";
 import useUserStore from "../../store/useUserStore";
@@ -6,6 +6,7 @@ import StoryCover from "./StoryCover";
 import { userStory } from "../../api/request";
 import useStoryStore from "../store/useStoryStore";
 import OtherUserStory from "./OtherUserStory";
+import Desktop from "../../responsive/Desktop";
 
 const Container = styled.div`
   position: sticky;
@@ -45,9 +46,25 @@ const B = styled.div`
   }
 `;
 
+const UserAvi = styled.div`
+  height: 50px;
+  width: 50px;
+  border-radius: 50%;
+  cursor: pointer;
+  img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    margin-right: 10px;
+    opacity: 0.85;
+  }
+`;
+
 const Story = () => {
   const { user } = useUserStore();
   const { allStories, setAllStories } = useStoryStore();
+  const [isSmallScreen, setIsSmallScreen] = useState(false);
 
   useEffect(() => {
     const fetchStories = async () => {
@@ -60,11 +77,35 @@ const Story = () => {
     };
     fetchStories();
   }, []);
+
+  useEffect(() => {
+    const checkScreenSize = () => {
+      setIsSmallScreen(window.innerWidth <= 768); // Breakpoint for small screens
+    };
+
+    // Initial check
+    checkScreenSize();
+
+    // Add resize event listener
+    window.addEventListener("resize", checkScreenSize);
+
+    // Cleanup on unmount
+    return () => window.removeEventListener("resize", checkScreenSize);
+  }, []);
+
   return (
     <Container>
-      {/* <A>
-        <StoryCover user={user} />
-      </A> */}
+      {!isSmallScreen ? (
+        <A>
+          <StoryCover user={user} />
+        </A>
+      ) : (
+        <A>
+          <UserAvi>
+            <img src={user.profilePic} alt="User Avatar" />
+          </UserAvi>
+        </A>
+      )}
       <B>
         {allStories.map((s, i) => {
           const stories = s.stories;
