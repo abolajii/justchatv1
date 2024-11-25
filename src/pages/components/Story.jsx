@@ -7,6 +7,7 @@ import { userStory } from "../../api/request";
 import useStoryStore from "../store/useStoryStore";
 import OtherUserStory from "./OtherUserStory";
 import Desktop from "../../responsive/Desktop";
+import { Drawer } from "../../components";
 
 const Container = styled.div`
   position: sticky;
@@ -65,6 +66,7 @@ const Story = () => {
   const { user } = useUserStore();
   const { allStories, setAllStories } = useStoryStore();
   const [isSmallScreen, setIsSmallScreen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     const fetchStories = async () => {
@@ -101,9 +103,12 @@ const Story = () => {
         </A>
       ) : (
         <A>
-          <UserAvi>
-            <img src={user.profilePic} alt="User Avatar" />
-          </UserAvi>
+          <div onClick={() => setIsOpen(true)}>
+            <UserAvi>
+              <img src={user.profilePic} alt="User Avatar" />
+            </UserAvi>
+            <Drawer isOpen={isOpen} setIsOpen={setIsOpen} />
+          </div>
         </A>
       )}
       <B>

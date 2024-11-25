@@ -26,7 +26,16 @@ const ScrollableContainer = styled.div`
   display: flex;
   flex-direction: column;
   overflow: hidden;
+
+  /* Hide the scrollbar */
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Make the container scrollable but hide scrollbar */
+  overflow-y: scroll;
 `;
+
 const SectionTitle = styled.h3`
   font-size: 18px;
   font-weight: 600;
@@ -73,6 +82,12 @@ const SettingsContainer = styled.div`
   padding: 24px;
   height: 100%;
   overflow-y: auto;
+  position: relative;
+
+  /* Hide the default scrollbar */
+  &::-webkit-scrollbar {
+    display: none;
+  }
 `;
 
 const Title = styled.h2`
@@ -101,6 +116,12 @@ const SectionHeader = styled.button`
   cursor: pointer;
   text-align: left;
 
+  /* Make the section header sticky */
+  position: sticky;
+  top: 0;
+  background-color: #fff;
+  z-index: 10;
+
   svg {
     transition: transform 0.3s ease;
     transform: ${({ isExpanded }) =>
@@ -111,6 +132,45 @@ const SectionHeader = styled.button`
     background: rgba(0, 0, 0, 0.02);
   }
 `;
+
+const SectionContent = styled.div`
+  padding: 0 24px;
+  max-height: ${({ isExpanded, maxHeight }) =>
+    isExpanded ? `${maxHeight}px` : "0"};
+  opacity: ${({ isExpanded }) => (isExpanded ? "1" : "0")};
+  transition: all 0.3s ease-in-out;
+  overflow: hidden;
+`;
+
+// const Section = styled.div`
+//   background: #f8f9fa;
+//   border-radius: 8px;
+//   margin-bottom: 16px;
+//   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+//   overflow: hidden;
+// `;
+
+// const SectionHeader = styled.button`
+//   width: 100%;
+//   padding: 16px 24px;
+//   display: flex;
+//   justify-content: space-between;
+//   align-items: center;
+//   background: none;
+//   border: none;
+//   cursor: pointer;
+//   text-align: left;
+
+//   svg {
+//     transition: transform 0.3s ease;
+//     transform: ${({ isExpanded }) =>
+//       isExpanded ? "rotate(-180deg)" : "rotate(0deg)"};
+//   }
+
+//   &:hover {
+//     background: rgba(0, 0, 0, 0.02);
+//   }
+// `;
 
 const ToggleContainer = styled.div`
   display: flex;
@@ -156,7 +216,7 @@ const ToggleSwitch = styled.label`
   }
 
   input:checked + span {
-    background-color: ${colors.paleGreen};
+    background-color: ${colors.primaryGreen};
   }
 
   input:checked + span:before {
@@ -164,14 +224,14 @@ const ToggleSwitch = styled.label`
   }
 `;
 
-const SectionContent = styled.div`
-  padding: 0 24px;
-  max-height: ${({ isExpanded, maxHeight }) =>
-    isExpanded ? `${maxHeight}px` : "0"};
-  opacity: ${({ isExpanded }) => (isExpanded ? "1" : "0")};
-  transition: all 0.3s ease-in-out;
-  overflow: hidden;
-`;
+// const SectionContent = styled.div`
+//   padding: 0 24px;
+//   max-height: ${({ isExpanded, maxHeight }) =>
+//     isExpanded ? `${maxHeight}px` : "0"};
+//   opacity: ${({ isExpanded }) => (isExpanded ? "1" : "0")};
+//   transition: all 0.3s ease-in-out;
+//   overflow: hidden;
+// `;
 
 const InnerContent = styled.div`
   padding-bottom: 24px;
@@ -200,7 +260,7 @@ const Input = styled.input`
 `;
 
 const Button = styled.button`
-  width: 100%;
+  width: 190px;
   padding: 12px 24px;
   background-color: ${colors.primaryGreen};
   color: white;
@@ -208,6 +268,7 @@ const Button = styled.button`
   border-radius: 4px;
   font-size: 16px;
   font-weight: 500;
+  margin-top: 20px;
   cursor: pointer;
   display: flex;
   align-items: center;

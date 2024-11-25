@@ -5,7 +5,7 @@ import styled from "styled-components";
 import { useAlert } from "../context/AlertContext";
 import { login } from "../api/request";
 import useUserStore from "../store/useUserStore"; // Import the store
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Text = styled.div`
   font-size: 20px;
@@ -22,6 +22,22 @@ const FormContainer = styled.form`
   flex-direction: column;
   width: 100%;
   max-width: 400px;
+
+  .text-center {
+    text-align: center;
+    margin-top: 10px;
+    font-size: 13px;
+
+    a {
+      color: #115c46;
+      text-decoration: none;
+      margin-top: 8px;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
 
   label {
     margin-bottom: 8px;
@@ -172,6 +188,10 @@ const Login = () => {
           <button type="submit" disabled={isLoading}>
             {isLoading ? <Spinner size="20px" /> : "Sign In"}
           </button>
+
+          <p className="text-center">
+            Don't have an account? <Link to="/register">Sign up</Link>
+          </p>
         </FormContainer>
       </div>
     </div>

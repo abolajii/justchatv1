@@ -9,6 +9,7 @@ import {
   Notifications,
   Bookmarks,
   Discover,
+  Register,
 } from "./pages"; // Destructure from the index file
 import Modal from "./pages/components/Modal";
 import ProtectedRoute from "./routes/ProtectedRoute";
@@ -96,6 +97,7 @@ const App = () => {
         {/* Public routes */}
         <Route path="/" element={<Login />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
       </Routes>
     </AlertProvider>
   );

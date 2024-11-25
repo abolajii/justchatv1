@@ -4,7 +4,7 @@ import usePageTitle from "../hooks/useTittle";
 import styled from "styled-components";
 import { useAlert } from "../context/AlertContext";
 import useUserStore from "../store/useUserStore";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { AiOutlineCloudUpload } from "react-icons/ai";
 import { register } from "../api/request";
 
@@ -23,6 +23,22 @@ const FormContainer = styled.form`
   flex-direction: column;
   width: 100%;
   max-width: 400px;
+
+  .text-center {
+    text-align: center;
+    margin-top: 10px;
+    font-size: 13px;
+
+    a {
+      color: #115c46;
+      text-decoration: none;
+      margin-top: 8px;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
 
   label {
     margin-bottom: 8px;
@@ -81,7 +97,6 @@ const FileInputContainer = styled.div`
   border-radius: 4px;
   padding: 12px;
   cursor: pointer;
-  margin-bottom: 16px;
   transition: background-color 0.2s;
 
   &:hover {
@@ -256,7 +271,13 @@ const Register = () => {
           {errors.password && <div className="error">{errors.password}</div>}
 
           <label>Profile Picture</label>
-          <div style={{ display: "flex", alignItems: "center" }}>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              marginBottom: "10px",
+            }}
+          >
             <FileInputContainer
               onDrop={handleDrop}
               onDragOver={(e) => {
@@ -289,6 +310,10 @@ const Register = () => {
           <button type="submit" disabled={isLoading}>
             {isLoading ? <Spinner size="20px" /> : "Create account"}
           </button>
+
+          <p className="text-center">
+            Already have an account? <Link to="/login">Sign in</Link>
+          </p>
         </FormContainer>
       </div>
     </div>
