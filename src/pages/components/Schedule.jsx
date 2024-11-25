@@ -72,6 +72,11 @@ const Select = styled.select`
     background-color: #f3f4f6;
     cursor: not-allowed;
   }
+
+  option {
+    padding: 8px;
+    color: #000;
+  }
 `;
 
 const ErrorAlert = styled.div`
