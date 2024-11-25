@@ -103,8 +103,8 @@ const Story = () => {
         </A>
       ) : (
         <A>
-          <div onClick={() => setIsOpen(true)}>
-            <UserAvi>
+          <div className="relative">
+            <UserAvi onClick={() => setIsOpen(true)}>
               <img src={user.profilePic} alt="User Avatar" />
             </UserAvi>
             <Drawer isOpen={isOpen} setIsOpen={setIsOpen} />
