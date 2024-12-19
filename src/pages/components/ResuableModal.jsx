@@ -51,6 +51,7 @@ const Overlay = styled.div`
   width: 100%;
   height: 100%;
   background: rgba(0, 0, 0, 0.5);
+
   display: ${({ isOpen }) => (isOpen ? "block" : "none")};
   animation: ${({ isOpen }) => (isOpen ? fadeIn : fadeOut)} 0.3s ease-in-out;
   z-index: 1000;
@@ -61,7 +62,8 @@ const ModalContainer = styled.div`
   top: 0;
   left: 50%;
   transform: translate(-50%, 10px);
-  background: white;
+  background-color: ${(props) => (props.isDarkMode ? "#1a1a1a" : "white")};
+  color: ${(props) => (props.isDarkMode ? "#e5e5e5" : "#333")};
   border-radius: 8px;
   padding: 20px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
@@ -81,12 +83,14 @@ const CloseButton = styled.button`
   font-size: 16px;
   cursor: pointer;
   font-size: 15px;
+  color: ${(props) => (props.isDarkMode ? "#e5e5e5" : "#333")};
 `;
 
-const ReusableModal = ({ isOpen, closeModal, children }) => {
+const ReusableModal = ({ isOpen, closeModal, children, isDarkMode }) => {
   return (
     <>
       <Overlay
+        isDarkMode={isDarkMode}
         isOpen={isOpen}
         onClick={(e) => {
           e.stopPropagation();
@@ -94,9 +98,9 @@ const ReusableModal = ({ isOpen, closeModal, children }) => {
         }}
       />
       {isOpen && (
-        <ModalContainer isOpen={isOpen}>
-          <CloseButton onClick={closeModal}>
-            <MdClose size={20} color="#000" />
+        <ModalContainer isOpen={isOpen} isDarkMode={isDarkMode}>
+          <CloseButton onClick={closeModal} isDarkMode={isDarkMode}>
+            <MdClose size={20} />
           </CloseButton>
           {children}
         </ModalContainer>

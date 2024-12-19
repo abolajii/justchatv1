@@ -7,22 +7,25 @@ import { FiMinus } from "react-icons/fi";
 import { createPoll } from "../../api/request";
 import { useAlert } from "../../context/AlertContext";
 import { Spinner } from "../../components";
+import useThemeStore from "../../store/useThemeStore";
 
 const PollContainer = styled.div`
   display: flex;
   flex-direction: column;
+  background-color: ${(props) => (props.isDarkMode ? "#1a1a1a" : "white")};
+  color: ${(props) => (props.isDarkMode ? "#e5e5e5" : "#333")};
 
   .label {
     font-size: 14px;
     margin-bottom: 4px;
     font-weight: 500;
-    color: #000;
+    color: ${(props) => (props.isDarkMode ? "#e5e5e5" : "#000")};
   }
 
   .poll-length {
     font-size: 14px;
     font-weight: 500;
-    color: #000;
+    color: ${(props) => (props.isDarkMode ? "#e5e5e5" : "#000")};
   }
 
   .poll-duration {
@@ -42,6 +45,7 @@ const PollContainer = styled.div`
     font-size: 13px;
     font-weight: bold;
     text-align: center;
+    color: ${(props) => (props.isDarkMode ? "#e5e5e5" : "#000")};
   }
 
   .flex-1 {
@@ -52,9 +56,27 @@ const PollContainer = styled.div`
   }
 
   .error {
-    color: red;
+    color: ${(props) => (props.isDarkMode ? "#f87171" : "#dc2626")};
     font-size: 12px;
     margin-top: 4px;
+  }
+`;
+
+const Input = styled.input`
+  width: 100%;
+  padding: 10px;
+  font-size: 1rem;
+  border: 1px solid
+    ${(props) =>
+      props.hasError ? "red" : props.isDarkMode ? "#404040" : "#ccc"};
+  border-radius: 8px;
+  outline: none;
+  background-color: ${(props) => (props.isDarkMode ? "#262626" : "white")};
+  color: ${(props) => (props.isDarkMode ? "#e5e5e5" : "#333")};
+
+  &:focus {
+    border-color: #097528;
+    box-shadow: 0px 0px 4px rgba(9, 117, 40, 0.5);
   }
 `;
 
@@ -65,18 +87,18 @@ const PollHeader = styled.h2`
   margin-bottom: 16px;
 `;
 
-const Input = styled.input`
-  width: 100%;
-  padding: 10px;
-  font-size: 1rem;
-  border: 1px solid ${(props) => (props.hasError ? "red" : "#ccc")};
-  border-radius: 8px;
-  outline: none;
-  &:focus {
-    border-color: #097528; /* Green focus border */
-    box-shadow: 0px 0px 4px rgba(9, 117, 40, 0.5); /* Green shadow */
-  }
-`;
+// const Input = styled.input`
+//   width: 100%;
+//   padding: 10px;
+//   font-size: 1rem;
+//   border: 1px solid ${(props) => (props.hasError ? "red" : "#ccc")};
+//   border-radius: 8px;
+//   outline: none;
+//   &:focus {
+//     border-color: #097528; /* Green focus border */
+//     box-shadow: 0px 0px 4px rgba(9, 117, 40, 0.5); /* Green shadow */
+//   }
+// `;
 
 const OptionContainer = styled.div`
   display: flex;
@@ -105,19 +127,26 @@ const Dropdown = styled.select`
   width: 100%;
   padding: 5px 10px;
   font-size: 1rem;
-  border: 1px solid ${(props) => (props.hasError ? "red" : "#ccc")};
+  border: 1px solid
+    ${(props) => {
+      if (props.$hasError) return "#dc2626";
+      return props.isDarkMode ? "#404040" : "#d1d5db";
+    }};
   border-radius: 8px;
   outline: none;
   appearance: none;
-  background-color: white;
+  background-color: ${(props) => (props.isDarkMode ? "#262626" : "white")};
+  color: ${(props) => (props.isDarkMode ? "#e5e5e5" : "#333")};
+
   background-image: url("data:image/svg+xml;charset=UTF-8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>");
   background-repeat: no-repeat;
   background-position: right 12px center;
   background-size: 16px;
-  color: #000;
 
   option {
-    color: #000;
+    /* color: #000; */
+    color: ${(props) => (props.isDarkMode ? "#e5e5e5" : "#000")};
+    background-color: ${(props) => (props.isDarkMode ? "#262626" : "white")};
   }
   &:focus {
     border-color: #097528; /* Green focus border */
@@ -142,6 +171,7 @@ const SubmitButton = styled.button`
 
 const Poll = () => {
   const { isPollModalOpen, closePollModal } = useModalStore();
+  const { isDarkMode } = useThemeStore();
   const [question, setQuestion] = useState("");
   const [options, setOptions] = useState([""]);
   const [pollDays, setPollDays] = useState(0);
@@ -254,12 +284,30 @@ const Poll = () => {
   };
 
   return (
-    <ReuseableModal isOpen={isPollModalOpen} closeModal={closePollModal}>
-      <PollContainer>
+    <ReuseableModal
+      isOpen={isPollModalOpen}
+      closeModal={() => {
+        closePollModal();
+        // Reset the form
+        setQuestion("");
+        setOptions([""]);
+        setPollDays(0);
+        setPollHours(0);
+        setPollMinutes(0);
+        setErrors({
+          question: "",
+          options: "",
+          duration: "",
+        });
+      }}
+      isDarkMode={isDarkMode}
+    >
+      <PollContainer isDarkMode={isDarkMode}>
         <PollHeader>Create a Poll</PollHeader>
 
         <p className="label">Question</p>
         <Input
+          isDarkMode={isDarkMode}
           placeholder="Enter your question"
           value={question}
           onChange={(e) => {
@@ -275,6 +323,7 @@ const Poll = () => {
           {options.map((option, index) => (
             <OptionContainer key={index}>
               <OptionInput
+                isDarkMode={isDarkMode}
                 placeholder={`Option ${index + 1}`}
                 value={option}
                 onChange={(e) => {
@@ -302,6 +351,7 @@ const Poll = () => {
             <p className="title">Days</p>
             <Dropdown
               value={pollDays}
+              isDarkMode={isDarkMode}
               onChange={(e) => {
                 setPollDays(Number(e.target.value));
                 if (errors.duration) setErrors({ ...errors, duration: "" });
@@ -317,6 +367,7 @@ const Poll = () => {
           <div className="flex-1">
             <p className="title">Hours</p>
             <Dropdown
+              isDarkMode={isDarkMode}
               value={pollHours}
               onChange={(e) => {
                 setPollHours(Number(e.target.value));
@@ -333,6 +384,7 @@ const Poll = () => {
           <div className="flex-1">
             <p className="title">Mins</p>
             <Dropdown
+              isDarkMode={isDarkMode}
               value={pollMinutes}
               onChange={(e) => {
                 setPollMinutes(Number(e.target.value));

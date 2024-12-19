@@ -7,6 +7,7 @@ import { Spinner } from "../../components";
 import usePostStore from "../store/usePostStore";
 import { schedulePost } from "../../api/request";
 import { useAlert } from "../../context/AlertContext";
+import useThemeStore from "../../store/useThemeStore";
 
 const Container = styled.div`
   width: 100%;
@@ -14,6 +15,8 @@ const Container = styled.div`
   margin: 0 auto;
   display: flex;
   flex-direction: column;
+  background-color: ${(props) => (props.isDarkMode ? "#1a1a1a" : "white")};
+  color: ${(props) => (props.isDarkMode ? "#e5e5e5" : "#333")};
   gap: 24px;
 `;
 
@@ -22,10 +25,12 @@ const Header = styled.h2`
   font-weight: bold;
   text-align: center;
   margin: 0;
+
+  color: ${(props) => (props.isDarkMode ? "#ffffff" : "#000000")};
 `;
 
 const ScheduleInfo = styled.p`
-  color: #666;
+  color: ${(props) => (props.isDarkMode ? "#a3a3a3" : "#666")};
   font-size: 0.875rem;
   margin: 0;
 `;
@@ -39,7 +44,7 @@ const FormSection = styled.div`
 const Label = styled.label`
   font-size: 0.875rem;
   font-weight: 500;
-  color: #333;
+  color: ${(props) => (props.isDarkMode ? "#e5e5e5" : "#333")};
 `;
 
 const SelectGroup = styled.div`
@@ -52,9 +57,15 @@ const Select = styled.select`
   width: 100%;
   padding: 8px;
   font-size: 0.875rem;
-  border: 1px solid ${(props) => (props.$hasError ? "#dc2626" : "#d1d5db")};
+  border: 1px solid
+    ${(props) => {
+      if (props.$hasError) return "#dc2626";
+      return props.isDarkMode ? "#404040" : "#d1d5db";
+    }};
   border-radius: 8px;
-  background-color: white;
+  background-color: ${(props) => (props.isDarkMode ? "#262626" : "white")};
+  color: ${(props) => (props.isDarkMode ? "#e5e5e5" : "#333")};
+
   outline: none;
   appearance: none;
   background-image: url("data:image/svg+xml;charset=UTF-8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>");
@@ -69,13 +80,18 @@ const Select = styled.select`
   }
 
   &:disabled {
-    background-color: #f3f4f6;
+    background-color: ${(props) => (props.isDarkMode ? "#1f1f1f" : "#f3f4f6")};
     cursor: not-allowed;
   }
 
   option {
     padding: 8px;
-    color: #000;
+    color: ${(props) => (props.isDarkMode ? "#e5e5e5" : "#000")};
+    background-color: ${(props) => (props.isDarkMode ? "#262626" : "white")};
+  }
+
+  svg {
+    color: ${(props) => (props.isDarkMode ? "#e5e5e5" : "#333")};
   }
 `;
 
@@ -85,9 +101,11 @@ const ErrorAlert = styled.div`
   gap: 8px;
   padding: 8px 7px;
   border-radius: 8px;
-  background-color: #fee2e2;
+  background-color: ${(props) => (props.isDarkMode ? "#4c1d1d" : "#fee2e2")};
   border: 1px solid #ef4444;
-  color: #991b1b;
+  color: ${(props) => (props.isDarkMode ? "#fca5a5" : "#991b1b")};
+  font-size: 0.875rem;
+
   font-size: 0.875rem;
 
   svg {
@@ -110,7 +128,7 @@ const SubmitButton = styled.button`
   transition: all 0.2s ease;
 
   &:hover {
-    background-color: #dcfce7;
+    background-color: ${(props) => (props.isDarkMode ? "#132e1f" : "#dcfce7")};
   }
 
   &:disabled {
@@ -120,6 +138,7 @@ const SubmitButton = styled.button`
 `;
 
 const Schedule = () => {
+  const { isDarkMode } = useThemeStore();
   const { isScheduleModalOpen, closeScheduleModal } = useModalStore();
   const [isLoading, setIsLoading] = useState(false);
   const { content, file, setContent, setFile, setImage } = usePostStore();
@@ -245,7 +264,7 @@ const Schedule = () => {
   const handleSubmit = async () => {
     setTouched({ date: true, time: true });
     if (validateSchedule()) {
-      if (!content || !file) {
+      if (!content && !file) {
         showAlert("error", "Please provide a post content and image.");
         return;
       }
@@ -289,21 +308,33 @@ const Schedule = () => {
   };
 
   return (
-    <ReusableModal isOpen={isScheduleModalOpen} closeModal={closeScheduleModal}>
-      <Container>
-        <Header>Schedule Post</Header>
-
+    <ReusableModal
+      isOpen={isScheduleModalOpen}
+      closeModal={() => {
+        closeScheduleModal();
+        setContent("");
+        setFile(null);
+        setImage(null);
+        setErrors({ date: "", time: "" });
+      }}
+      isDarkMode={isDarkMode}
+    >
+      <Container isDarkMode={isDarkMode}>
+        <Header isDarkMode={isDarkMode}>Schedule Post</Header>
         {scheduledDateTime && (
-          <ScheduleInfo>Post will be sent on {scheduledDateTime}</ScheduleInfo>
+          <ScheduleInfo isDarkMode={isDarkMode}>
+            Post will be sent on {scheduledDateTime}
+          </ScheduleInfo>
         )}
 
         <FormSection>
-          <Label>Date</Label>
+          <Label isDarkMode={isDarkMode}>Date</Label>
           <SelectGroup>
             <Select
               value={scheduleDate.month}
               onChange={(e) => handleDateChange("month", e.target.value)}
               $hasError={errors.date && touched.date}
+              isDarkMode={isDarkMode}
             >
               {months.map((month, index) => (
                 <option key={month} value={String(index + 1).padStart(2, "0")}>
@@ -316,6 +347,7 @@ const Schedule = () => {
               value={scheduleDate.day}
               onChange={(e) => handleDateChange("day", e.target.value)}
               $hasError={errors.date && touched.date}
+              isDarkMode={isDarkMode}
             >
               {[...Array(31)].map((_, i) => (
                 <option key={i} value={String(i + 1).padStart(2, "0")}>
@@ -328,6 +360,7 @@ const Schedule = () => {
               value={scheduleDate.year}
               onChange={(e) => handleDateChange("year", e.target.value)}
               $hasError={errors.date && touched.date}
+              isDarkMode={isDarkMode}
             >
               {years.map((year) => (
                 <option key={year} value={year}>
@@ -337,7 +370,7 @@ const Schedule = () => {
             </Select>
           </SelectGroup>
           {errors.date && touched.date && (
-            <ErrorAlert>
+            <ErrorAlert isDarkMode={isDarkMode}>
               <AlertCircle />
               {errors.date}
             </ErrorAlert>
@@ -345,12 +378,13 @@ const Schedule = () => {
         </FormSection>
 
         <FormSection>
-          <Label>Time</Label>
+          <Label isDarkMode={isDarkMode}>Time</Label>
           <SelectGroup $columns="repeat(2, 1fr)">
             <Select
               value={scheduleTime.hour}
               onChange={(e) => handleTimeChange("hour", e.target.value)}
               $hasError={errors.time && touched.time}
+              isDarkMode={isDarkMode}
             >
               {[...Array(24)].map((_, i) => (
                 <option key={i} value={String(i).padStart(2, "0")}>
@@ -363,6 +397,7 @@ const Schedule = () => {
               value={scheduleTime.minute}
               onChange={(e) => handleTimeChange("minute", e.target.value)}
               $hasError={errors.time && touched.time}
+              isDarkMode={isDarkMode}
             >
               {[...Array(60)].map((_, i) => (
                 <option key={i} value={String(i).padStart(2, "0")}>
