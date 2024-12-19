@@ -15,8 +15,9 @@ import Modal from "./pages/components/Modal";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import { AlertProvider, useAlert } from "./context/AlertContext";
 import { Alert } from "./components";
-import { fetchCurrent } from "./api/request";
+import { fetchCurrent, getMe } from "./api/request";
 import useUserStore from "./store/useUserStore";
+import TradingProfitCalculator from "./ProfitCalculator";
 
 const App = () => {
   const { setCurrentUser } = useUserStore();
@@ -25,8 +26,8 @@ const App = () => {
     const token = localStorage.getItem("token");
     if (token) {
       const fetchUser = async () => {
-        const response = await fetchCurrent();
-        setCurrentUser(response);
+        const response = await getMe();
+        setCurrentUser(response.user);
       };
       fetchUser();
     }
@@ -62,6 +63,14 @@ const App = () => {
           }
         />
         <Route
+          path="/conversation/:id"
+          element={
+            <ProtectedRoute>
+              <Conversations />
+            </ProtectedRoute>
+          }
+        />
+        <Route
           path="/settings"
           element={
             <ProtectedRoute>
@@ -90,6 +99,14 @@ const App = () => {
           element={
             <ProtectedRoute>
               <Discover />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/trade"
+          element={
+            <ProtectedRoute>
+              <TradingProfitCalculator />
             </ProtectedRoute>
           }
         />

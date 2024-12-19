@@ -218,7 +218,7 @@ const Register = () => {
 
   return (
     <div className="w-full">
-      <div className="center flex-column">
+      <div className="center flex-col">
         <Logo />
         <Text>Create your account</Text>
         <FormContainer onSubmit={handleSubmit}>

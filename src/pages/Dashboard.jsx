@@ -1,53 +1,39 @@
-import React from "react";
-import styled from "styled-components";
+import React, { useEffect, useState } from "react";
 import { MainContainer } from "../components";
-import MainDashboard from "./MainDashboard";
-
-const MobileContainer = styled.div`
-  height: 100svh;
-  display: flex; /* Show DesktopView on desktop */
-  flex: 1;
-`;
-
-const B = styled.div`
-  flex: 2.5;
-`;
-
-const MobileView = styled.div`
-  display: block;
-
-  @media (min-width: 768px) {
-    display: none; /* Hide MobileView on desktop */
-  }
-`;
-
-const DesktopView = styled.div`
-  display: block;
-  user-select: none;
-
-  /* Hide DesktopView on mobile */
-`;
-
-const Story = () => {
-  return <div>Dashboard Page</div>;
-};
+import Header from "../components/Header";
+import Story from "./components/Story";
+import AllPosts from "./dashboard/AllPosts";
+import PostContainer from "./PostContainer";
 
 const Dashboard = () => {
+  const [isMobileView, setIsMobileView] = useState(false);
+
+  // Add resize event listener
+
+  useEffect(() => {
+    // Detect mobile view
+    const checkMobileView = () => {
+      setIsMobileView(window.innerWidth <= 768);
+    };
+
+    checkMobileView(); // Initial check
+    window.addEventListener("resize", checkMobileView);
+
+    return () => {
+      window.removeEventListener("resize", checkMobileView); // Cleanup
+    };
+  }, []);
+
   return (
-    <div>
-      {/* <MobileView>
-        <MobileContainer>
-          <B>
-            <MainDashboard />
-          </B>
-        </MobileContainer>
-      </MobileView> */}
-      <DesktopView className="no-select">
-        <MainContainer>
-          <MainDashboard />
-        </MainContainer>
-      </DesktopView>
-    </div>
+    <MainContainer>
+      <Header>
+        <div>
+          <Story show={!isMobileView} />
+          <PostContainer />
+          <AllPosts />
+        </div>
+      </Header>
+    </MainContainer>
   );
 };
 

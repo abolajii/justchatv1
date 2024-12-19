@@ -58,8 +58,8 @@ export const userFollow = async (userId) => {
   return response.data; // Return the updated user data or a success message
 };
 
-export const getFeeds = async () => {
-  const response = await chatAppAuth.get("/feeds");
+export const getFeeds = async (pageNum) => {
+  const response = await chatAppAuth.get(`/feeds?page=${pageNum}`);
   return response.data; // Return the updated user data or a success message
 };
 
@@ -92,8 +92,9 @@ export const getSuggestedUsers = () => {
   return response; // Return created reply data
 };
 
-export const getUseNotifications = () => {
+export const getUserNotifications = () => {
   const response = chatAppAuth.get(`/notifications`); // Adjust the endpoint to match your backend route
+  // console.log(response);
   return response; // Return created reply data
 };
 
@@ -210,5 +211,10 @@ export const votePoll = async (data) => {
 
 export const schedulePost = async (data) => {
   const response = await chatAppAuth.post(`/schedule/post`, data);
+  return response.data; // Re
+};
+
+export const fetchUserActivity = async (tag, userId) => {
+  const response = await chatAppAuth.get(`/activity/${userId}?tag=${tag}`);
   return response.data; // Re
 };

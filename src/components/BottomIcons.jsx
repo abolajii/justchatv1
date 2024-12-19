@@ -62,7 +62,15 @@ const CloseButton = styled(FaTimes)`
   cursor: pointer;
 `;
 
-const BottomIcons = ({ onSubmit, postContent, image, setImage, setFile }) => {
+const BottomIcons = ({
+  onSubmit,
+  postContent,
+  image,
+  setImage,
+  setFile,
+  reply,
+  filePicker,
+}) => {
   const [showEmoji, setShowEmoji] = useState(false);
   const { openPollModal, openScheduleModal } = useModalStore();
 
@@ -86,6 +94,79 @@ const BottomIcons = ({ onSubmit, postContent, image, setImage, setFile }) => {
 
   const toggleEmojiPopup = () => setShowEmoji((prev) => !prev);
 
+  if (reply) {
+    return (
+      <div>
+        <div
+          className="flex justify-between"
+          style={{ marginTop: "10px", position: "relative" }}
+        >
+          <div
+            className="action-icons"
+            style={{ display: "flex", gap: "10px" }}
+          >
+            <Desktop>
+              <div className="relative center">
+                <FaSmile
+                  title="Add Emoji"
+                  onClick={toggleEmojiPopup}
+                  size={18}
+                />
+                {showEmoji && (
+                  <EmojiPopup show={showEmoji}>
+                    <p>Emoji Picker Here</p>
+                    {/* Replace with actual emoji picker library */}
+                  </EmojiPopup>
+                )}
+              </div>
+            </Desktop>
+
+            <div className="center">
+              <HiPhotograph
+                title="Attach File"
+                size={22}
+                onClick={filePicker}
+              />
+            </div>
+            <div className="center">
+              <FaPollH
+                title="Create Poll"
+                size={20}
+                onClick={() => {
+                  openPollModal();
+                }}
+              />
+              <Poll />
+            </div>
+            <div className="center">
+              <RiCalendarScheduleFill
+                title="Schedule Post"
+                size={20}
+                onClick={() => {
+                  openScheduleModal();
+                }}
+              />
+              <Schedule />
+            </div>
+          </div>
+          <div>
+            <FaPaperPlane
+              title="Send"
+              size={20}
+              className={`send-icon ${
+                !postContent.trim() && !image ? "disabled" : ""
+              }`}
+              onClick={onSubmit}
+              style={{
+                cursor: postContent.trim() || image ? "pointer" : "not-allowed",
+              }}
+            />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div>
       <div className="center">
@@ -103,7 +184,7 @@ const BottomIcons = ({ onSubmit, postContent, image, setImage, setFile }) => {
         <div className="action-icons" style={{ display: "flex", gap: "10px" }}>
           <Desktop>
             <div className="relative center">
-              <FaSmile title="Add Emoji" onClick={toggleEmojiPopup} size={20} />
+              <FaSmile title="Add Emoji" onClick={toggleEmojiPopup} size={18} />
               {showEmoji && (
                 <EmojiPopup show={showEmoji}>
                   <p>Emoji Picker Here</p>
@@ -113,11 +194,13 @@ const BottomIcons = ({ onSubmit, postContent, image, setImage, setFile }) => {
             </div>
           </Desktop>
 
-          <HiPhotograph
-            title="Attach File"
-            size={20}
-            onClick={openFilePicker}
-          />
+          <div className="center">
+            <HiPhotograph
+              title="Attach File"
+              size={22}
+              onClick={openFilePicker}
+            />
+          </div>
           <div className="center">
             <FaPollH
               title="Create Poll"

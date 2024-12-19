@@ -1,26 +1,11 @@
 import React, { useEffect, useState } from "react";
-
 import styled from "styled-components";
-import useUserStore from "../../store/useUserStore";
 import StoryCover from "./StoryCover";
-import { userStory } from "../../api/request";
+import useUserStore from "../../store/useUserStore";
 import useStoryStore from "../store/useStoryStore";
+import { userStory } from "../../api/request";
 import OtherUserStory from "./OtherUserStory";
-import Desktop from "../../responsive/Desktop";
-import { Drawer } from "../../components";
-
-const Container = styled.div`
-  position: sticky;
-  top: 0;
-  width: 100%;
-  display: flex;
-  padding: 10px;
-  height: 80px;
-  align-items: center;
-  border-bottom: 1px solid #dbdbdb;
-  background-color: #fff;
-  z-index: 1000;
-`;
+import useThemeStore from "../../store/useThemeStore";
 
 const A = styled.div`
   flex: 0.4;
@@ -38,6 +23,7 @@ const B = styled.div`
   .text-xs {
     font-size: 9px;
     text-align: center;
+    color: ${(props) => (props.isDarkMode ? "#cccccc" : "#666666")};
   }
 
   img {
@@ -45,28 +31,32 @@ const B = styled.div`
     height: 100%;
     object-fit: cover;
   }
-`;
 
-const UserAvi = styled.div`
-  height: 50px;
-  width: 50px;
-  border-radius: 50%;
-  cursor: pointer;
-  img {
-    height: 100%;
-    width: 100%;
-    object-fit: cover;
-    border-radius: 50%;
-    margin-right: 10px;
-    opacity: 0.85;
+  /* Scrollbar styling for dark mode */
+  scrollbar-width: thin;
+  scrollbar-color: ${(props) =>
+    props.isDarkMode
+      ? "rgba(255,255,255,0.2) transparent"
+      : "rgba(0,0,0,0.2) transparent"};
+
+  &::-webkit-scrollbar {
+    height: 8px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: ${(props) =>
+      props.isDarkMode ? "rgba(255,255,255,0.2)" : "rgba(0,0,0,0.2)"};
+    border-radius: 4px;
   }
 `;
 
-const Story = () => {
+const Story = ({ show }) => {
+  const [isMobileView, setIsMobileView] = useState(false);
   const { user } = useUserStore();
   const { allStories, setAllStories } = useStoryStore();
-  const [isSmallScreen, setIsSmallScreen] = useState(false);
-  const [isOpen, setIsOpen] = useState(false);
+  const { isDarkMode } = useThemeStore(); // Add dark mode state
+
+  // Add resize event listener
 
   useEffect(() => {
     const fetchStories = async () => {
@@ -81,44 +71,38 @@ const Story = () => {
   }, []);
 
   useEffect(() => {
-    const checkScreenSize = () => {
-      setIsSmallScreen(window.innerWidth <= 768); // Breakpoint for small screens
+    // Detect mobile view
+    const checkMobileView = () => {
+      setIsMobileView(window.innerWidth <= 768);
     };
 
-    // Initial check
-    checkScreenSize();
+    checkMobileView(); // Initial check
+    window.addEventListener("resize", checkMobileView);
 
-    // Add resize event listener
-    window.addEventListener("resize", checkScreenSize);
-
-    // Cleanup on unmount
-    return () => window.removeEventListener("resize", checkScreenSize);
+    return () => {
+      window.removeEventListener("resize", checkMobileView); // Cleanup
+    };
   }, []);
 
-  return (
-    <Container>
-      {!isSmallScreen ? (
-        <A>
-          <StoryCover user={user} />
-        </A>
-      ) : (
-        <A>
-          <div className="relative">
-            <UserAvi onClick={() => setIsOpen(true)}>
-              <img src={user.profilePic} alt="User Avatar" />
-            </UserAvi>
-            <Drawer isOpen={isOpen} setIsOpen={setIsOpen} />
+  if (show) {
+    return (
+      <div className="flex align-center gap-sm">
+        {!isMobileView && (
+          <div>
+            <A>
+              <StoryCover user={user} />
+            </A>
           </div>
-        </A>
-      )}
-      <B>
-        {allStories.map((s, i) => {
-          const stories = s.stories;
-          return <OtherUserStory key={i} stories={stories} s={s} />;
-        })}
-      </B>
-    </Container>
-  );
+        )}
+        <B isDarkMode={isDarkMode}>
+          {allStories.map((s, i) => {
+            const stories = s.stories;
+            return <OtherUserStory key={i} stories={stories} s={s} />;
+          })}
+        </B>
+      </div>
+    );
+  }
 };
 
 export default Story;

@@ -10,6 +10,7 @@ import { MdClose, MdSend } from "react-icons/md";
 import useModalStore from "../store/useModalStore";
 import { viewStory } from "../../api/request";
 import useUserStore from "../../store/useUserStore";
+import Desktop from "../../responsive/Desktop";
 const emojis = [
   "😀",
   "😂",
@@ -368,13 +369,13 @@ const ViewStatus = () => {
     startTimeRef.current = Date.now() - elapsedTimeRef.current;
 
     const storyId = currentStory._id;
-    const hasViewed = currentStory?.views?.find((v) => v.user === user.id);
+    const hasViewed = currentStory?.views?.find(
+      (v) => v.user === user?.id || v.user === user?._id
+    );
 
     if (!hasViewed) {
       handleViewStory(storyId, user.id);
       viewStory(storyId);
-
-      // add to user to views array
     }
 
     const animate = () => {
@@ -542,7 +543,7 @@ const ViewStatus = () => {
             onEnded={handleNext}
           />
         )}
-        {media.type == null && (
+        {media?.type == null && (
           <Text className="text-content" fontFamily={currentStory?.fontFamily}>
             {currentStory.text}
           </Text>
@@ -556,13 +557,15 @@ const ViewStatus = () => {
   return (
     <StatusModal>
       <ModalInner
-        bgColor={currentStory?.media.type === null && currentStory?.bgColor}
+        bgColor={currentStory?.media?.type === null && currentStory?.bgColor}
       >
-        <div className="icon-container left-icons">
-          <div className="center icon" onClick={() => closeModalStatus()}>
-            <MdClose size={25} color="#fff" />
+        <Desktop>
+          <div className="icon-container left-icons">
+            <div className="center icon" onClick={() => closeModalStatus()}>
+              <MdClose size={25} color="#fff" />
+            </div>
           </div>
-        </div>
+        </Desktop>
         <Relative>
           <StatusInner>
             <ProgressContainer>
@@ -583,8 +586,8 @@ const ViewStatus = () => {
                 </div>
                 <div>
                   <div className="name">
-                    {selectedStory.user.name}
-                    {selectedStory.user.isVerified && <HiCheckBadge />}
+                    {selectedStory?.user?.name}
+                    {selectedStory?.user?.isVerified && <HiCheckBadge />}
                   </div>
                   <div className="time">
                     {formatTimestamp(currentStory?.createdAt)}
@@ -613,31 +616,33 @@ const ViewStatus = () => {
                 )}
               </div>
             </UserDetails>
-            <InputContainer className="footer flex">
-              <div
-                className="center cursor"
-                onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-              >
-                {renderEmojiPicker()}
-                <FaSmile color="#fbfbfb" size={24} />
-              </div>
-              <div className="input-wrapper">
-                <textarea
-                  onFocus={() => {
-                    setIsPlaying(false);
-                    isPlayingRef.current = false;
-                  }}
-                  ref={textareaRef}
-                  placeholder="Send message"
-                  value={inputValue}
-                  onChange={handleInputChange}
-                  rows={1}
-                />
-              </div>
-              <div className="center icon cursor">
-                {loading ? "" : <MdSend color="#fbfbfb" size={24} />}
-              </div>
-            </InputContainer>
+            {!isLoggedIn && (
+              <InputContainer className="footer flex">
+                <div
+                  className="center cursor"
+                  onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+                >
+                  {renderEmojiPicker()}
+                  <FaSmile color="#fbfbfb" size={24} />
+                </div>
+                <div className="input-wrapper">
+                  <textarea
+                    onFocus={() => {
+                      setIsPlaying(false);
+                      isPlayingRef.current = false;
+                    }}
+                    ref={textareaRef}
+                    placeholder="Send message"
+                    value={inputValue}
+                    onChange={handleInputChange}
+                    rows={1}
+                  />
+                </div>
+                <div className="center icon cursor">
+                  {loading ? "" : <MdSend color="#fbfbfb" size={24} />}
+                </div>
+              </InputContainer>
+            )}
             {renderContent()}
           </StatusInner>
         </Relative>

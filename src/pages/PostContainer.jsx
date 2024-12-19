@@ -1,27 +1,44 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
 import useUserStore from "../store/useUserStore";
+import useThemeStore from "../store/useThemeStore"; // Import theme store
 import BottomIcons from "../components/BottomIcons";
 import { createPost } from "../api/request";
 import { useAlert } from "../context/AlertContext";
 import usePostStore from "./store/usePostStore";
 
 const Container = styled.div`
-  border-bottom: 1px solid #ebebeb;
+  border-bottom: 1px solid ${(props) => (props.isDarkMode ? "#333" : "#ebebeb")};
   border-radius: 4px;
+  background-color: ${(props) => (props.isDarkMode ? "#1e1e1e" : "#fff")};
   padding: 10px;
+
   .gap {
     gap: 10px;
   }
+
   textarea {
     width: 100%;
-    border: none;
+    /* border: 1px solid ${(props) =>
+      props.isDarkMode ? "#333" : "#e0e0e0"}; */
     border-radius: 4px;
     font-size: 16px;
     min-height: 70px;
     outline: none;
     resize: none;
     font-family: inherit;
+    color: ${(props) => (props.isDarkMode ? "#e0e0e0" : "#333")};
+    /* background-color: ${(props) =>
+      props.isDarkMode ? "#121212" : "#f9f9f9"}; */
+    transition: border-color 0.2s ease;
+
+    &:focus {
+      border-color: #6bc1b7;
+    }
+
+    &::placeholder {
+      color: ${(props) => (props.isDarkMode ? "#888" : "#666")};
+    }
   }
 
   .flex-1 {
@@ -31,13 +48,13 @@ const Container = styled.div`
   .action-icons {
     display: flex;
     gap: 10px;
-    color: #555;
+    color: ${(props) => (props.isDarkMode ? "#a2a2a2" : "#555")};
     cursor: pointer;
     font-size: 18px;
     align-items: center;
 
     .disabled {
-      color: #ccc;
+      color: ${(props) => (props.isDarkMode ? "#555" : "#ccc")};
       cursor: not-allowed;
     }
   }
@@ -48,13 +65,13 @@ const Container = styled.div`
     font-size: 20px;
 
     &.disabled {
-      color: #ccc;
+      color: ${(props) => (props.isDarkMode ? "#555" : "#ccc")};
       cursor: not-allowed;
     }
   }
 
   svg {
-    color: #a2a2a2;
+    color: ${(props) => (props.isDarkMode ? "#a2a2a2" : "#a2a2a2")};
 
     &:hover {
       color: #6bc1b7;
@@ -67,6 +84,7 @@ const UserAvi = styled.div`
   width: 35px;
   border-radius: 50%;
   cursor: pointer;
+
   img {
     height: 100%;
     width: 100%;
@@ -74,19 +92,31 @@ const UserAvi = styled.div`
     border-radius: 50%;
     margin-right: 10px;
     opacity: 0.85;
+    border: 2px solid
+      ${(props) =>
+        props.isDarkMode ? "rgba(255,255,255,0.1)" : "rgba(0,0,0,0.1)"};
+  }
+
+  @media (max-width: 768px) {
+    display: none;
   }
 `;
 
 const PostContainer = () => {
   const { user } = useUserStore();
+  const { isDarkMode } = useThemeStore(); // Get dark mode state
   const { content, setContent, image, setImage, file, setFile } =
     usePostStore();
 
   const { showAlert } = useAlert();
 
   const handleSendClick = async () => {
-    console.log("Post sent:", content, file);
-    // Send the post to the server
+    // Validate content before sending
+    if (!content.trim()) {
+      showAlert("error", "Post content cannot be empty");
+      return;
+    }
+
     const formData = new FormData();
     formData.append("content", content);
     if (file) {
@@ -96,30 +126,39 @@ const PostContainer = () => {
     try {
       const response = await createPost(formData);
       console.log("Post created:", response);
-      showAlert("success", "Post created successful!"); // Trigger success alert
-    } catch (error) {
-      console.error("Error creating post:", error.message);
-      showAlert("error", error.response.data.message); // Trigger error alert
-    }
+      showAlert("success", "Post created successfully!");
 
-    // Reset the state
-    setFile(null);
-    setImage(null);
-    setContent("");
-    // setPostContent("");
+      // Reset the state
+      setFile(null);
+      setImage(null);
+      setContent("");
+    } catch (error) {
+      console.error("Error creating post:", error);
+      showAlert(
+        "error",
+        error.response?.data?.message || "Failed to create post"
+      );
+    }
   };
 
   return (
-    <Container>
+    <Container isDarkMode={isDarkMode}>
       <div className="flex gap">
-        <UserAvi>
-          <img src={user.profilePic} alt="User Avatar" />
+        <UserAvi isDarkMode={isDarkMode}>
+          <img
+            src={user.profilePic}
+            alt="User Avatar"
+            onError={(e) => {
+              e.target.src = "/default-avatar.png"; // Fallback avatar
+            }}
+          />
         </UserAvi>
         <div className="flex-1 flex">
           <textarea
             placeholder="Share your thoughts..."
             value={content}
             onChange={(e) => setContent(e.target.value)}
+            maxLength={500} // Optional: Add a max length
           />
         </div>
       </div>

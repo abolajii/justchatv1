@@ -1,37 +1,24 @@
 import React, { useState } from "react";
+import { MainContainer } from "../components";
+import Header from "../components/Header";
 import styled from "styled-components";
-import { MainContainer, Search, Tabs } from "../components";
-import DiscoverScreen from "./discover/components/Discover";
-import TrendingScreen from "./discover/components/Trending";
-import Connect from "./discover/components/Connect";
-import Sports from "./discover/components/Sports";
-
-const Top = styled.div`
-  display: flex;
-  gap: 20px;
-  padding: 15px 10px;
-  flex-direction: column;
-`;
+import useThemeStore from "../store/useThemeStore";
 
 const Inner = styled.div`
-  padding: 0px 10px;
+  background-color: ${(props) => (props.isDarkMode ? "#1e1e1e" : "#fff")};
+  height: 100%;
 `;
 
 const Discover = () => {
-  const [activeTab, setActiveTab] = useState(0);
-  const tabs = ["Discover", "Trending", "Connects", "Sports"];
+  const { isDarkMode } = useThemeStore();
+
   return (
     <MainContainer>
-      <Top>
-        <Search />
-        <Tabs tabs={tabs} activeTab={activeTab} setActiveTab={setActiveTab} />
-      </Top>
-      <Inner>
-        {activeTab === 0 && <DiscoverScreen />}
-        {activeTab === 1 && <TrendingScreen />}
-        {activeTab === 2 && <Connect />}
-        {activeTab === 3 && <Sports />}
-      </Inner>
+      <Header>
+        <Inner isDarkMode={isDarkMode}>
+          <div>Search</div>
+        </Inner>
+      </Header>
     </MainContainer>
   );
 };

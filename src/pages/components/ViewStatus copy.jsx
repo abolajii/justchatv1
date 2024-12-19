@@ -339,7 +339,9 @@ const ViewStatus = () => {
     startTimeRef.current = Date.now() - elapsedTimeRef.current;
 
     const storyId = currentStory._id;
-    const hasViewed = currentStory?.views?.find((v) => v.user === user.id);
+    const hasViewed = currentStory?.views?.find(
+      (v) => v.user === user._id || v.user === user.id
+    );
 
     if (!hasViewed) {
       console.log("Viewing...");

@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 
 const OtherUserStoryAvi = ({
-  size = 55,
+  size = 54,
   strokeWidth = 2,
   imageSrc,
   stories = [], // Array of story objects

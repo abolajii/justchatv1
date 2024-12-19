@@ -30,3 +30,19 @@ export const formatTimestamp = (isoString) => {
     );
   }
 };
+
+export function formatDate(timestamp) {
+  const date = new Date(timestamp);
+  const now = new Date();
+  const timeDifference = now - date;
+
+  // If more than 24 hours ago, use "MMM dd" format
+  if (timeDifference > 24 * 60 * 60 * 1000) {
+    const options = { month: "short", day: "numeric" };
+    return new Intl.DateTimeFormat("en-US", options).format(date);
+  }
+
+  // Otherwise, use "hh:mm AM/PM" format
+  const options = { hour: "numeric", minute: "numeric", hour12: true };
+  return new Intl.DateTimeFormat("en-US", options).format(date);
+}

@@ -1,5 +1,3 @@
-src/styles/index.css
-
 /* Colors */
 :root {
   --primary-color: #1d9bf0; /* Twitter-like blue */
@@ -10,6 +8,22 @@ src/styles/index.css
   --black: #000000;
   font-family: "Roboto", serif;
   font-size: 16px;
+}
+
+:root {
+  --black: #000000;
+  --eerie-black: #1b1b1b;
+  --jet-black: #2b2b2b;
+  --charcoal: #3c3c3c;
+  --dim-gray: #4f4f4f;
+  --dark-gray: #6e6e6e;
+  --light-slate: #a1a1a1;
+  --silver: #c4c4c4;
+}
+
+body {
+  background-color: var(--black);
+  color: var(--silver);
 }
 
 /* Base Reset */
@@ -23,15 +37,13 @@ html {
   font-size: 16px;
 }
 
-.cursor {
-  cursor: pointer;
-}
-.no-select {
-  user-select: none; /* Standard syntax */
-  -webkit-user-select: none; /* Safari and Chrome */
-  -moz-user-select: none; /* Firefox */
-  -ms-user-select: none; /* Older Internet Explorer */
-}
+/* .no-select { */
+/* user-select: none; Standard syntax */
+/* -webkit-user-select: none; Safari and Chrome */
+/* -moz-user-select: none; Firefox */
+/* -ms-user-select: none; Older Internet Explorer */
+/* } */
+
 body {
   font-family: "Arial", sans-serif;
   background-color: var(--background-color);
@@ -40,26 +52,82 @@ body {
   margin: 0;
 }
 
+.opacity-0 {
+  opacity: 0;
+}
+
 /* Flex Utilities */
 .flex {
   display: flex;
 }
 
-.flex-center {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.contentEditable {
+  -webkit-user-modify: read-write-plaintext-only;
+  user-modify: read-write-plaintext-only;
+  font-size: 14px; /* or whatever you want */
 }
 
-.flex-column {
+input,
+textarea {
+  width: 100%;
+  border: none;
+  background-color: transparent;
+  outline: none;
+}
+
+button {
+  cursor: pointer;
+  background-color: transparent;
+  outline: none;
+  border: none;
+}
+
+.flex {
+  display: flex;
+}
+
+.center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flex-col {
   flex-direction: column;
+}
+
+.justify-end {
+  justify-content: flex-end;
+}
+
+.align-center {
+  align-items: center;
 }
 
 .justify-between {
   justify-content: space-between;
 }
 
-/* Grid Utilities */
+.flex-1 {
+  flex: 1;
+}
+
+.pointer {
+  cursor: pointer;
+}
+
+.gap-sm {
+  gap: 10px;
+}
+
+.italic {
+  font-style: italic;
+}
+
+.gap-md {
+  gap: 15px;
+}
+
 .grid {
   display: grid;
 }
@@ -72,81 +140,328 @@ body {
   grid-template-columns: repeat(3, 1fr);
 }
 
-/* Spacing Utilities */
+.grid-cols-4 {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.grid-cols-5 {
+  grid-template-columns: repeat(5, 1fr);
+}
+
+.grid-cols-6 {
+  grid-template-columns: repeat(6, 1fr);
+}
+
+.m-0 {
+  margin: 0px;
+}
+.m-1 {
+  margin: 4px;
+}
+.m-2 {
+  margin: 8px;
+}
+.m-3 {
+  margin: 12px;
+}
+.m-4 {
+  margin: 16px;
+}
+.m-5 {
+  margin: 20px;
+}
+.m-6 {
+  margin: 24px;
+}
+
+.mt-1 {
+  margin-top: 4px;
+}
+.mt-2 {
+  margin-top: 8px;
+}
+.mt-3 {
+  margin-top: 12px;
+}
 .mt-4 {
-  margin-top: 1rem;
+  margin-top: 16px;
+}
+
+.mb-1 {
+  margin-bottom: 4px;
+}
+.mb-2 {
+  margin-bottom: 8px;
+}
+.mb-3 {
+  margin-bottom: 12px;
 }
 .mb-4 {
-  margin-bottom: 1rem;
+  margin-bottom: 16px;
+}
+
+.ml-1 {
+  margin-left: 4px;
+}
+.ml-2 {
+  margin-left: 8px;
+}
+.ml-3 {
+  margin-left: 12px;
+}
+.ml-4 {
+  margin-left: 16px;
+}
+
+.mr-1 {
+  margin-right: 4px;
+}
+.mr-2 {
+  margin-right: 8px;
+}
+.mr-3 {
+  margin-right: 12px;
+}
+.mr-4 {
+  margin-right: 16px;
+}
+
+.p-0 {
+  padding: 0px;
+}
+.p-1 {
+  padding: 4px;
+}
+.p-2 {
+  padding: 8px;
+}
+.p-3 {
+  padding: 12px;
 }
 .p-4 {
-  padding: 1rem;
+  padding: 16px;
+}
+.p-5 {
+  padding: 20px;
+}
+.p-6 {
+  padding: 24px;
 }
 
-/* Text Utilities */
-.text-sm {
-  font-size: 0.875rem;
+.pt-1 {
+  padding-top: 4px;
 }
-.text-lg {
-  font-size: 1.25rem;
+.pt-2 {
+  padding-top: 8px;
 }
-.text-center {
-  text-align: center;
+.pt-3 {
+  padding-top: 12px;
 }
-.font-bold {
-  font-weight: bold;
+.pt-4 {
+  padding-top: 16px;
 }
 
-/* Width and Height */
-.w-full {
+.pb-1 {
+  padding-bottom: 4px;
+}
+.pb-2 {
+  padding-bottom: 8px;
+}
+.pb-3 {
+  padding-bottom: 12px;
+}
+.pb-4 {
+  padding-bottom: 16px;
+}
+
+.pl-1 {
+  padding-left: 4px;
+}
+.pl-2 {
+  padding-left: 8px;
+}
+.pl-3 {
+  padding-left: 12px;
+}
+.pl-4 {
+  padding-left: 16px;
+}
+
+.pr-1 {
+  padding-right: 4px;
+}
+.pr-2 {
+  padding-right: 8px;
+}
+.pr-3 {
+  padding-right: 12px;
+}
+.pr-4 {
+  padding-right: 16px;
+}
+
+.w-100 {
   width: 100%;
 }
-.h-full {
+
+.h-100 {
   height: 100%;
 }
 
-/* Positioning */
+.w-auto {
+  width: auto;
+}
+
+.h-auto {
+  height: auto;
+}
+
+.min-w-0 {
+  min-width: 0;
+}
+
+.min-h-0 {
+  min-height: 0;
+}
+
 .relative {
   position: relative;
 }
+
 .absolute {
   position: absolute;
 }
 
-/* Buttons */
-.btn {
-  padding: 0.5rem 1rem;
-  border: none;
-  cursor: pointer;
-  border-radius: 5px;
-  color: var(--white);
+.fixed {
+  position: fixed;
 }
 
-.btn-primary {
-  background-color: var(--primary-color);
+.top-0 {
+  top: 0;
 }
 
-.btn-secondary {
-  background-color: var(--secondary-color);
+.bottom-0 {
+  bottom: 0;
 }
 
-.h-screen {
-  height: 100vh;
+.left-0 {
+  left: 0;
 }
 
-.center {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.right-0 {
+  right: 0;
 }
 
-input {
-  border: none;
-  outline: none;
+.hidden {
+  display: none;
 }
 
-.icon:hover {
-  background: rgba(0, 0, 0, 0.05);
+.block {
+  display: block;
+}
+
+.inline-block {
+  display: inline-block;
+}
+
+.inline {
+  display: inline;
+}
+.text-left {
+  text-align: left;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.text-justify {
+  text-align: justify;
+}
+.shadow-sm {
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.shadow-md {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.shadow-lg {
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
+}
+
+.border {
+  border: 1px solid #ddd;
+}
+
+.border-b-1 {
+  border-bottom: 1px solid #ddd;
+}
+
+.z-0 {
+  z-index: 0;
+}
+
+.z-10 {
+  z-index: 10;
+}
+
+.z-20 {
+  z-index: 20;
+}
+
+.z-30 {
+  z-index: 30;
+}
+
+.z-40 {
+  z-index: 40;
+}
+
+.z-50 {
+  z-index: 50;
+}
+
+.text-xs {
+  font-size: 12px;
+}
+
+.text-sm {
+  font-size: 14px;
+}
+
+.text-md {
+  font-size: 16px;
+}
+
+.text-lg {
+  font-size: 18px;
+}
+
+.text-xl {
+  font-size: 20px;
+}
+
+.text-2xl {
+  font-size: 24px;
+}
+
+.border-b-1 {
+  border-bottom: 1px solid #ddd;
+}
+
+.h-10 {
+  height: 40px;
+}
+
+.w-10 {
+  width: 40px;
+}
+
+.rounded-full {
   border-radius: 50%;
-  cursor: pointer;
 }

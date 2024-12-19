@@ -6,6 +6,8 @@ const useModalStore = create((set) => ({
   isReuseableModalOpen: false,
   isPollModalOpen: false, // State for Poll Modal
   isScheduleModalOpen: false, // State for Schedule Modal
+  isReplyModalOpen: false, // State for Reply Modal,
+  isQuoteModalOpen: false, // State for Quote Modal
 
   // Status Modal Actions
   openModalStatus: () => set({ isModalStatusOpen: true }),
@@ -26,6 +28,14 @@ const useModalStore = create((set) => ({
   // Schedule Modal Actions
   openScheduleModal: () => set({ isScheduleModalOpen: true }),
   closeScheduleModal: () => set({ isScheduleModalOpen: false }),
+
+  // Reply Modal Actions
+  openReplyModal: () => set({ isReplyModalOpen: true }),
+  closeReplyModal: () => set({ isReplyModalOpen: false }),
+
+  // Quote Modal Actions
+  openQuoteModal: () => set({ isQuoteModalOpen: true }),
+  closeQuoteModal: () => set({ isQuoteModalOpen: false }),
 }));
 
 export default useModalStore;

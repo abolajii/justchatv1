@@ -7,18 +7,17 @@ import useStoryStore from "../store/useStoryStore";
 import StatusModal from "./StatusModal";
 import ViewStatus from "./ViewStatus";
 
-const Container = styled.div``;
-
 const Border = styled.div`
-  border: 2px solid #0bdb8b;
-  height: 60px;
-  width: 60px;
+  border: ${(props) =>
+    props.isViewed ? "2px solid #0bdb8b" : "2px solid #ccc"};
+  height: 56px;
+  width: 56px;
   border-radius: 50%;
 `;
 
 const UserAvi = styled.div`
-  height: 54px;
-  width: 54px;
+  height: 48px;
+  width: 48px;
   border-radius: 50%;
   position: relative; /* Allows positioning of the plus icon */
   cursor: pointer;
@@ -37,8 +36,14 @@ const OtherUserStory = ({ stories, s }) => {
   const { selectStory } = useStoryStore();
 
   if (stories.length === 1) {
+    const story = stories[0];
+    // If there is only one story, show it in a bordered circle
+    const isViewed = story.views?.find(
+      (v) => v.user?._id === user.id || v.user?._id === user.id
+    );
+
     return (
-      <Border className="center">
+      <Border className="center" isViewed={isViewed}>
         <UserAvi
           onClick={() => {
             openModalStatus();
@@ -48,6 +53,7 @@ const OtherUserStory = ({ stories, s }) => {
           <img src={stories[0].user.profilePic} alt={stories[0].user.name} />
         </UserAvi>
         {isModalStatusOpen && <ViewStatus />}
+        {/* <ViewStatus /> */}
       </Border>
     );
   }
@@ -55,7 +61,7 @@ const OtherUserStory = ({ stories, s }) => {
   return (
     <>
       <StoryAvi
-        loggedInUserId={user.id} // Pass the logged-in user's ID
+        loggedInUserId={user?.id || user?._id} // Pass the logged-in user's ID
         stories={stories}
         segments={s.stories.length || 0}
         imageSrc={s.user.profilePic}
@@ -65,6 +71,7 @@ const OtherUserStory = ({ stories, s }) => {
         }}
       />
       {isModalStatusOpen && <ViewStatus />}
+      {/* <ViewStatus /> */}
     </>
   );
 };

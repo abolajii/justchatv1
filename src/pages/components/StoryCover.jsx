@@ -3,7 +3,8 @@ import styled, { keyframes } from "styled-components";
 import { FaPlus } from "react-icons/fa";
 import useModalStore from "../store/useModalStore";
 import Modal from "./Modal";
-// import Tabs from "./Tabs";
+import StoryAvi from "./StoryAvi";
+
 import Text from "./Text";
 import Image from "./Image";
 import { BiSend } from "react-icons/bi";
@@ -11,6 +12,7 @@ import useStoryStore from "../store/useStoryStore";
 import { createStory } from "../../api/request";
 import { useAlert } from "../../context/AlertContext";
 import { Spinner } from "../../components";
+import ViewStatus from "./ViewStatus";
 // Modal content animation
 const dropDown = keyframes`
   from {
@@ -24,8 +26,8 @@ const dropDown = keyframes`
 `;
 
 const UserAvi = styled.div`
-  height: 54px;
-  width: 54px;
+  height: 48px;
+  width: 48px;
   border-radius: 50%;
   position: relative; /* Allows positioning of the plus icon */
 
@@ -36,6 +38,14 @@ const UserAvi = styled.div`
     border-radius: 50%;
     margin-right: 10px;
   }
+`;
+
+const Border = styled.div`
+  border: ${(props) =>
+    props.isViewed ? "2px solid #0bdb8b" : "2px solid #ccc"};
+  height: 55px;
+  width: 55px;
+  border-radius: 50%;
 `;
 
 const PlusIcon = styled.div`
@@ -159,11 +169,13 @@ const Tab = styled.div`
 `;
 
 const StoryCover = ({ user, stories = [] }) => {
-  const { openModal, closeModal } = useModalStore();
+  const { openModal, closeModal, openModalStatus, isModalStatusOpen } =
+    useModalStore();
   const { activeTab, setActiveTab, text, image, fontFamily, bgColor, setText } =
     useStoryStore();
   const { showAlert } = useAlert();
   const [loading, setLoading] = useState(false);
+  const { selectStory } = useStoryStore();
 
   const handleTabClick = (tab) => {
     setActiveTab(tab); // Set the active tab
@@ -241,10 +253,46 @@ const StoryCover = ({ user, stories = [] }) => {
         </PlusIcon>
       </UserAvi>
     );
-  } else if (stories.length === 1) {
-    return <div>StoryCover</div>;
+  } else if (stories[0].stories.length === 1) {
+    const story = stories[0];
+    // If there is only one story, show it in a bordered circle
+    const isViewed = story.views?.find(
+      (v) => v.user?._id === user.id || v.user?._id === user.id
+    );
+
+    return (
+      <Border className="center cursor" isViewed={isViewed}>
+        <UserAvi
+          onClick={() => {
+            openModalStatus();
+            selectStory(story);
+          }}
+        >
+          <img src={stories[0].user.profilePic} alt={stories[0].user.name} />
+        </UserAvi>
+        {/* {isModalStatusOpen && <ViewStatus isLoggedIn />} */}
+        <ViewStatus />
+      </Border>
+    );
   }
-  return <div>StoryCover</div>;
+  const story = stories[0].stories;
+  return (
+    <div className="cursor">
+      <StoryAvi
+        loggedInUserId={user?.id || user?._id} // Pass the logged-in user's ID
+        stories={story}
+        segments={story.length || 0}
+        imageSrc={user.profilePic}
+        onClick={() => {
+          openModalStatus();
+          selectStory(stories[0]);
+        }}
+      />
+      <ViewStatus />
+
+      {/* {isModalStatusOpen && <ViewStatus isLoggedIn />} */}
+    </div>
+  );
 };
 
 export default StoryCover;

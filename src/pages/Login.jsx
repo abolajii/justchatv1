@@ -154,7 +154,7 @@ const Login = () => {
 
   return (
     <div className="w-full">
-      <div className="center flex-column">
+      <div className="center flex-col">
         <Logo />
         <Text>Sign in to JustChats</Text>
         <FormContainer onSubmit={handleSubmit}>
