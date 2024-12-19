@@ -1,13 +1,20 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled, { css } from "styled-components";
-import { PiBookmarksSimpleFill } from "react-icons/pi";
+import { PiBookmarksSimpleFill, PiFolderFill } from "react-icons/pi";
 import { MainContainer } from "../components";
 import { BiSolidBookmarkAltPlus } from "react-icons/bi";
 import { IoMdClose, IoMdArrowBack } from "react-icons/io";
 import useThemeStore from "../store/useThemeStore";
 import useBookmarkStore from "./store/useBookmark";
-
-// Reuse the existing theme definitions from the previous file
+import {
+  createFolder,
+  fetchUserActivity,
+  getUserBookmark,
+} from "../api/request";
+import AllPosts from "./dashboard/AllPosts";
+import RenderFolder from "./bookmark/components/RenderFolder";
+import { MdChevronLeft } from "react-icons/md";
+import { useNavigate } from "react-router-dom";
 
 const lightTheme = {
   background: "#fff",
@@ -47,14 +54,24 @@ const Top = styled.div`
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
+  position: sticky;
+  top: -0px;
+  padding: 10px;
+  width: 100%;
+  z-index: 100;
+  background-color: ${(props) => props.theme.background};
 `;
 
 const Inner = styled.div`
-  padding: 20px;
-
   width: 700px;
   height: 100%;
   border-right: 1px solid ${(props) => props.theme.borderColor};
+
+  overflow: scroll;
+
+  &::-webkit-scrollbar {
+    width: 0px;
+  }
 `;
 
 const BackButton = styled.button`
@@ -168,6 +185,10 @@ const Input = styled.input`
   color: ${(props) => props.theme.textPrimary};
 `;
 
+const Padding = styled.div`
+  padding: 0 20px 20px;
+`;
+
 const Button = styled.button`
   width: 100%;
   padding: 10px;
@@ -186,22 +207,6 @@ const Button = styled.button`
   &:hover:not(:disabled) {
     opacity: 0.9;
   }
-`;
-
-const BookmarkList = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  gap: 15px;
-`;
-
-const BookmarkItem = styled.div`
-  background-color: ${(props) => props.theme.inputBackground};
-  border: 1px solid ${(props) => props.theme.borderColor};
-  border-radius: 8px;
-  padding: 15px;
-  display: flex;
-  flex-direction: column;
-  width: 250px;
 `;
 
 const NoBookmarksContainer = styled.div`
@@ -236,27 +241,55 @@ const BookmarkCategories = [
 
 const Bookmarks = () => {
   const { isDarkMode } = useThemeStore();
-  const { bookmarks, addBookmark } = useBookmarkStore();
+
+  const navigate = useNavigate();
+
+  const { bookmarks, addBookmark, setBookmarks } = useBookmarkStore();
+  const [bookmark, setBookmark] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [bookmarkData, setBookmarkData] = useState({
-    title: "",
-    url: "",
+    name: "",
     category: "Other",
   });
 
+  useEffect(() => {
+    const fetchBookmark = async () => {
+      try {
+        const response = await getUserBookmark();
+        setBookmarks(response.data.folders);
+        setBookmark(response.data.bookmarks);
+      } catch (e) {
+        console.error("Error fetching bookmarks:", e);
+      }
+    };
+
+    fetchBookmark();
+  }, []);
+
   const theme = isDarkMode ? darkTheme : lightTheme;
 
-  const handleCreateBookmark = () => {
-    if (bookmarkData.title.trim() && bookmarkData.url.trim()) {
-      addBookmark({
-        title: bookmarkData.title,
-        url: bookmarkData.url,
-        category: bookmarkData.category,
-      });
+  const handleCreateBookmarkFolder = async () => {
+    try {
+      if (bookmarkData.name.trim()) {
+        const data = {
+          name: bookmarkData.name,
+          category: bookmarkData.category,
+        };
+        const response = await createFolder(data);
 
-      // Reset form
-      setBookmarkData({ title: "", url: "", category: "Other" });
-      setIsModalOpen(false);
+        console.log(response);
+
+        addBookmark({
+          name: bookmarkData.name,
+          category: bookmarkData.category,
+        });
+
+        // Reset form
+        setBookmarkData({ name: "", category: "Other" });
+        setIsModalOpen(false);
+      }
+    } catch (error) {
+      console.error("Error adding bookmark:", error);
     }
   };
 
@@ -264,10 +297,10 @@ const Bookmarks = () => {
     <MainContainer>
       <Container theme={theme}>
         <Inner theme={theme}>
-          <Top>
+          <Top theme={theme}>
             <div className="flex align-center gap-sm">
-              <BackButton theme={theme}>
-                <IoMdArrowBack size={24} />
+              <BackButton theme={theme} onClick={() => navigate(-1)}>
+                <MdChevronLeft size={24} />
               </BackButton>
               <PageTitle theme={theme}>Bookmarks</PageTitle>
             </div>
@@ -280,7 +313,7 @@ const Bookmarks = () => {
             </CreateFolderButton>
           </Top>
 
-          {bookmarks.length === 0 ? (
+          {bookmarks.length === 0 && bookmark.length === 0 ? (
             <NoBookmarksContainer theme={theme}>
               <PiBookmarksSimpleFill size={64} color={theme.iconColor} />
               <h2>No Bookmarks Yet</h2>
@@ -291,15 +324,10 @@ const Bookmarks = () => {
               </p>
             </NoBookmarksContainer>
           ) : (
-            <BookmarkList theme={theme}>
-              {bookmarks.map((bookmark) => (
-                <BookmarkItem key={bookmark.id} theme={theme}>
-                  <h3>{bookmark.title}</h3>
-                  <p>{bookmark.url}</p>
-                  <small>Category: {bookmark.category}</small>
-                </BookmarkItem>
-              ))}
-            </BookmarkList>
+            <Padding theme={theme}>
+              <RenderFolder folder={bookmarks} />
+              <AllPosts bookmarks={bookmark} full />
+            </Padding>
           )}
 
           {/* Modal for Creating Bookmark */}
@@ -323,22 +351,11 @@ const Bookmarks = () => {
               </ModalHeader>
               <Input
                 placeholder="Bookmark Title"
-                value={bookmarkData.title}
+                value={bookmarkData.name}
                 onChange={(e) =>
                   setBookmarkData((prev) => ({
                     ...prev,
-                    title: e.target.value,
-                  }))
-                }
-                theme={theme}
-              />
-              <Input
-                placeholder="URL"
-                value={bookmarkData.url}
-                onChange={(e) =>
-                  setBookmarkData((prev) => ({
-                    ...prev,
-                    url: e.target.value,
+                    name: e.target.value,
                   }))
                 }
                 theme={theme}
@@ -360,10 +377,8 @@ const Bookmarks = () => {
                 ))}
               </CategorySelect>
               <Button
-                onClick={handleCreateBookmark}
-                disabled={
-                  !bookmarkData.title.trim() || !bookmarkData.url.trim()
-                }
+                onClick={handleCreateBookmarkFolder}
+                disabled={!bookmarkData.name.trim()}
                 theme={theme}
               >
                 Create Bookmark

@@ -279,7 +279,7 @@ const Sidebar = () => {
           </div>
           <div>
             <div className="name flex">
-              {user.name}
+              {user?.name}
               {user?.isVerified && (
                 <div className="center">
                   <HiCheckBadge color="#1b9d87" />
@@ -287,9 +287,9 @@ const Sidebar = () => {
               )}
             </div>
             <div className="flex align-center">
-              <div className="username">@{user.username}</div>
+              <div className="username">@{user?.username}</div>
               <div className="divider"></div>
-              <div className="username">{user.postCount} posts</div>
+              <div className="username">{user?.postCount} posts</div>
             </div>
           </div>
         </BottomInner>

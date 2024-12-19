@@ -10,6 +10,7 @@ import {
   Bookmarks,
   Discover,
   Register,
+  ViewProfile,
 } from "./pages"; // Destructure from the index file
 import Modal from "./pages/components/Modal";
 import ProtectedRoute from "./routes/ProtectedRoute";
@@ -18,6 +19,7 @@ import { Alert } from "./components";
 import { fetchCurrent, getMe } from "./api/request";
 import useUserStore from "./store/useUserStore";
 import TradingProfitCalculator from "./ProfitCalculator";
+import BookmarkFolder from "./pages/bookmark/components/BookmarkFolder";
 
 const App = () => {
   const { setCurrentUser } = useUserStore();
@@ -51,6 +53,14 @@ const App = () => {
           element={
             <ProtectedRoute>
               <Profile />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/profile/:uid"
+          element={
+            <ProtectedRoute>
+              <ViewProfile />
             </ProtectedRoute>
           }
         />
@@ -91,6 +101,14 @@ const App = () => {
           element={
             <ProtectedRoute>
               <Bookmarks />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/bookmarks/:fid"
+          element={
+            <ProtectedRoute>
+              <BookmarkFolder />
             </ProtectedRoute>
           }
         />

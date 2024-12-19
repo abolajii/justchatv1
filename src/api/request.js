@@ -161,60 +161,110 @@ export const getConversation = async (id) => {
 
 export const sendTextMessage = async (data) => {
   const response = await chatAppAuth.post(`/send`, data);
-  return response.data; // Re
+  return response.data;
 };
 
 export const getNonparticipants = async (id) => {
   const response = await chatAppAuth.get(`/participants?conversationId=${id}`);
-  return response.data; // Re
+  return response.data;
 };
 
 export const addToGroup = async (data) => {
   const response = await chatAppAuth.put(`/add`, data);
-  return response.data; // Re
+  return response.data;
 };
 
 export const createStory = async (data) => {
   const response = await chatAppAuth.post(`/story`, data);
-  return response.data; // Re
+  return response.data;
 };
 
 export const userStory = async () => {
   const response = await chatAppAuth.get(`/stories`);
-  return response.data; // Re
+  return response.data;
 };
 
 export const viewStory = async (id) => {
   const response = await chatAppAuth.post(`/story/${id}/view`);
-  return response.data; // Re
+  return response.data;
 };
 
 export const getMe = async () => {
   const response = await chatAppAuth.get(`/me`);
-  return response.data; // Re
+  return response.data;
 };
 
 export const updateProfile = async (data) => {
   const response = await chatAppAuth.put(`/me`, data);
-  return response.data; // Re
+  return response.data;
 };
 
 export const createPoll = async (data) => {
   const response = await chatAppAuth.post(`/poll/create`, data);
-  return response.data; // Re
+  return response.data;
 };
 
 export const votePoll = async (data) => {
   const response = await chatAppAuth.post(`/poll/vote`, data);
-  return response.data; // Re
+  return response.data;
 };
 
 export const schedulePost = async (data) => {
   const response = await chatAppAuth.post(`/schedule/post`, data);
-  return response.data; // Re
+  return response.data;
 };
 
 export const fetchUserActivity = async (tag, userId) => {
   const response = await chatAppAuth.get(`/activity/${userId}?tag=${tag}`);
-  return response.data; // Re
+  return response.data;
+};
+
+export const fetchUserInfo = async (tag) => {
+  const response = await chatAppAuth.get(`/activity?tag=${tag}`);
+  return response.data;
+};
+
+export const createFolder = async (data) => {
+  const response = await chatAppAuth.post(`/folder/create`, data);
+  return response.data;
+};
+
+export const getUserBookmark = async () => {
+  const response = await chatAppAuth.get(`/bookmarks`);
+  return response.data;
+};
+
+export const addBookmarkToFolder = async (data) => {
+  const response = await chatAppAuth.post(`/folder/bookmark`, data);
+  return response.data;
+};
+
+export const getFolderById = async (data) => {
+  const response = await chatAppAuth.get(`/folder/${data}`);
+  return response.data;
+};
+
+export const removeFromFolder = async (data) => {
+  const response = await chatAppAuth.delete(`/folder/bookmark/${data}`);
+  return response.data;
+};
+
+export const deleteFolder = async (data) => {
+  const response = await chatAppAuth.delete(`/folder/${data}`);
+  return response.data;
+};
+
+export const updateFolder = async (data) => {
+  const response = await chatAppAuth.put(`/folder/${data.id}`, data);
+  return response.data;
+};
+
+export const deletePost = async (data) => {
+  const response = await chatAppAuth.delete(`/post/${data}`);
+  return response.data;
+};
+
+export const updatePost = async (data) => {
+  const response = await chatAppAuth.put(`/post/${data.id}`, data);
+  return response.data;
 };

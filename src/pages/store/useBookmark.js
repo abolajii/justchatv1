@@ -11,7 +11,7 @@ const useBookmarkStore = create((set) => ({
         ...state.bookmarks,
         {
           ...bookmark,
-          id: crypto.randomUUID(),
+          _id: crypto.randomUUID(),
           createdAt: new Date(),
         },
       ],

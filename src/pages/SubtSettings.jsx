@@ -4,6 +4,9 @@ import { AiOutlineCamera, AiOutlineClose } from "react-icons/ai";
 import bg from "./bg.jpg";
 
 import useUserStore from "../store/useUserStore";
+import { updateProfile } from "../api/request";
+import { useAlert } from "../context/AlertContext";
+import { Spinner } from "../components";
 
 // Theme Colors (similar to previous components)
 const lightTheme = {
@@ -12,7 +15,7 @@ const lightTheme = {
   textSecondary: "#666",
   inputBackground: "#f9f9f9",
   inputBorder: "#e0e0e0",
-  primaryColor: "#6bc1b7",
+  primaryColor: "#2c635d",
   errorColor: "#ff4d4f",
 };
 
@@ -22,7 +25,7 @@ const darkTheme = {
   textSecondary: "#888",
   inputBackground: "#2c2c2c",
   inputBorder: "#444",
-  primaryColor: "#6bc1b7",
+  primaryColor: "#26625b",
   errorColor: "#ff7875",
 };
 
@@ -134,7 +137,7 @@ const Textarea = styled.textarea`
   color: ${(props) => props.theme.textPrimary};
   font-family: inherit;
   font-size: 14px;
-  resize: vertical; /* Allows vertical resizing only */
+  resize: none; /* Allows vertical resizing only */
   min-height: 100px;
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
 
@@ -218,28 +221,37 @@ const CancelButton = styled.button`
 `;
 
 const ProfileSettings = ({ isDarkMode }) => {
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
   const theme = isDarkMode ? darkTheme : lightTheme;
   const profileRef = useRef(null);
-  const { user } = useUserStore();
+  const { user, setCurrentUser } = useUserStore();
+  const [avatar, setAvatar] = useState(null);
+  const [backDrop, setBackDrop] = useState(null);
+  const { showAlert } = useAlert();
+  const [loading, setLoading] = useState(false);
 
   // States for image previews
   const [preview, setPreview] = useState(user?.profilePic || null);
   const [backdropPreview, setBackdropPreview] = useState(
-    user?.backdropPic || null
+    user?.backdrop || null
   );
 
   const [formData, setFormData] = useState({
-    name: "",
-    bio: "",
+    name: user.name || "",
+    bio: user.bio || "",
+    link: user.link || "",
     currentPassword: "",
+    location: user.location || "",
     newPassword: "",
     confirmPassword: "",
   });
 
   // Handle file change for both images
-  const handleFileChange = (e, setImage) => {
+  const handleFileChange = (e, setImage, setFile) => {
     const file = e.target.files[0];
     if (file) {
+      setFile(file);
       const reader = new FileReader();
       reader.onloadend = () => {
         setImage(reader.result);
@@ -260,6 +272,48 @@ const ProfileSettings = ({ isDarkMode }) => {
     }));
   };
 
+  const handleUpdateUser = async () => {
+    // e.preventDefault();
+    try {
+      const updatedUser = {
+        ...formData,
+      };
+
+      const newformData = new FormData();
+      Object.keys(updatedUser).forEach((key) => {
+        if (updatedUser[key]) {
+          console.log(updatedUser[key]);
+          newformData.append(key, updatedUser[key]);
+        }
+      });
+
+      if (avatar !== null) {
+        newformData.append("profilePic", avatar);
+      }
+
+      if (backDrop !== null) {
+        newformData.append("backdrop", backDrop);
+      }
+      setLoading(true);
+
+      // Replace with your API call
+      const response = await updateProfile(newformData);
+
+      const userDetails = {
+        ...user,
+        ...response.user,
+      };
+      setCurrentUser(userDetails); // Update user state with the updated user data
+      showAlert("success", "Profile updated successfully!"); // Trigger success alert
+      setLoading(false);
+      // setError("");
+    } catch (err) {
+      console.log(err);
+      setError(err.message || "Failed to update profile.");
+      setSuccess("");
+    }
+  };
+
   return (
     <InnerContent ref={profileRef} theme={theme}>
       {/* Backdrop Image Section */}
@@ -275,7 +329,9 @@ const ProfileSettings = ({ isDarkMode }) => {
               id="backdropInput"
               style={{ display: "none" }}
               accept="image/*"
-              onChange={(e) => handleFileChange(e, setBackdropPreview)}
+              onChange={(e) =>
+                handleFileChange(e, setBackdropPreview, setBackDrop)
+              }
             />
           </label>
         </UploadIcon>
@@ -289,11 +345,7 @@ const ProfileSettings = ({ isDarkMode }) => {
 
         {/* Profile Picture */}
         <ProfileContainer>
-          {preview ? (
-            <ProfileImage src={preview} alt="Profile preview" />
-          ) : (
-            <EmptyProfile theme={theme}>Upload Profile Picture</EmptyProfile>
-          )}
+          <ProfileImage src={preview} alt="Profile preview" />
 
           {/* Profile Upload Icon */}
           <UploadIcon>
@@ -304,7 +356,7 @@ const ProfileSettings = ({ isDarkMode }) => {
                 id="profileInput"
                 style={{ display: "none" }}
                 accept="image/*"
-                onChange={(e) => handleFileChange(e, setPreview)}
+                onChange={(e) => handleFileChange(e, setPreview, setAvatar)}
               />
             </label>
           </UploadIcon>
@@ -338,15 +390,46 @@ const ProfileSettings = ({ isDarkMode }) => {
         </FormGroup>
 
         <FormGroup>
+          <Label theme={theme}>Location</Label>
+          <Input
+            name="location"
+            value={formData.location || ""}
+            onChange={handleChange}
+            placeholder="Your location"
+            theme={theme}
+          />
+        </FormGroup>
+
+        <FormGroup>
           <Label theme={theme}>Website</Label>
           <Input
-            name="website"
-            value={formData.website || ""}
+            name="link"
+            value={formData.link || ""}
             onChange={handleChange}
             placeholder="Your website"
             theme={theme}
           />
         </FormGroup>
+
+        <button
+          onClick={handleUpdateUser}
+          style={{
+            backgroundColor: theme.primaryColor,
+            color: "#fff",
+            padding: "10px 20px",
+            border: "none",
+            borderRadius: "4px",
+            cursor: "pointer",
+          }}
+        >
+          {loading ? (
+            <div className="center">
+              <Spinner size="13px" />
+            </div>
+          ) : (
+            "Update Profile"
+          )}
+        </button>
       </Padding>
     </InnerContent>
   );

@@ -35,10 +35,16 @@ const C = styled.div`
   /* background-color: #2e2e2e; */
 
   background-color: ${(props) => (props.isDarkMode ? "#1e1e1e" : "#ffffff")};
+  height: 100vh;
+  overflow: scroll;
 
   @media (max-width: 768px) {
     flex: 1; /* Show MobileView on desktop */
     display: none; /* Hide MobileView on desktop */
+  }
+
+  &::-webkit-scrollbar {
+    display: none;
   }
 `;
 

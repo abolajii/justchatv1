@@ -20,6 +20,7 @@ export default useThemeStore;
 export const lightTheme = {
   background: "#fff",
   textPrimary: "#333",
+
   textSecondary: "#666",
   inputBackground: "#f9f9f9",
   inputBorder: "#e0e0e0",

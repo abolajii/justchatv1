@@ -4,6 +4,7 @@ export { default as Login } from "./Login";
 export { default as Notifications } from "./Notifications";
 export { default as Settings } from "./Settings";
 export { default as Profile } from "./Profile";
+export { default as ViewProfile } from "./ViewProfile";
 export { default as Register } from "./Register";
 export { default as Discover } from "./Discover";
 export { default as Dashboard } from "./Dashboard";

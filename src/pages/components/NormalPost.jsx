@@ -3,13 +3,20 @@ import styled from "styled-components";
 import useThemeStore from "../../store/useThemeStore";
 import { Bookmark, Heart, MessageCircle, Share2 } from "lucide-react";
 import { MdMoreHoriz } from "react-icons/md";
-import { bookMarkPost, likePost } from "../../api/request";
+import { bookMarkPost, deletePost, likePost } from "../../api/request";
 import useUserStore from "../../store/useUserStore";
-import { BottomIcons, Interaction, ReuseableModal } from "../../components";
+import { Interaction, ReuseableModal } from "../../components";
 import useModalStore from "../store/useModalStore";
 import ReplyPost from "../../components/ReplyPost";
 import ReplyModal from "./ReplyModal";
 import usePostStore from "../store/usePostStore";
+import ModalChildren from "../bookmark/components/ModalChildren";
+import AnimateModal from "../../components/AnimateModal";
+import DropdownWithIcons from "../../components/Dropdown";
+import Delete from "./Delete";
+import { HiCheckBadge } from "react-icons/hi2";
+import { useAlert } from "../../context/AlertContext";
+import { useNavigate } from "react-router-dom";
 
 // Utility function for date formatting
 export const formatDate = (dateString) => {
@@ -30,11 +37,12 @@ export const formatDate = (dateString) => {
 };
 
 const Container = styled.div`
-  max-width: ${(props) => (props.full ? "auto" : "600px")};
+  /* max-width: ${(props) => (props.full ? "auto" : "600px")}; */
   width: 100%;
   margin: 0 auto;
-  margin-bottom: 16px;
+  margin-bottom: 10px;
 
+  cursor: pointer;
   .action-icons {
     display: flex;
     gap: 10px;
@@ -57,14 +65,6 @@ const Container = styled.div`
     &.disabled {
       color: ${(props) => (props.isDarkMode ? "#555" : "#ccc")};
       cursor: not-allowed;
-    }
-  }
-
-  svg {
-    color: ${(props) => (props.isDarkMode ? "#a2a2a2" : "#a2a2a2")};
-
-    &:hover {
-      color: #6bc1b7;
     }
   }
 `;
@@ -102,7 +102,6 @@ const PostHeader = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  /* margin-bottom: 8px; */
 `;
 
 const UserInfo = styled.div`
@@ -113,6 +112,8 @@ const UserInfo = styled.div`
 
 const AuthorName = styled.span`
   font-weight: 600;
+  display: flex;
+  align-items: center;
   font-size: 15px;
   color: ${(props) => (props.$isDarkMode ? "#e0e0e0" : "#14171a")};
 `;
@@ -131,53 +132,21 @@ const PostText = styled.p`
   font-size: 14px;
   line-height: 1.4;
   color: ${(props) => (props.$isDarkMode ? "#e0e0e0" : "#14171a")};
-  margin-bottom: 2px;
+  margin-top: -4px;
+  margin-bottom: 4px;
 `;
-
-// const InteractionContainer = styled.div`
-//   display: flex;
-//   justify-content: space-between;
-//   align-items: center;
-// `;
-
-// const InteractionButton = styled.button`
-//   display: flex;
-//   align-items: center;
-//   gap: 4px;
-//   background: none;
-//   border: none;
-//   cursor: pointer;
-//   color: ${(props) =>
-//     props.$isDarkMode
-//       ? props.$isActive
-//         ? props.$activeColor
-//         : "#888888"
-//       : props.$isActive
-//       ? props.$activeColor
-//       : "#657786"};
-//   transition: color 0.2s ease;
-
-//   &:hover {
-//     color: ${(props) => props.$hoverColor};
-//   }
-
-//   svg {
-//     transition: transform 0.2s ease;
-//   }
-
-//   &:hover svg {
-//     transform: scale(1.1);
-//   }
-// `;
 
 const MoreOptionsButton = styled.button`
   background: none;
   border: none;
-  cursor: pointer;
   color: ${(props) => (props.$isDarkMode ? "#888888" : "#657786")};
 
+  cursor: pointer;
+  font-size: 1.5rem;
+  position: relative;
+
   &:hover {
-    color: #1da1f2;
+    color: ${(props) => (props.$isDarkMode ? "#727272" : "#596e80")};
   }
 `;
 
@@ -194,18 +163,35 @@ const ImageContainer = styled.div`
   }
 `;
 
-const NormalPost = ({ post, share, full }) => {
+const NormalPost = ({ post, share, full, bookmarks }) => {
   const { user } = useUserStore();
 
   const { isDarkMode } = useThemeStore();
-  const { setSinglePost } = usePostStore();
-  const [likes, setLikes] = useState(post.likes.length || 0);
-  const [comments, setComments] = useState(post.comments.length || 0);
-  const [shares, setShares] = useState(post.shares.length || 0);
+  const { setSelectedUser, setSinglePost } = usePostStore();
+  const [index, setIndex] = useState(0);
+  const { showAlert } = useAlert();
+
+  const navigate = useNavigate();
+
+  const [likes, setLikes] = useState(
+    post?.engagementCounts?.likes || post?.likes?.length || 0
+  );
+  const [comments, setComments] = useState(
+    post?.engagementCounts?.comments || post?.comments?.length || 0
+  );
+  const [shares, setShares] = useState(
+    post?.engagementCounts?.shares || post?.shares?.length || 0
+  );
+
   const [isLiked, setIsLiked] = useState(false);
-  const [isBookmarked, setIsBookmarked] = useState(post.isBookmarked);
+  const [isBookmarked, setIsBookmarked] = useState(
+    bookmarks ? true : post.isBookmarked
+  );
 
   const { isReplyModalOpen, closeReplyModal, openReplyModal } = useModalStore();
+
+  const [moveModal, setMoveModal] = useState(false);
+  const [deleteModal, setDeleteModal] = useState(false);
 
   useEffect(() => {
     if (post?.likes?.includes(user?.id)) {
@@ -216,7 +202,12 @@ const NormalPost = ({ post, share, full }) => {
   }, [post?.likes, user?.id]);
 
   // Default avatar if not provided
-  const avatarSrc = post.user?.profilePic || "/default-avatar.png";
+  const avatarSrc = post.user?.profilePic;
+  const [isDropdownVisible, setIsDropdownVisible] = useState(false);
+
+  const toggleDropdown = () => {
+    setIsDropdownVisible(!isDropdownVisible);
+  };
 
   const toggleLike = async () => {
     setIsLiked(!isLiked);
@@ -235,6 +226,10 @@ const NormalPost = ({ post, share, full }) => {
 
     try {
       await bookMarkPost(post._id);
+      showAlert(
+        "success",
+        isBookmarked ? "Removed from bookmark." : "Added to bookmark."
+      );
     } catch (error) {
       console.log("Error bookmarking post:", error);
     }
@@ -244,6 +239,24 @@ const NormalPost = ({ post, share, full }) => {
     openReplyModal();
     setSinglePost(post);
     // Implement message modal logic here
+  };
+
+  const deletePostById = async () => {
+    try {
+      const response = await deletePost(post._id);
+      console.log(response);
+      setDeleteModal(false);
+      showAlert("success", "Post deleted successfully.");
+
+      // Update bookmarks state if post was bookmarked
+      // if (isBookmarked) {
+      //   setIsBookmarked(false);
+      // }
+      // Navigate back to feed
+      // navigate("/feed");
+    } catch (error) {
+      console.log("Error deleting post:", error);
+    }
   };
 
   const interactions = [
@@ -279,12 +292,39 @@ const NormalPost = ({ post, share, full }) => {
   ];
 
   return (
-    <Container full={full}>
-      <ReuseableModal isOpen={isReplyModalOpen} closeModal={closeReplyModal}>
+    <Container full={full} onClick={() => {}}>
+      <AnimateModal
+        title={"Select Folder"}
+        isOpen={moveModal}
+        closeModal={() => setMoveModal(false)}
+        body={
+          <ModalChildren post={post} closeModal={() => setMoveModal(false)} />
+        }
+      />
+
+      <AnimateModal
+        title={"Delete Post"}
+        isOpen={deleteModal}
+        closeModal={() => setDeleteModal(false)}
+        body={
+          <Delete
+            post={post}
+            closeModal={() => setDeleteModal(false)}
+            onCancel={() => setDeleteModal(false)}
+            onDeleteConfirm={deletePostById}
+          />
+        }
+      />
+      {/* <ReuseableModal isOpen={isReplyModalOpen} closeModal={closeReplyModal}>
         <ReplyModal post={post} />
-      </ReuseableModal>
+      </ReuseableModal> */}
       <PostWrapper $isDarkMode={isDarkMode}>
-        <AvatarContainer>
+        <AvatarContainer
+          onClick={() => {
+            setSelectedUser(post.user);
+            navigate(`/profile/${post.user.username}`);
+          }}
+        >
           <Avatar
             src={avatarSrc}
             alt={`${post.user?.name || "User"}'s profile`}
@@ -298,6 +338,11 @@ const NormalPost = ({ post, share, full }) => {
             <UserInfo>
               <AuthorName $isDarkMode={isDarkMode}>
                 {post.user?.name}
+                {post.user?.isVerified && (
+                  <div className="center">
+                    <HiCheckBadge color="#1b9d87" />
+                  </div>
+                )}
               </AuthorName>
               <Username $isDarkMode={isDarkMode}>
                 @{post.user?.username}
@@ -307,8 +352,23 @@ const NormalPost = ({ post, share, full }) => {
                 {formatDate(post.createdAt)}
               </Timestamp>
             </UserInfo>
-            <MoreOptionsButton $isDarkMode={isDarkMode}>
-              <MdMoreHoriz />
+            <MoreOptionsButton
+              $isDarkMode={isDarkMode}
+              onClick={() => {
+                setIndex(post._id);
+                toggleDropdown();
+              }}
+            >
+              <MdMoreHoriz size={24} />
+              <DropdownWithIcons
+                index={index}
+                post={post}
+                isDarkMode={isDarkMode}
+                isDropdownVisible={isDropdownVisible}
+                onDelete={() => setDeleteModal(true)}
+                setMoveModal={setMoveModal}
+                setIsDropdownVisible={setIsDropdownVisible}
+              />
             </MoreOptionsButton>
           </PostHeader>
           <PostText $isDarkMode={isDarkMode}>{post.content}</PostText>

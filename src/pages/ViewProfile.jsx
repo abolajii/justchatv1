@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from "react";
 import styled, { keyframes } from "styled-components";
 import { MainContainer } from "../components";
-import useUserStore from "../store/useUserStore";
 import useThemeStore, { darkTheme, lightTheme } from "../store/useThemeStore";
 import bg from "./bg.jpg";
-import { IoMdSettings } from "react-icons/io";
 import { useNavigate, useParams } from "react-router-dom";
 import { getUserById } from "../api/request";
 import { HiCheckBadge } from "react-icons/hi2";
@@ -12,6 +10,7 @@ import { IoLocationSharp } from "react-icons/io5";
 import ProfileTab from "./ProfileTab";
 import { MdChevronLeft, MdLink } from "react-icons/md";
 import { GoLink } from "react-icons/go";
+import usePostStore from "./store/usePostStore";
 
 // Modal Animation
 const fadeIn = keyframes`
@@ -138,15 +137,6 @@ const IconContainer = styled.div`
   z-index: 2; /* Ensure it appears above the backdrop */
 `;
 
-const SettingsIcon = styled.button`
-  background: none;
-  border: none;
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-  color: ${(props) => props.theme.textPrimary};
-`;
-
 const BackButton = styled.button`
   background: none;
   border: none;
@@ -192,14 +182,18 @@ const ProfileDetails = styled.div`
   }
 `;
 
-const Profile = () => {
-  const { clearUser, user } = useUserStore();
+const ViewProfile = () => {
   const { isDarkMode } = useThemeStore();
+  const { selectedUser } = usePostStore();
   const theme = isDarkMode ? darkTheme : lightTheme;
   const [modalImage, setModalImage] = useState(null);
   const [posts, setPosts] = useState([]);
   const [singleUser, setSingleUser] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [followLoading, setFollowLoading] = useState(false);
+  const [isConnected, setIsConnected] = useState(false);
+  const { uid } = useParams();
+  const [loading, setLoading] = useState(true);
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
   const openImageModal = (imageSrc) => {
     setModalImage(imageSrc);
@@ -212,17 +206,18 @@ const Profile = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    getUserById(user.username).then((data) => {
+    getUserById(uid).then((data) => {
       setLoading(false);
       setSingleUser(data.user);
       setPosts(data.posts);
+      //   setIsConnected(data.user.followers?.includes(user?.id));
     });
-  }, [user.id]);
+  }, [uid]);
 
-  const finalUser = singleUser || user;
+  const finalUser = singleUser || selectedUser;
 
-  const followerCount = finalUser.followers.length || user.followers;
-  const followingCount = finalUser.following.length || user.following;
+  const followerCount = finalUser?.followers?.length;
+  const followingCount = finalUser?.following?.length;
 
   const handleBackClick = () => {
     navigate(-1);
@@ -241,15 +236,14 @@ const Profile = () => {
             <BackButton theme={theme} onClick={handleBackClick}>
               <MdChevronLeft size={26} />
             </BackButton>
-            <SettingsIcon onClick={handleSettingsClick} theme={theme}>
-              <IoMdSettings size={24} />
-            </SettingsIcon>
           </IconContainer>
-          <BackdropImage
-            src={user?.backdrop || bg}
-            alt="Backdrop preview"
-            onClick={() => openImageModal(finalUser?.backdrop || bg)}
-          />
+          {finalUser?.backdrop && (
+            <BackdropImage
+              src={finalUser?.backdrop}
+              alt="Backdrop preview"
+              onClick={() => openImageModal(finalUser?.backdrop || bg)}
+            />
+          )}
 
           <ProfileContainer
             onClick={() => openImageModal(finalUser?.profilePic || bg)}
@@ -348,11 +342,10 @@ const Profile = () => {
             </div>
           </StatsContainer>
         </ProfileDetails>
-        <ProfileTab posts={posts} />
+        <ProfileTab posts={posts} uid={finalUser?._id} />
       </Container>
-      {/* <button onClick={clearUser}>Logout</button> */}
     </MainContainer>
   );
 };
 
-export default Profile;
+export default ViewProfile;

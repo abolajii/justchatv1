@@ -2,10 +2,10 @@ import React from "react";
 import NormalPost from "./NormalPost";
 import PollPost from "./PollPost";
 
-const renderPostByType = (post, full) => {
+const renderPostByType = (post, full, bookmarks) => {
   switch (post.postType) {
     case "normal":
-      return <NormalPost post={post} full={full} />;
+      return <NormalPost post={post} full={full} bookmarks={bookmarks} />;
     case "shared":
       return <div>Shared</div>;
     case "quote":
@@ -13,7 +13,7 @@ const renderPostByType = (post, full) => {
     case "poll":
       return (
         <div>
-          <PollPost post={post} />
+          <PollPost post={post} bookmarks={bookmarks} />
         </div>
       );
     default:
@@ -21,8 +21,8 @@ const renderPostByType = (post, full) => {
   }
 };
 
-const Post = ({ post, full }) => {
-  return <div>{renderPostByType(post, full)}</div>;
+const Post = ({ post, full, bookmarks }) => {
+  return <div>{renderPostByType(post, full, bookmarks)}</div>;
 };
 
 export default Post;

@@ -4,6 +4,9 @@ import { create } from "zustand";
 const usePostStore = create((set) => ({
   content: "",
   setContent: (content) => set({ content }),
+  selectedUser: null,
+  setSelectedUser: (user) => set({ selectedUser: user }),
+  // Add post state
   allPosts: [],
   setAllPosts: (posts) => set({ allPosts: posts }),
   page: 1,

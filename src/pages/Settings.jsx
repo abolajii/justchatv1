@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import styled, { css, keyframes } from "styled-components";
 import { MainContainer } from "../components";
-import { IoMdArrowBack } from "react-icons/io";
 import { IoChevronDown } from "react-icons/io5";
 import useThemeStore from "../store/useThemeStore";
 import {
@@ -10,6 +9,7 @@ import {
   ProfileSettings,
 } from "./SubtSettings";
 import { useNavigate } from "react-router-dom";
+import { MdChevronLeft } from "react-icons/md";
 
 // Theme definitions (similar to previous component)
 const lightTheme = {
@@ -182,7 +182,7 @@ const Settings = () => {
             <Top theme={theme}>
               <div style={{ display: "flex", alignItems: "center" }}>
                 <BackButton theme={theme} onClick={() => navigate(-1)}>
-                  <IoMdArrowBack size={24} />
+                  <MdChevronLeft size={24} />
                 </BackButton>
                 <PageTitle theme={theme}>Settings</PageTitle>
               </div>

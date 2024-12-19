@@ -26,6 +26,7 @@ const Top = styled.div`
 `;
 
 const Inner = styled.div`
+  /* height: 100vh; */
   @media (max-width: 768px) {
     top: 55px;
     position: relative;

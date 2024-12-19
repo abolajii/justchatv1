@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { useEffect, useState } from "react";
 import AllPosts from "./dashboard/AllPosts";
-import { fetchUserActivity } from "../api/request";
+import { fetchUserActivity, fetchUserInfo } from "../api/request";
 import Media from "./profile/components/Media";
 import useThemeStore, { darkTheme, lightTheme } from "../store/useThemeStore";
 
@@ -26,9 +26,10 @@ const Tab = styled.div`
 const ContentContainer = styled.div`
   padding: 5px 15px;
   overflow-y: auto;
+  min-height: 360px;
 `;
 
-const ProfileTab = ({ posts }) => {
+const ProfileTab = ({ posts, uid }) => {
   const { isDarkMode } = useThemeStore();
   const theme = isDarkMode ? darkTheme : lightTheme;
   const [activeTab, setActiveTab] = useState("posts");
@@ -37,12 +38,26 @@ const ProfileTab = ({ posts }) => {
   useEffect(() => {
     const userActivity = async () => {
       setResults([]);
-      const fetchedPosts = await fetchUserActivity(activeTab);
-      console.log(fetchedPosts.activity);
-      setResults(fetchedPosts.activity);
+      if (uid) {
+        const fetchedPosts = await fetchUserActivity(activeTab, uid);
+        setResults(fetchedPosts.activity);
+      }
     };
     userActivity();
-  }, [activeTab]);
+  }, [activeTab, uid]);
+
+  useEffect(() => {
+    if (!uid) {
+      const userActivity = async () => {
+        setResults([]);
+        const fetchedPosts = await fetchUserInfo(activeTab);
+        setResults(fetchedPosts.activity);
+      };
+      userActivity();
+    }
+  }, [activeTab, uid]);
+
+  console.log(results);
 
   const renderTabContent = () => {
     switch (activeTab) {
@@ -104,7 +119,6 @@ const ProfileTab = ({ posts }) => {
           Replies
         </Tab>
       </TabContainer>
-
       <ContentContainer theme={theme}>{renderTabContent()}</ContentContainer>
     </div>
   );

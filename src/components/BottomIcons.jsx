@@ -7,6 +7,7 @@ import useModalStore from "../pages/store/useModalStore";
 import Poll from "../pages/components/Poll";
 import Schedule from "../pages/components/Schedule";
 import Desktop from "../responsive/Desktop";
+import Spinner from "./Spinner";
 
 const EmojiPopup = styled.div`
   position: absolute;
@@ -70,6 +71,7 @@ const BottomIcons = ({
   setFile,
   reply,
   filePicker,
+  isLoading,
 }) => {
   const [showEmoji, setShowEmoji] = useState(false);
   const { openPollModal, openScheduleModal } = useModalStore();
@@ -150,17 +152,22 @@ const BottomIcons = ({
             </div>
           </div>
           <div>
-            <FaPaperPlane
-              title="Send"
-              size={20}
-              className={`send-icon ${
-                !postContent.trim() && !image ? "disabled" : ""
-              }`}
-              onClick={onSubmit}
-              style={{
-                cursor: postContent.trim() || image ? "pointer" : "not-allowed",
-              }}
-            />
+            {isLoading ? (
+              <Spinner size="19px" />
+            ) : (
+              <FaPaperPlane
+                title="Send"
+                size={20}
+                className={`send-icon ${
+                  !postContent.trim() && !image ? "disabled" : ""
+                }`}
+                onClick={onSubmit}
+                style={{
+                  cursor:
+                    postContent.trim() || image ? "pointer" : "not-allowed",
+                }}
+              />
+            )}
           </div>
         </div>
       </div>
@@ -223,17 +230,21 @@ const BottomIcons = ({
           </div>
         </div>
         <div>
-          <FaPaperPlane
-            title="Send"
-            size={20}
-            className={`send-icon ${
-              !postContent.trim() && !image ? "disabled" : ""
-            }`}
-            onClick={onSubmit}
-            style={{
-              cursor: postContent.trim() || image ? "pointer" : "not-allowed",
-            }}
-          />
+          {isLoading ? (
+            <Spinner size="19px" />
+          ) : (
+            <FaPaperPlane
+              title="Send"
+              size={20}
+              className={`send-icon ${
+                !postContent.trim() && !image ? "disabled" : ""
+              }`}
+              onClick={onSubmit}
+              style={{
+                cursor: postContent.trim() || image ? "pointer" : "not-allowed",
+              }}
+            />
+          )}
         </div>
       </div>
     </div>

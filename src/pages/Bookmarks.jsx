@@ -1,49 +1,16 @@
-import React, { useState } from "react";
-import styled, { css } from "styled-components";
-import { PiBookmarksSimpleFill, PiFolderFill } from "react-icons/pi";
+import React, { useEffect, useState } from "react";
+import styled from "styled-components";
+import { PiBookmarksSimpleFill } from "react-icons/pi";
 import { MainContainer } from "../components";
 import { BiSolidBookmarkAltPlus } from "react-icons/bi";
-import { IoMdClose, IoMdArrowBack } from "react-icons/io";
 import useThemeStore from "../store/useThemeStore";
 import useBookmarkStore from "./store/useBookmark";
-
-const CategoryColors = {
-  Sports: {
-    light: "#e6f3e6",
-    dark: "#004d00",
-    text: { light: "#2e7d32", dark: "#4caf50" },
-  },
-  Educational: {
-    light: "#e6f2ff",
-    dark: "#00256c",
-    text: { light: "#1565c0", dark: "#64b5f6" },
-  },
-  AI: {
-    light: "#f3e5f5",
-    dark: "#4a148c",
-    text: { light: "#6a1b9a", dark: "#ad60bb" },
-  },
-  Technology: {
-    light: "#e0f7fa",
-    dark: "#006064",
-    text: { light: "#00838f", dark: "#4dd0e1" },
-  },
-  News: {
-    light: "#fff3e0",
-    dark: "#bf360c",
-    text: { light: "#eaa47e", dark: "#f3d2c8" },
-  },
-  Entertainment: {
-    light: "#fce4ec",
-    dark: "#880e4f",
-    text: { light: "#ad1457", dark: "#f06292" },
-  },
-  Other: {
-    light: "#f5f5f5",
-    dark: "#212121",
-    text: { light: "#616161", dark: "#9e9e9e" },
-  },
-};
+import { createFolder, getUserBookmark } from "../api/request";
+import AllPosts from "./dashboard/AllPosts";
+import RenderFolder from "./bookmark/components/RenderFolder";
+import { MdChevronLeft } from "react-icons/md";
+import { useNavigate } from "react-router-dom";
+import BookmarkModal from "./BookmarkModal";
 
 const lightTheme = {
   background: "#fff",
@@ -83,14 +50,24 @@ const Top = styled.div`
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
+  position: sticky;
+  top: -0px;
+  padding: 10px;
+  width: 100%;
+  z-index: 100;
+  background-color: ${(props) => props.theme.background};
 `;
 
 const Inner = styled.div`
-  padding: 20px;
-
   width: 700px;
   height: 100%;
   border-right: 1px solid ${(props) => props.theme.borderColor};
+
+  overflow: scroll;
+
+  &::-webkit-scrollbar {
+    width: 0px;
+  }
 `;
 
 const BackButton = styled.button`
@@ -127,107 +104,8 @@ const CreateFolderButton = styled.button`
   }
 `;
 
-const ModalOverlay = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 0.3s ease, visibility 0.3s ease;
-
-  ${(props) =>
-    props.isOpen &&
-    css`
-      opacity: 1;
-      visibility: visible;
-    `}
-`;
-
-const ModalContent = styled.div`
-  background-color: ${(props) => props.theme.background};
-  border-radius: 8px;
-  padding: 20px;
-  width: 90%;
-  max-width: 400px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  transform: scale(0.7);
-  opacity: 0;
-  transition: transform 0.3s ease, opacity 0.3s ease;
-
-  ${(props) =>
-    props.isOpen &&
-    css`
-      transform: scale(1);
-      opacity: 1;
-    `}
-`;
-
-const ModalHeader = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-`;
-
-const ModalTitle = styled.h2`
-  margin: 0;
-  color: ${(props) => props.theme.textPrimary};
-`;
-
-const CloseButton = styled.button`
-  background: none;
-  border: none;
-  color: ${(props) => props.theme.textSecondary};
-  cursor: pointer;
-  font-size: 1.5rem;
-  transition: color 0.3s;
-
-  &:hover {
-    color: ${(props) => props.theme.primaryColor};
-  }
-`;
-
-const Input = styled.input`
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 15px;
-  border: 1px solid ${(props) => props.theme.inputBorder};
-  border-radius: 4px;
-  background-color: ${(props) => props.theme.inputBackground};
-  color: ${(props) => props.theme.textPrimary};
-`;
-
-const Button = styled.button`
-  width: 100%;
-  padding: 10px;
-  background-color: ${(props) => props.theme.primaryColor};
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-
-  &:disabled {
-    background-color: ${(props) => props.theme.disabledColor};
-    cursor: not-allowed;
-  }
-
-  &:hover:not(:disabled) {
-    opacity: 0.9;
-  }
-`;
-
-const BookmarkList = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
+const Padding = styled.div`
+  padding: 0 20px 20px;
 `;
 
 const NoBookmarksContainer = styled.div`
@@ -240,80 +118,57 @@ const NoBookmarksContainer = styled.div`
   color: ${(props) => props.theme.textSecondary};
 `;
 
-const CategorySelect = styled.select`
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 15px;
-  border: 1px solid ${(props) => props.theme.inputBorder};
-  border-radius: 4px;
-  background-color: ${(props) => props.theme.inputBackground};
-  color: ${(props) => props.theme.textPrimary};
-`;
-
-const BookmarkCategories = [
-  "Sports",
-  "Educational",
-  "AI",
-  "Technology",
-  "News",
-  "Entertainment",
-  "Other",
-];
-
-const Tag = styled.span`
-  background-color: ${(props) =>
-    props.isDarkMode
-      ? CategoryColors[props.category].dark
-      : CategoryColors[props.category].light};
-  color: ${(props) =>
-    props.isDarkMode
-      ? CategoryColors[props.category].text.dark
-      : CategoryColors[props.category].text.light};
-  padding: 2px 6px;
-  border-radius: 4px;
-  font-size: 10px;
-  width: fit-content;
-`;
-
-const BookmarkItem = styled.div`
-  background-color: ${(props) => props.theme.inputBackground};
-  border: 1px solid ${(props) => props.theme.borderColor};
-  border-radius: 8px;
-  padding: 10px;
-  display: flex;
-  flex-direction: column;
-  width: 212px;
-  cursor: pointer;
-`;
-
-const BookmarkTitle = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 8px;
-`;
-
 const Bookmarks = () => {
   const { isDarkMode } = useThemeStore();
-  const { bookmarks, addBookmark } = useBookmarkStore();
+
+  const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const { bookmarks, addBookmark, setBookmarks } = useBookmarkStore();
+  const [bookmark, setBookmark] = useState([]);
   const [bookmarkData, setBookmarkData] = useState({
-    title: "",
+    name: "",
     category: "Other",
   });
 
+  useEffect(() => {
+    const fetchBookmark = async () => {
+      try {
+        const response = await getUserBookmark();
+        setBookmarks(response.data.folders);
+        setBookmark(response.data.bookmarks);
+      } catch (e) {
+        console.error("Error fetching bookmarks:", e);
+      }
+    };
+
+    fetchBookmark();
+  }, []);
+
   const theme = isDarkMode ? darkTheme : lightTheme;
 
-  const handleCreateBookmark = () => {
-    if (bookmarkData.title.trim()) {
-      addBookmark({
-        title: bookmarkData.title,
-        category: bookmarkData.category,
-      });
+  const handleCreateBookmarkFolder = async () => {
+    try {
+      if (bookmarkData.name.trim()) {
+        const data = {
+          name: bookmarkData.name,
+          category: bookmarkData.category,
+        };
+        const response = await createFolder(data);
 
-      // Reset form
-      setBookmarkData({ title: "", category: "Other" });
-      setIsModalOpen(false);
+        console.log(response);
+
+        addBookmark({
+          name: bookmarkData.name,
+          category: bookmarkData.category,
+        });
+
+        // Reset form
+        setBookmarkData({ name: "", category: "Other" });
+        setIsModalOpen(false);
+      }
+    } catch (error) {
+      console.error("Error adding bookmark:", error);
     }
   };
 
@@ -321,23 +176,23 @@ const Bookmarks = () => {
     <MainContainer>
       <Container theme={theme}>
         <Inner theme={theme}>
-          <Top>
+          <Top theme={theme}>
             <div className="flex align-center gap-sm">
-              <BackButton theme={theme}>
-                <IoMdArrowBack size={24} />
+              <BackButton theme={theme} onClick={() => navigate(-1)}>
+                <MdChevronLeft size={24} />
               </BackButton>
               <PageTitle theme={theme}>Bookmarks</PageTitle>
             </div>
 
             <CreateFolderButton
-              onClick={() => setIsModalOpen(true)}
               theme={theme}
+              onClick={() => setIsModalOpen(true)}
             >
               <BiSolidBookmarkAltPlus size={24} />
             </CreateFolderButton>
           </Top>
 
-          {bookmarks.length === 0 ? (
+          {bookmarks.length === 0 && bookmark.length === 0 ? (
             <NoBookmarksContainer theme={theme}>
               <PiBookmarksSimpleFill size={64} color={theme.iconColor} />
               <h2>No Bookmarks Yet</h2>
@@ -348,76 +203,16 @@ const Bookmarks = () => {
               </p>
             </NoBookmarksContainer>
           ) : (
-            <BookmarkList theme={theme}>
-              {bookmarks.map((bookmark) => (
-                <BookmarkItem key={bookmark.id} theme={theme}>
-                  <BookmarkTitle>
-                    <PiFolderFill color={theme.iconColor} size={20} />
-                    <h3>{bookmark.title}</h3>
-                  </BookmarkTitle>
-                  <Tag isDarkMode={isDarkMode} category={bookmark.category}>
-                    {bookmark.category}
-                  </Tag>
-                </BookmarkItem>
-              ))}
-            </BookmarkList>
+            <Padding theme={theme}>
+              <RenderFolder folder={bookmarks} />
+              <AllPosts bookmarks={bookmark} full />
+            </Padding>
           )}
 
-          {/* Modal for Creating Bookmark */}
-          <ModalOverlay
+          <BookmarkModal
+            closeModal={() => setIsModalOpen(false)}
             isOpen={isModalOpen}
-            onClick={() => setIsModalOpen(false)}
-          >
-            <ModalContent
-              theme={theme}
-              isOpen={isModalOpen}
-              onClick={(e) => e.stopPropagation()}
-            >
-              <ModalHeader>
-                <ModalTitle theme={theme}>Create New Bookmark</ModalTitle>
-                <CloseButton
-                  onClick={() => setIsModalOpen(false)}
-                  theme={theme}
-                >
-                  <IoMdClose />
-                </CloseButton>
-              </ModalHeader>
-              <Input
-                placeholder="Bookmark Title"
-                value={bookmarkData.title}
-                onChange={(e) =>
-                  setBookmarkData((prev) => ({
-                    ...prev,
-                    title: e.target.value,
-                  }))
-                }
-                theme={theme}
-              />
-              <CategorySelect
-                value={bookmarkData.category}
-                onChange={(e) =>
-                  setBookmarkData((prev) => ({
-                    ...prev,
-                    category: e.target.value,
-                  }))
-                }
-                theme={theme}
-              >
-                {BookmarkCategories.map((category) => (
-                  <option key={category} value={category}>
-                    {category}
-                  </option>
-                ))}
-              </CategorySelect>
-              <Button
-                onClick={handleCreateBookmark}
-                disabled={!bookmarkData.title.trim()}
-                theme={theme}
-              >
-                Create Bookmark
-              </Button>
-            </ModalContent>
-          </ModalOverlay>
+          />
         </Inner>
       </Container>
     </MainContainer>

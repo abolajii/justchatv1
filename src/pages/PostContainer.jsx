@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import useUserStore from "../store/useUserStore";
 import useThemeStore from "../store/useThemeStore"; // Import theme store
@@ -105,10 +105,19 @@ const UserAvi = styled.div`
 const PostContainer = () => {
   const { user } = useUserStore();
   const { isDarkMode } = useThemeStore(); // Get dark mode state
-  const { content, setContent, image, setImage, file, setFile } =
-    usePostStore();
+  const {
+    content,
+    setContent,
+    image,
+    setImage,
+    file,
+    setFile,
+    setAllPosts,
+    allPosts,
+  } = usePostStore();
 
   const { showAlert } = useAlert();
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSendClick = async () => {
     // Validate content before sending
@@ -124,14 +133,17 @@ const PostContainer = () => {
     }
 
     try {
+      setIsLoading(true);
       const response = await createPost(formData);
-      console.log("Post created:", response);
+      const data = [response, ...allPosts];
+      setAllPosts(data);
       showAlert("success", "Post created successfully!");
 
       // Reset the state
       setFile(null);
       setImage(null);
       setContent("");
+      setIsLoading(false);
     } catch (error) {
       console.error("Error creating post:", error);
       showAlert(
@@ -163,6 +175,7 @@ const PostContainer = () => {
         </div>
       </div>
       <BottomIcons
+        isLoading={isLoading}
         onSubmit={handleSendClick}
         postContent={content}
         image={image}

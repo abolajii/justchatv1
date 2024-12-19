@@ -86,21 +86,6 @@ const InteractionContainer = ({ isDarkMode, interactions }) => {
                     </InteractionCount>
                   )}
                 </InteractionItem>
-                {dropdownOpen && (
-                  <DropdownContainer>
-                    {shareDropdownOptions.map((option, index) => (
-                      <DropdownItem
-                        key={index}
-                        onClick={() => {
-                          option.onClick();
-                          setDropdownOpen(false);
-                        }}
-                      >
-                        {option.label}
-                      </DropdownItem>
-                    ))}
-                  </DropdownContainer>
-                )}
               </div>
             );
           }
