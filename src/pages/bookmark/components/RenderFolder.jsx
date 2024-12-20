@@ -154,7 +154,7 @@ const RenderFolder = ({ folder }) => {
                 <Tag isDarkMode={isDarkMode} category={bookmark.category}>
                   {bookmark.category}
                 </Tag>
-                {bookmark.bookmarks.length > 0 && (
+                {bookmark?.bookmarks?.length > 0 && (
                   <BookmarkCount
                     isDarkMode={isDarkMode}
                     category={bookmark.category}

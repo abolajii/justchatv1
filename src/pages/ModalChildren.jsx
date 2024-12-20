@@ -4,6 +4,8 @@ import useBookmarkStore from "./store/useBookmark";
 import useThemeStore from "../store/useThemeStore";
 
 import styled from "styled-components";
+import { Spinner } from "../components";
+import { useAlert } from "../context/AlertContext";
 const BookmarkCategories = [
   "Sports",
   "Educational",
@@ -83,6 +85,8 @@ const darkTheme = {
 const ModalChildren = ({ closeModal }) => {
   const { isDarkMode } = useThemeStore();
   const theme = isDarkMode ? darkTheme : lightTheme;
+  const [loading, setIsLoading] = useState(false);
+  const { showAlert } = useAlert();
 
   const [bookmarkData, setBookmarkData] = useState({
     name: "",
@@ -93,18 +97,21 @@ const ModalChildren = ({ closeModal }) => {
   const handleCreateBookmarkFolder = async () => {
     try {
       if (bookmarkData.name.trim()) {
+        setIsLoading(true);
+
         const data = {
           name: bookmarkData.name,
           category: bookmarkData.category,
         };
         const response = await createFolder(data);
 
-        console.log(response);
-
         addBookmark({
           name: bookmarkData.name,
           category: bookmarkData.category,
         });
+
+        setIsLoading(false);
+        showAlert("success", "Folder created successfully");
 
         // Reset form
         setBookmarkData({ name: "", category: "Other" });
@@ -112,6 +119,7 @@ const ModalChildren = ({ closeModal }) => {
       }
     } catch (error) {
       console.error("Error adding bookmark:", error);
+      setIsLoading(true);
     }
   };
   return (
@@ -148,7 +156,7 @@ const ModalChildren = ({ closeModal }) => {
         disabled={!bookmarkData.name.trim()}
         theme={theme}
       >
-        Create Bookmark
+        {loading ? <Spinner size="20px" /> : "Create Bookmark"}
       </Button>
     </div>
   );

@@ -8,12 +8,12 @@ const useBookmarkStore = create((set) => ({
   addBookmark: (bookmark) =>
     set((state) => ({
       bookmarks: [
-        ...state.bookmarks,
         {
           ...bookmark,
           _id: crypto.randomUUID(),
           createdAt: new Date(),
         },
+        ...state.bookmarks,
       ],
     })),
   removeBookmark: (id) =>
