@@ -124,7 +124,7 @@ const formatCurrency = (value, currency = "NGN") => {
 const TradingProfitCalculator = () => {
   const { isDarkMode, toggleTheme } = useThemeStore();
 
-  const [startCapital, setStartCapital] = useState("277.35");
+  const [startCapital, setStartCapital] = useState("0");
   const [startDate, setStartDate] = useState(format(new Date(), "yyyy-MM-dd"));
   const [endDate, setEndDate] = useState(format(new Date(), "yyyy-MM-dd"));
   const [pageSize, setPageSize] = useState(10);
@@ -133,7 +133,7 @@ const TradingProfitCalculator = () => {
   const [calculatedResults, setCalculatedResults] = useState({
     results: [],
   });
-  const [monthlyBonus, setMonthlyBonus] = useState(100);
+  const [monthlyBonus, setMonthlyBonus] = useState(0);
 
   const calculateTradingResults = () => {
     // ... (same implementation as original code)
