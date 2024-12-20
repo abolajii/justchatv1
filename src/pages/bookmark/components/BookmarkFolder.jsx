@@ -202,8 +202,8 @@ const BookmarkFolder = () => {
                     {folder?.category}
                   </Tag>
                 </div>
-                {folder?.bookmarks.length > 0 && (
-                  <p className="text-sm">{folder?.bookmarks.length} posts</p>
+                {folder?.bookmarks?.length > 0 && (
+                  <p className="text-sm">{folder?.bookmarks?.length} posts</p>
                 )}
               </PageTitle>
             </div>
