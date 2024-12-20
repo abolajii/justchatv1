@@ -144,8 +144,9 @@ const Login = () => {
 
         showAlert("success", "Login successful!"); // Trigger success alert
       } catch (error) {
+        console.log(error);
         console.error("Login failed:", error);
-        showAlert("error", "Login failed. Please try again.");
+        showAlert("error", `Login failed. ${error.response.data.message}`);
       } finally {
         setIsLoading(false);
       }

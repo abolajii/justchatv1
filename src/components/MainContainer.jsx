@@ -5,6 +5,7 @@ import Widget from "../pages/discover/components/Widget";
 import useThemeStore from "../store/useThemeStore";
 import { useLocation } from "react-router-dom";
 import MobileSidebar from "./MobileSidebar";
+import AdvertWidget from "./AdvertWidget";
 
 const Container = styled.div`
   height: 100vh;
@@ -80,7 +81,7 @@ const MainContainer = ({ children }) => {
       </A>
       <B>{children}</B>
       <C isDarkMode={isDarkMode}>
-        <Widget />
+        <AdvertWidget />
       </C>
     </Container>
   );

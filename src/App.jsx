@@ -12,14 +12,15 @@ import {
   Register,
   ViewProfile,
 } from "./pages"; // Destructure from the index file
-import Modal from "./pages/components/Modal";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import { AlertProvider, useAlert } from "./context/AlertContext";
 import { Alert } from "./components";
-import { fetchCurrent, getMe } from "./api/request";
+import { getMe } from "./api/request";
 import useUserStore from "./store/useUserStore";
 import TradingProfitCalculator from "./ProfitCalculator";
 import BookmarkFolder from "./pages/bookmark/components/BookmarkFolder";
+import Trade from "./pages/trade/Trade";
+import TradeOnboarding from "./pages/trade/TradeOnboarding";
 
 const App = () => {
   const { setCurrentUser } = useUserStore();
@@ -125,6 +126,24 @@ const App = () => {
           element={
             <ProtectedRoute>
               <TradingProfitCalculator />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/setup"
+          element={
+            <ProtectedRoute>
+              <Trade />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/trade/onboarding"
+          element={
+            <ProtectedRoute>
+              <TradeOnboarding />
             </ProtectedRoute>
           }
         />
