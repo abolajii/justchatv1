@@ -30,7 +30,7 @@ const StepperItem = styled.div`
   background-color: ${(props) =>
     props.isActive ? "transperent" : props.isCompleted ? "#57b6a9" : "white"};
   color: ${(props) =>
-    props.isActive || props.isCompleted ? "white" : "#6b7280"};
+    props.isActive || props.isCompleted ? "black" : "#6b7280"};
   font-weight: bold;
   transition: all 0.2s ease-in-out;
 `;
