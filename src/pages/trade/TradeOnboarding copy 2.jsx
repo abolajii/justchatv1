@@ -34,7 +34,6 @@ const FormGroup = styled.div`
 `;
 
 const Label = styled.div`
-  font-size: 14px;
   margin-bottom: 8px;
   color: ${({ theme }) => theme.textPrimary};
 `;

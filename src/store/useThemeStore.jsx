@@ -43,6 +43,6 @@ export const darkTheme = {
   primaryColor: "#3a8179",
   secondaryPrimary: "#ff8a65", // Matches with lightTheme for consistency
   btnColor: "#3a8179", // Matches the primary color for buttons
-  disabledColor: "#555",
+  disabledColor: "#979797",
   avatarBorder: "rgba(255,255,255,0.1)",
 };

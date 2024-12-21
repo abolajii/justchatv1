@@ -1,189 +1,219 @@
-// ThemeConfig.js
-import { createGlobalStyle } from "styled-components";
+import React from "react";
+import styled from "styled-components";
+import {
+  User,
+  Globe,
+  TrendingUp,
+  Clock,
+  Wallet,
+  Bell,
+  Mail,
+  Settings,
+  HelpCircle,
+} from "lucide-react";
+import useThemeStore from "../store/useThemeStore";
 
-export const lightTheme = {
-  background: "#ffffff",
-  text: "#1a1a1a",
-  primary: "#3b82f6",
-  secondary: "#64748b",
-  border: "#e2e8f0",
-  buttonText: "#ffffff",
-  shadow: "rgba(0, 0, 0, 0.1)",
-};
-
-export const darkTheme = {
-  background: "#1e293b",
-  text: "#ffffff",
-  primary: "#60a5fa",
-  secondary: "#94a3b8",
-  border: "#334155",
-  buttonText: "#ffffff",
-  shadow: "rgba(0, 0, 0, 0.3)",
-};
-
-export const GlobalStyles = createGlobalStyle`
-  body {
-    background: ${({ theme }) => theme.background};
-    color: ${({ theme }) => theme.text};
-    transition: all 0.3s linear;
-  }
+const Container = styled.div`
+  min-height: 100vh;
+  background-color: ${(props) => (props.isDarkMode ? "#0b0b0b" : "#ffffff")};
+  transition: background-color 0.3s ease;
 `;
 
-// BannerStyles.js
-import styled, { keyframes } from "styled-components";
-
-const waveAnimation = keyframes`
-  0% { transform: rotate(0deg); }
-  50% { transform: rotate(-45deg); }
-  100% { transform: rotate(0deg); }
+const Inner = styled.div`
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 24px;
 `;
 
-const scaleIn = keyframes`
-  from { transform: scale(0); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
+const WelcomeBox = styled.div`
+  background-color: ${(props) => (props.isDarkMode ? "#1a1a1a" : "#f5f5f5")};
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 `;
 
-export const BannerContainer = styled.div`
-  position: fixed;
-  bottom: 2rem;
-  right: 2rem;
-  padding: 1.5rem;
-  max-width: 24rem;
-  background: ${({ theme }) => theme.background};
-  border: 1px solid ${({ theme }) => theme.border};
-  border-radius: 0.5rem;
-  box-shadow: 0 4px 6px ${({ theme }) => theme.shadow};
-  animation: ${scaleIn} 0.5s ease-out forwards;
-
-  &.hide {
-    animation: ${scaleIn} 0.5s ease-out reverse forwards;
-  }
-`;
-
-export const Header = styled.div`
+const UserInfo = styled.div`
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  margin-bottom: 1rem;
+  gap: 16px;
+  margin-bottom: 20px;
 `;
 
-export const HandIcon = styled.div`
-  color: ${({ theme }) => theme.primary};
-  animation: ${waveAnimation} 2s infinite;
+const Avatar = styled.div`
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background-color: #ddd;
+  overflow: hidden;
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
 `;
 
-export const Title = styled.h2`
-  font-size: 1.25rem;
+const UserDetails = styled.div`
+  flex: 1;
+`;
+
+const UserName = styled.h2`
+  color: ${(props) => (props.isDarkMode ? "#ffffff" : "#000000")};
+  font-size: 24px;
   font-weight: 600;
-  color: ${({ theme }) => theme.text};
+  margin: 0 0 4px 0;
 `;
 
-export const Description = styled.p`
-  color: ${({ theme }) => theme.secondary};
-  margin-bottom: 1rem;
-  line-height: 1.5;
-`;
-
-export const Button = styled.button`
-  width: 100%;
-  padding: 0.5rem 1rem;
-  background: ${({ theme }) => theme.primary};
-  color: ${({ theme }) => theme.buttonText};
-  border: none;
-  border-radius: 0.375rem;
-  font-weight: 500;
+const CountryInfo = styled.div`
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  transition: all 0.3s ease;
-  cursor: pointer;
+  gap: 8px;
+  color: ${(props) => (props.isDarkMode ? "#a0a0a0" : "#666666")};
+`;
 
-  &:hover {
-    filter: brightness(110%);
+const Stats = styled.div`
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-top: 20px;
+`;
 
-    svg {
-      transform: translateX(4px);
-    }
+const StatItem = styled.div`
+  color: ${(props) => (props.isDarkMode ? "#ffffff" : "#000000")};
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+
+  .icon {
+    color: ${(props) => (props.isDarkMode ? "#a0a0a0" : "#666666")};
   }
 
-  svg {
-    transition: transform 0.3s ease;
+  .content {
+    flex: 1;
+  }
+
+  .label {
+    font-size: 14px;
+    color: ${(props) => (props.isDarkMode ? "#a0a0a0" : "#666666")};
+    margin-bottom: 4px;
+  }
+
+  .value {
+    font-size: 18px;
+    font-weight: 500;
   }
 `;
 
-export const CloseButton = styled.button`
-  position: absolute;
-  top: 0.5rem;
-  right: 0.5rem;
+const QuickActions = styled.div`
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid ${(props) => (props.isDarkMode ? "#333" : "#ddd")};
+`;
+
+const ActionButton = styled.button`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
   background: none;
   border: none;
-  color: ${({ theme }) => theme.secondary};
+  color: ${(props) => (props.isDarkMode ? "#a0a0a0" : "#666666")};
   cursor: pointer;
-  padding: 0.25rem;
-  transition: color 0.3s ease;
+  padding: 8px;
+  font-size: 12px;
+  transition: all 0.2s ease;
 
   &:hover {
-    color: ${({ theme }) => theme.text};
+    color: ${(props) => (props.isDarkMode ? "#ffffff" : "#000000")};
   }
 `;
 
-// Banner.jsx
-import React, { useState, useEffect } from "react";
-import { ThemeProvider } from "styled-components";
-import { Hand, ArrowRight } from "lucide-react";
+const Trade = () => {
+  const { isDarkMode } = useThemeStore();
 
-const Banner = () => {
-  const [isVisible, setIsVisible] = useState(true);
-  const [isDarkMode, setIsDarkMode] = useState(false);
-
-  useEffect(() => {
-    // Check system dark mode preference
-    const darkModeMediaQuery = window.matchMedia(
-      "(prefers-color-scheme: dark)"
-    );
-    setIsDarkMode(darkModeMediaQuery.matches);
-
-    // Listen for theme changes
-    const listener = (e) => setIsDarkMode(e.matches);
-    darkModeMediaQuery.addListener(listener);
-
-    // Hide banner after 2 minutes
-    const timer = setTimeout(() => setIsVisible(false), 120000);
-
-    return () => {
-      darkModeMediaQuery.removeListener(listener);
-      clearTimeout(timer);
-    };
-  }, []);
-
-  if (!isVisible) return null;
+  // Mock data - replace with actual data from your state management
+  const userData = {
+    name: "John Doe",
+    avatar: "/path/to/avatar.jpg",
+    country: "US",
+    countryFlag: "🇺🇸",
+    tradeCount: 156,
+    lastTradeTime: "2024-12-20T10:30:00",
+    startingCapital: "$10,000",
+    reminderCount: 3,
+  };
 
   return (
-    <ThemeProvider theme={isDarkMode ? darkTheme : lightTheme}>
-      <GlobalStyles />
-      <BannerContainer className={!isVisible ? "hide" : ""}>
-        <Header>
-          <HandIcon>
-            <Hand size={24} />
-          </HandIcon>
-          <Title>Learn Smart Financial Management</Title>
-        </Header>
+    <Container isDarkMode={isDarkMode}>
+      <Inner>
+        <WelcomeBox isDarkMode={isDarkMode}>
+          <UserInfo>
+            <Avatar>
+              <img src={userData.avatar} alt={userData.name} />
+            </Avatar>
+            <UserDetails>
+              <UserName isDarkMode={isDarkMode}>
+                Welcome, {userData.name}
+              </UserName>
+              <CountryInfo isDarkMode={isDarkMode}>
+                <Globe size={16} />
+                <span>{userData.countryFlag}</span>
+                <span>{userData.country}</span>
+              </CountryInfo>
+            </UserDetails>
+          </UserInfo>
 
-        <Description>
-          Discover proven strategies for responsible financial planning,
-          investment basics, and wealth building through education.
-        </Description>
-
-        <Button>
-          <span>Start Learning Now</span>
-          <ArrowRight size={18} />
-        </Button>
-
-        <CloseButton onClick={() => setIsVisible(false)}>✕</CloseButton>
-      </BannerContainer>
-    </ThemeProvider>
+          <Stats>
+            <StatItem isDarkMode={isDarkMode}>
+              <TrendingUp size={20} className="icon" />
+              <div className="content">
+                <div className="label">Total Trades</div>
+                <div className="value">{userData.tradeCount}</div>
+              </div>
+            </StatItem>
+            <StatItem isDarkMode={isDarkMode}>
+              <Clock size={20} className="icon" />
+              <div className="content">
+                <div className="label">Last Trade</div>
+                <div className="value">
+                  {new Date(userData.lastTradeTime).toLocaleTimeString()}
+                </div>
+              </div>
+            </StatItem>
+            <StatItem isDarkMode={isDarkMode}>
+              <Wallet size={20} className="icon" />
+              <div className="content">
+                <div className="label">Starting Capital</div>
+                <div className="value">{userData.startingCapital}</div>
+              </div>
+            </StatItem>
+            <StatItem isDarkMode={isDarkMode}>
+              <Bell size={20} className="icon" />
+              <div className="content">
+                <div className="label">Reminders</div>
+                <div className="value">{userData.reminderCount}</div>
+              </div>
+            </StatItem>
+            <StatItem isDarkMode={isDarkMode}>
+              <Bell size={20} className="icon" />
+              <div className="content">
+                <div className="label">Reminders</div>
+                <div className="value">{userData.reminderCount}</div>
+              </div>
+            </StatItem>
+            <StatItem isDarkMode={isDarkMode}>
+              <Bell size={20} className="icon" />
+              <div className="content">
+                <div className="label">Reminders</div>
+                <div className="value">{userData.reminderCount}</div>
+              </div>
+            </StatItem>
+          </Stats>
+        </WelcomeBox>
+      </Inner>
+    </Container>
   );
 };
 
-export default Banner;
+export default Trade;
