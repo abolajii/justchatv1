@@ -30,7 +30,7 @@ const StepperItem = styled.div`
   background-color: ${(props) =>
     props.isActive ? "transperent" : props.isCompleted ? "#57b6a9" : "white"};
   color: ${(props) =>
-    props.isActive || props.isCompleted ? "white" : "#6b7280"};
+    props.isActive || props.isCompleted ? props.theme.textPrimary : "#6b7280"};
   font-weight: bold;
   transition: all 0.2s ease-in-out;
 `;
@@ -129,6 +129,7 @@ const Stepper = () => {
         {steps.map((step, index) => (
           <React.Fragment key={step}>
             <StepperItem
+              theme={theme}
               isActive={currentStep === index}
               isCompleted={currentStep > index}
             >
