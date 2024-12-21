@@ -131,27 +131,29 @@ const Reminder = () => {
   const { isDarkMode } = useThemeStore();
   const theme = isDarkMode ? darkTheme : lightTheme;
   const {
-    // signalTimeStartAndEndDate,
+    signalTimeStartAndEndDate,
     reminderSettings,
     setReminderSettings,
     reminder,
     setReminder,
   } = useCbexStore();
-
-  // Initialize reminder settings when signalTimeStartAndEndDate changes
-  // useEffect(() => {
-  //   if (Array.isArray(signalTimeStartAndEndDate)) {
-  //     const initialSettings = signalTimeStartAndEndDate.map(
-  //       (signal, index) => ({
-  //         id: index + 1,
-  //         time: signal.startTime || "",
-  //         isEnabled: false,
-  //         endTime: signal.endTime || "",
-  //       })
-  //     );
-  //     setReminderSettings(initialSettings);
-  //   }
-  // }, [signalTimeStartAndEndDate]);
+  useEffect(() => {
+    if (!Array.isArray(reminderSettings) || reminderSettings.length === 0) {
+      // Initialize settings from signalTimeStartAndEndDate if reminderSettings is empty
+      const initialSettings = signalTimeStartAndEndDate.map(
+        (signal, index) => ({
+          id: index + 1,
+          time: signal.startTime || "",
+          isEnabled: false,
+          endTime: signal.endTime || "",
+        })
+      );
+      setReminderSettings(initialSettings);
+    } else {
+      // Use existing reminderSettings if it is not empty
+      setReminderSettings(reminderSettings);
+    }
+  }, [signalTimeStartAndEndDate, reminderSettings]);
 
   const handleScheduleChange = (event) => {
     setReminder(event.target.value);
