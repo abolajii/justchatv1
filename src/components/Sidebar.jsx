@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import Logo from "./Logo";
+import { RiLogoutCircleLine, RiSignalTowerFill } from "react-icons/ri";
 import { Link, useLocation } from "react-router-dom";
 import {
   FaHome,
@@ -222,7 +223,7 @@ const IconContainer = styled.div`
 const Sidebar = () => {
   const location = useLocation();
   const { isDarkMode, setTheme } = useThemeStore();
-  const { user } = useUserStore();
+  const { user, clearUser } = useUserStore();
 
   useEffect(() => {
     // Optional: Persist theme preference in localStorage
@@ -268,6 +269,20 @@ const Sidebar = () => {
               {route.label}
             </SiderLink>
           ))}
+          {user?.isUserSignal && (
+            <SiderLink>
+              <IconWrapper>
+                <RiSignalTowerFill size={16} />
+              </IconWrapper>
+              Signal
+            </SiderLink>
+          )}
+          <SiderLink onClick={clearUser}>
+            <IconWrapper>
+              <RiLogoutCircleLine size={16} />
+            </IconWrapper>
+            Logout
+          </SiderLink>
         </SidebarMenu>
       </Top>
       <Bottom className="center">
