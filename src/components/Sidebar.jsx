@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 import Logo from "./Logo";
 import { RiLogoutCircleLine, RiSignalTowerFill } from "react-icons/ri";
@@ -7,7 +7,6 @@ import {
   FaHome,
   FaComments,
   FaUser,
-  FaCog,
   FaBell,
   FaBookmark,
   FaCompass,
@@ -270,7 +269,7 @@ const Sidebar = () => {
             </SiderLink>
           ))}
           {user?.isUserSignal && (
-            <SiderLink>
+            <SiderLink to={"/trade/view"}>
               <IconWrapper>
                 <RiSignalTowerFill size={16} />
               </IconWrapper>
