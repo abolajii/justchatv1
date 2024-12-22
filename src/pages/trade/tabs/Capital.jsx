@@ -6,6 +6,7 @@ import useThemeStore, {
   lightTheme,
 } from "../../../store/useThemeStore";
 import useCbexStore from "../../store/useCbexStore";
+import ErrorMessage from "../../../components/Error";
 const FormGroup = styled.div`
   /* margin: 20px 0; */
 `;
@@ -29,14 +30,14 @@ const RadioInput = styled.input`
   appearance: none;
   width: 15px;
   height: 15px;
-  border: 1px solid ${({ isBlue }) => (isBlue ? "#2196F3" : "#4CAF50")};
+  border: 1px solid ${({ $isBlue }) => ($isBlue ? "#2196F3" : "#4CAF50")};
   margin: 0;
   cursor: pointer;
   border-radius: 50%;
 
   &:checked {
-    background-color: ${({ isBlue }) => (isBlue ? "#2196F3" : "#4CAF50")};
-    border: 1px solid ${({ isBlue }) => (isBlue ? "#2196F3" : "#4CAF50")};
+    background-color: ${({ $isBlue }) => ($isBlue ? "#2196F3" : "#4CAF50")};
+    border: 1px solid ${({ $isBlue }) => ($isBlue ? "#2196F3" : "#4CAF50")};
     position: relative;
 
     &::after {
@@ -103,7 +104,7 @@ const formatCurrentDateTime = () => {
   return `${formatDate} - ${formatTime}`;
 };
 
-const Capital = () => {
+const Capital = ({ error }) => {
   const {
     tradeSchedule,
     setTradeSchedule,
@@ -125,6 +126,7 @@ const Capital = () => {
 
   return (
     <FormGroup>
+      <ErrorMessage error={error} isDarkMode={isDarkMode} />
       <Label theme={theme}>What is your starting capital?</Label>
 
       <RadioGroup>
@@ -135,7 +137,7 @@ const Capital = () => {
             value="before_after"
             checked={tradeSchedule === "before_after"}
             onChange={handleScheduleChange}
-            isBlue={false}
+            $isBlue={false}
           />
           Before/After Trade
         </RadioLabel>
@@ -147,7 +149,7 @@ const Capital = () => {
             value="inbetween"
             checked={tradeSchedule === "inbetween"}
             onChange={handleScheduleChange}
-            isBlue={true}
+            $isBlue={true}
           />
           In-between Trade
         </RadioLabel>

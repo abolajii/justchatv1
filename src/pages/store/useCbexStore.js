@@ -6,14 +6,14 @@ const useCbexStore = create((set) => {
     numberOfSignals: 2,
     selectedOption: "default",
     customTrades: "",
-    exchamgeRate: null,
+    exchangeRate: null,
     tradeSchedule: "before_after",
     secCustomTrade: "",
     startingCapital: "",
     reminder: "",
-
     signalTimeStartAndEndDate: [],
     reminderSettings: [],
+
     setCountry: (country) => set({ country }),
     setNumberOfSignals: (numberOfSignals) => set({ numberOfSignals }),
     setSelectedOption: (selectedOption) => set({ selectedOption }),

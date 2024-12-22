@@ -1,16 +1,11 @@
 import React from "react";
 import styled from "styled-components";
-import useThemeStore, {
-  darkTheme,
-  lightTheme,
-} from "../../../store/useThemeStore";
-import { Bell, Clock, Globe, TrendingUp, Wallet } from "lucide-react";
+import useThemeStore from "../../../store/useThemeStore";
+import { Bell, Globe, TrendingUp, Wallet } from "lucide-react";
 import useUserStore from "../../../store/useUserStore";
 import useCbexStore from "../../store/useCbexStore";
 
 const Container = styled.div`
-  /* background-color: ${(props) =>
-    props.isDarkMode ? "#0b0b0b" : "#ffffff"}; */
   transition: background-color 0.3s ease;
   margin: auto;
   width: 90%;
@@ -42,7 +37,7 @@ const UserDetails = styled.div`
 `;
 
 const UserName = styled.h2`
-  color: ${(props) => (props.isDarkMode ? "#ffffff" : "#000000")};
+  color: ${(props) => (props.$isDarkMode ? "#ffffff" : "#000000")};
   font-size: 24px;
   font-weight: 600;
   margin: 0 0 4px 0;
@@ -52,7 +47,7 @@ const CountryInfo = styled.div`
   display: flex;
   align-items: center;
   gap: 8px;
-  color: ${(props) => (props.isDarkMode ? "#a0a0a0" : "#666666")};
+  color: ${(props) => (props.$isDarkMode ? "#a0a0a0" : "#666666")};
 `;
 
 const Stats = styled.div`
@@ -63,13 +58,13 @@ const Stats = styled.div`
 `;
 
 const StatItem = styled.div`
-  color: ${(props) => (props.isDarkMode ? "#ffffff" : "#000000")};
+  color: ${(props) => (props.$isDarkMode ? "#ffffff" : "#000000")};
   display: flex;
   align-items: flex-start;
   gap: 12px;
 
   .icon {
-    color: ${(props) => (props.isDarkMode ? "#a0a0a0" : "#666666")};
+    color: ${(props) => (props.i$sDarkMode ? "#a0a0a0" : "#666666")};
   }
 
   .content {
@@ -78,7 +73,7 @@ const StatItem = styled.div`
 
   .label {
     font-size: 14px;
-    color: ${(props) => (props.isDarkMode ? "#a0a0a0" : "#666666")};
+    color: ${(props) => (props.$isDarkMode ? "#a0a0a0" : "#666666")};
     margin-bottom: 4px;
   }
 
@@ -90,7 +85,7 @@ const StatItem = styled.div`
 
 const DetailsWidget = () => {
   const { isDarkMode } = useThemeStore();
-  const theme = isDarkMode ? darkTheme : lightTheme;
+
   const { user } = useUserStore();
   const { country, numberOfSignals, reminderSettings, startingCapital } =
     useCbexStore();
@@ -102,8 +97,8 @@ const DetailsWidget = () => {
           <img src={user.profilePic} alt={user.name} />
         </Avatar>
         <UserDetails>
-          <UserName isDarkMode={isDarkMode}>{user.name}</UserName>
-          <CountryInfo isDarkMode={isDarkMode}>
+          <UserName $isDarkMode={isDarkMode}>{user.name}</UserName>
+          <CountryInfo $isDarkMode={isDarkMode}>
             <Globe size={16} />
             {/* <span>{userData.countryFlag}</span> */}
             <span>{country.name}</span>
@@ -111,14 +106,14 @@ const DetailsWidget = () => {
         </UserDetails>
       </UserInfo>
       <Stats>
-        <StatItem isDarkMode={isDarkMode}>
+        <StatItem $isDarkMode={isDarkMode}>
           <Wallet size={20} className="icon" />
           <div className="content">
             <div className="label">Starting Capital</div>
             <div className="value">${startingCapital}</div>
           </div>
         </StatItem>
-        <StatItem isDarkMode={isDarkMode}>
+        <StatItem $isDarkMode={isDarkMode}>
           <TrendingUp size={20} className="icon" />
           <div className="content">
             <div className="label">Number of Signals</div>
@@ -126,7 +121,7 @@ const DetailsWidget = () => {
           </div>
         </StatItem>
 
-        <StatItem isDarkMode={isDarkMode}>
+        <StatItem $isDarkMode={isDarkMode}>
           <Bell size={20} className="icon" />
           <div className="content">
             <div className="label">Reminders</div>

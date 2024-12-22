@@ -41,14 +41,14 @@ const RadioInput = styled.input`
   appearance: none;
   width: 15px;
   height: 15px;
-  border: 1px solid ${({ isBlue }) => (isBlue ? "#2196F3" : "#4CAF50")};
+  border: 1px solid ${({ $isBlue }) => ($isBlue ? "#2196F3" : "#4CAF50")};
   margin: 0;
   cursor: pointer;
   border-radius: 50%;
 
   &:checked {
-    background-color: ${({ isBlue }) => (isBlue ? "#2196F3" : "#4CAF50")};
-    border: 1px solid ${({ isBlue }) => (isBlue ? "#2196F3" : "#4CAF50")};
+    background-color: ${({ $isBlue }) => ($isBlue ? "#2196F3" : "#4CAF50")};
+    border: 1px solid ${({ $isBlue }) => ($isBlue ? "#2196F3" : "#4CAF50")};
     position: relative;
 
     &::after {
@@ -118,7 +118,7 @@ const Signal = () => {
             value="default"
             checked={selectedOption === "default"}
             onChange={handleOptionChange}
-            isBlue={false}
+            $isBlue={false}
           />
           2 signals
         </RadioLabel>
@@ -130,7 +130,7 @@ const Signal = () => {
             value="custom"
             checked={selectedOption === "custom"}
             onChange={handleOptionChange}
-            isBlue={true}
+            $isBlue={true}
           />
           More
         </RadioLabel>

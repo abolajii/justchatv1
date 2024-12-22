@@ -21,6 +21,7 @@ import TradingProfitCalculator from "./ProfitCalculator";
 import BookmarkFolder from "./pages/bookmark/components/BookmarkFolder";
 import Trade from "./pages/trade/Trade";
 import TradeOnboarding from "./pages/trade/TradeOnboarding";
+import Future from "./pages/future/Future";
 
 const App = () => {
   const { setCurrentUser } = useUserStore();
@@ -144,6 +145,15 @@ const App = () => {
           element={
             <ProtectedRoute>
               <TradeOnboarding />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/trade/view"
+          element={
+            <ProtectedRoute>
+              <Future />
             </ProtectedRoute>
           }
         />

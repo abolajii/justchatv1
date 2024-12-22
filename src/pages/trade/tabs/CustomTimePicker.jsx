@@ -82,16 +82,16 @@ const TimeCell = styled.div`
   text-align: center;
   border-radius: 4px;
   cursor: pointer;
-  background: ${({ isSelected, theme }) =>
-    isSelected ? theme.primaryColor : "transparent"};
-  color: ${({ isSelected, theme }) =>
-    isSelected ? "#fff" : theme.textSecondary};
+  background: ${({ $isSelected, theme }) =>
+    $isSelected ? theme.primaryColor : "transparent"};
+  color: ${({ $isSelected, theme }) =>
+    $isSelected ? "#fff" : theme.textSecondary};
   transition: all 0.2s;
   font-size: 13px;
 
   &:hover {
-    background: ${({ isSelected, theme }) =>
-      isSelected ? theme.primaryColor : `${theme.primaryColor}20`};
+    background: ${({ $isSelected, theme }) =>
+      $isSelected ? theme.primaryColor : `${theme.primaryColor}20`};
   }
 `;
 
@@ -152,7 +152,7 @@ const CustomTimePicker = ({ value, onChange, disabled, theme }) => {
                 {hours.map((hour) => (
                   <TimeCell
                     key={hour}
-                    isSelected={hour === selectedHour}
+                    $isSelected={hour === selectedHour}
                     theme={theme}
                     onClick={() => {
                       setSelectedHour(hour);
@@ -172,7 +172,7 @@ const CustomTimePicker = ({ value, onChange, disabled, theme }) => {
                 {minutes.map((minute) => (
                   <TimeCell
                     key={minute}
-                    isSelected={minute === selectedMinute}
+                    $isSelected={minute === selectedMinute}
                     theme={theme}
                     onClick={() => {
                       setSelectedMinute(minute);

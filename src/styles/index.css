@@ -104,6 +104,10 @@ button {
   align-items: center;
 }
 
+.align-end {
+  align-items: end;
+}
+
 .justify-between {
   justify-content: space-between;
 }

@@ -8,6 +8,8 @@ import { MdArrowDropDown, MdArrowDropUp } from "react-icons/md";
 
 import data from "../../../data/rate.json";
 import useCbexStore from "../../store/useCbexStore";
+import { AlertCircle } from "lucide-react";
+import ErrorMessage from "../../../components/Error";
 
 const currencyToCountry = {
   AED: "United Arab Emirates",
@@ -240,7 +242,7 @@ const RateDisplay = styled.div`
   border: 1px solid ${({ theme }) => theme.borderColor};
 `;
 
-const Country = () => {
+const Country = ({ error }) => {
   const { isDarkMode } = useThemeStore();
   const theme = isDarkMode ? darkTheme : lightTheme;
 
@@ -278,6 +280,7 @@ const Country = () => {
 
   return (
     <FormGroup>
+      <ErrorMessage error={error} />
       <Label theme={theme}>Select Your Country</Label>
       <Select theme={theme} onClick={toggleDropdown}>
         <div>

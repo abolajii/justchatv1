@@ -268,3 +268,13 @@ export const updatePost = async (data) => {
   const response = await chatAppAuth.put(`/post/${data.id}`, data);
   return response.data;
 };
+
+export const createFutureAccount = async (data) => {
+  const response = await chatAppAuth.post(`/create/future`, data);
+  return response.data;
+};
+
+export const getUserSignal = async () => {
+  const response = await chatAppAuth.get(`/user/signal`);
+  return response.data;
+};

@@ -5,6 +5,7 @@ import useThemeStore, {
   lightTheme,
 } from "../../../store/useThemeStore";
 import useCbexStore from "../../store/useCbexStore";
+import ErrorMessage from "../../../components/Error";
 
 const Container = styled.div`
   font-size: 15px;
@@ -31,14 +32,14 @@ const RadioInput = styled.input`
   appearance: none;
   width: 15px;
   height: 15px;
-  border: 1px solid ${({ isBlue }) => (isBlue ? "#2196F3" : "#4CAF50")};
+  border: 1px solid ${({ $isBlue }) => ($isBlue ? "#2196F3" : "#4CAF50")};
   border-radius: 50%;
   margin: 0;
   cursor: pointer;
 
   &:checked {
-    background-color: ${({ isBlue }) => (isBlue ? "#2196F3" : "#4CAF50")};
-    border: 1px solid ${({ isBlue }) => (isBlue ? "#2196F3" : "#4CAF50")};
+    background-color: ${({ $isBlue }) => ($isBlue ? "#2196F3" : "#4CAF50")};
+    border: 1px solid ${({ $isBlue }) => ($isBlue ? "#2196F3" : "#4CAF50")};
     position: relative;
 
     &::after {
@@ -127,7 +128,7 @@ const Slider = styled.span`
   }
 `;
 
-const Reminder = () => {
+const Reminder = ({ error }) => {
   const { isDarkMode } = useThemeStore();
   const theme = isDarkMode ? darkTheme : lightTheme;
   const {
@@ -157,10 +158,12 @@ const Reminder = () => {
 
   const handleScheduleChange = (event) => {
     setReminder(event.target.value);
+    if (event.target.value === "no") {
+      setReminderSettings([]);
+    }
   };
 
   const handleToggle = (id) => {
-    console.log(id);
     if (!Array.isArray(reminderSettings)) return;
 
     const updatedSettings = reminderSettings.map((setting) =>
@@ -177,10 +180,9 @@ const Reminder = () => {
     return time;
   };
 
-  console.log(reminderSettings);
-
   return (
     <Container theme={theme}>
+      <ErrorMessage error={error} isDarkMode={isDarkMode} />
       <Label theme={theme}>
         Would you like to set a reminder about signal?
       </Label>
@@ -192,7 +194,7 @@ const Reminder = () => {
             value="yes"
             checked={reminder === "yes"}
             onChange={handleScheduleChange}
-            isBlue={false}
+            $isBlue={false}
           />
           Yes
         </RadioLabel>
@@ -203,7 +205,7 @@ const Reminder = () => {
             value="no"
             checked={reminder === "no"}
             onChange={handleScheduleChange}
-            isBlue={true}
+            $isBlue={true}
           />
           No
         </RadioLabel>

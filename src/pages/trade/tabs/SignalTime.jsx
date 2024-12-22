@@ -6,6 +6,7 @@ import useThemeStore, {
 } from "../../../store/useThemeStore";
 import CustomTimePicker from "./CustomTimePicker";
 import useCbexStore from "../../store/useCbexStore";
+import ErrorMessage from "../../../components/Error";
 
 const BigLabel = styled.div`
   font-size: 15px;
@@ -61,7 +62,7 @@ const Note = styled.p`
   margin-top: -3px;
 `;
 
-const SignalTime = () => {
+const SignalTime = ({ error }) => {
   const { isDarkMode } = useThemeStore();
   const {
     numberOfSignals,
@@ -114,6 +115,7 @@ const SignalTime = () => {
 
   return (
     <Container theme={theme}>
+      <ErrorMessage error={error} isDarkMode={isDarkMode} />
       <BigLabel theme={theme}>Time of Signal(s)</BigLabel>
       <Note theme={theme}>{numberOfSignals} signals per day</Note>
 
