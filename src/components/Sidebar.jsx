@@ -121,13 +121,10 @@ const SiderLink = styled(Link)`
     color: #333;
     border-right: 2px solid #6bc1b7;
 
-    /* background-color: #2563eb; */
-
     /* Dark Mode */
     .dark-mode & {
       background-color: rgba(85, 85, 85, 0.5);
-
-      color: #2563eb;
+      color: #c4c4c4;
     }
   }
 `;

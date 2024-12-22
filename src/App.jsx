@@ -22,6 +22,7 @@ import BookmarkFolder from "./pages/bookmark/components/BookmarkFolder";
 import Trade from "./pages/trade/Trade";
 import TradeOnboarding from "./pages/trade/TradeOnboarding";
 import Future from "./pages/future/Future";
+import UserSignal from "./pages/future/UserSignal";
 
 const App = () => {
   const { setCurrentUser } = useUserStore();
@@ -154,6 +155,14 @@ const App = () => {
           element={
             <ProtectedRoute>
               <Future />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/trade/signal"
+          element={
+            <ProtectedRoute>
+              <UserSignal />
             </ProtectedRoute>
           }
         />

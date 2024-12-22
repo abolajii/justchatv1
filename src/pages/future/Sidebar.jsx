@@ -49,7 +49,7 @@ const Sidebar = () => {
       label: "Dashboard",
     },
     {
-      path: "/trade/signals",
+      path: "/trade/signal",
       icon: RiSignalTowerFill,
       label: "Signals",
     },

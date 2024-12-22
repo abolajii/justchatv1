@@ -100,7 +100,7 @@ const LoadingPlaceholder = styled.div`
 `;
 
 const Account = () => {
-  const countryValue = 1600.0; // NGN to USD rate
+  const countryValue = 1700.0; // NGN to USD rate
   // const [balance, setBalance] = useState(null);
   const [currencyValue, setCurrencyValue] = useState(0);
   const [defaultValue, setDefaultValue] = useState(0);
@@ -115,6 +115,7 @@ const Account = () => {
       try {
         setIsLoading(true);
         const response = await getUserSignal();
+        console.log(response);
         if (response?.startingCapital) {
           const dollarAmount = response.startingCapital;
           const nairaAmount = dollarAmount * countryValue;

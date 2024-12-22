@@ -5,7 +5,6 @@ import CalendarGrid from "./Calendar";
 import Account from "./Account";
 import Upcoming from "./Upcoming";
 import Sidebar from "./Sidebar";
-import MainContainer from "./MainContainer";
 
 const Container = styled.div`
   height: 100vh;
@@ -33,19 +32,16 @@ const Two = styled.div`
   display: flex;
 `;
 
-const Future = () => {
+const MainContainer = ({ children }) => {
   //
   return (
-    <MainContainer>
-      <div className="flex flex-1">
-        <One>
-          <Account />
-          <Upcoming />
-        </One>
-        <Two>{/* <CalendarGrid /> */}</Two>
-      </div>
-    </MainContainer>
+    <Container>
+      <SidebarContainer>
+        <Sidebar />
+      </SidebarContainer>
+      <div className="flex flex-1">{children}</div>
+    </Container>
   );
 };
 
-export default Future;
+export default MainContainer;
