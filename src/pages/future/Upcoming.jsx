@@ -1,9 +1,10 @@
 import React from "react";
 import { RiSignalTowerFill } from "react-icons/ri";
 import styled from "styled-components";
+import { IoTimeOutline } from "react-icons/io5";
 
 const Container = styled.div`
-  margin-top: 20px;
+  margin-top: 60px;
   color: #ffffff;
 `;
 
@@ -62,14 +63,22 @@ const SignalTime = styled.p`
 
 const Tag = styled.div`
   background-color: #272727;
-  color: #2563eb;
   color: #22c55e;
-  border: 1px solid #22c55e;
+  color: #2563eb;
+  border: 1px solid #2563eb;
 
   padding: 4px 12px;
   border-radius: 12px;
   font-size: 12px;
   font-weight: 500;
+`;
+
+const TimeWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: #e0e0e0;
+  font-size: 14px;
 `;
 
 const Upcoming = () => {
@@ -78,12 +87,15 @@ const Upcoming = () => {
       <Title>Upcoming Signals</Title>
       <Inner>
         <Avatar>
-          <RiSignalTowerFill size={24} color="#22c55e" />
+          <RiSignalTowerFill size={24} color="#2563eb" />
         </Avatar>
         <Content>
           <SignalInfo>
             <SignalName>Signal 2</SignalName>
-            <SignalTime>19:00 - 19:30</SignalTime>
+            <TimeWrapper>
+              <IoTimeOutline />
+              <span>14:00 - 14:30</span>
+            </TimeWrapper>
           </SignalInfo>
           <Tag>Pending</Tag>
         </Content>

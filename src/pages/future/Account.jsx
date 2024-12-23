@@ -5,20 +5,24 @@ import { PiApproximateEqualsBold } from "react-icons/pi";
 import { Eye, EyeOff } from "lucide-react";
 import { getUserSignal } from "../../api/request";
 import useUserStore from "../../store/useUserStore";
+import { MdChevronLeft } from "react-icons/md";
+import { useNavigate } from "react-router-dom";
 
 const Container = styled.div`
-  margin-top: 60px;
+  margin-top: 20px;
   color: #abb3c0;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   width: 80%;
   height: 280px;
-  background-color: #151515;
   border-radius: 6px;
-  padding: 20px;
   position: relative;
 `;
 
-const Inner = styled.div``;
+const Inner = styled.div`
+  background-color: #151515;
+  height: 100%;
+  padding: 20px;
+`;
 
 const Welcome = styled.h1`
   font-size: 18px;
@@ -73,7 +77,7 @@ const MaskToggle = styled(Toggle)`
 
 const DateDisplay = styled.div`
   position: absolute;
-  bottom: 20px;
+  bottom: 0px;
   left: 20px;
   font-size: 14px;
   color: #9ca3af;
@@ -107,6 +111,8 @@ const Account = () => {
   const [isNaira, setIsNaira] = useState(true);
   const [showBalance, setShowBalance] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
+
+  const navigate = useNavigate();
 
   const { user } = useUserStore();
 
@@ -162,48 +168,57 @@ const Account = () => {
   };
 
   return (
-    <Container>
-      <Inner>
-        <div className="flex items-center justify-between">
-          <Welcome>Welcome, {user.username}</Welcome>
-          <IconContainer>
-            <MaskToggle onClick={() => setShowBalance(!showBalance)}>
-              {showBalance ? <EyeOff size={14} /> : <Eye size={14} />}
-            </MaskToggle>
-            <Toggle onClick={toggleValue}>
-              <GoArrowSwitch size={14} />
-            </Toggle>
-          </IconContainer>
+    <>
+      <Container>
+        <div
+          className="flex text-sm align-center mb-3 pointer"
+          onClick={() => navigate("/dashboard")}
+        >
+          <MdChevronLeft size={20} />
+          Back to JustChat
         </div>
-        {isLoading ? (
-          <LoadingPlaceholder />
-        ) : (
-          <div className="flex align-end">
-            <Balance>
-              {isNaira ? "₦" : "$"}
-              {showBalance
-                ? formatNumber(currencyValue).integerPart
-                : getMaskedValue()}
-              .
-            </Balance>
-            <div className="flex align-center">
-              <SmallBalance>
-                {showBalance ? formatNumber(currencyValue).decimalPart : "**"}
-              </SmallBalance>
-              {showBalance && (
-                <ExchangeRate>
-                  <PiApproximateEqualsBold />
-                  {isNaira ? "$" : "₦"}
-                  {formatNumber(defaultValue).integerPart}.
-                  {formatNumber(defaultValue).decimalPart}
-                </ExchangeRate>
-              )}
-            </div>
+        <Inner>
+          <div className="flex items-center justify-between">
+            <Welcome>Welcome, {user.username}</Welcome>
+            <IconContainer>
+              <MaskToggle onClick={() => setShowBalance(!showBalance)}>
+                {showBalance ? <EyeOff size={14} /> : <Eye size={14} />}
+              </MaskToggle>
+              <Toggle onClick={toggleValue}>
+                <GoArrowSwitch size={14} />
+              </Toggle>
+            </IconContainer>
           </div>
-        )}
-      </Inner>
-      <DateDisplay>{formatDate()}</DateDisplay>
-    </Container>
+          {isLoading ? (
+            <LoadingPlaceholder />
+          ) : (
+            <div className="flex align-end">
+              <Balance>
+                {isNaira ? "₦" : "$"}
+                {showBalance
+                  ? formatNumber(currencyValue).integerPart
+                  : getMaskedValue()}
+                .
+              </Balance>
+              <div className="flex align-center">
+                <SmallBalance>
+                  {showBalance ? formatNumber(currencyValue).decimalPart : "**"}
+                </SmallBalance>
+                {showBalance && (
+                  <ExchangeRate>
+                    <PiApproximateEqualsBold />
+                    {isNaira ? "$" : "₦"}
+                    {formatNumber(defaultValue).integerPart}.
+                    {formatNumber(defaultValue).decimalPart}
+                  </ExchangeRate>
+                )}
+              </div>
+            </div>
+          )}
+        </Inner>
+        <DateDisplay>{formatDate()}</DateDisplay>
+      </Container>
+    </>
   );
 };
 

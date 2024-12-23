@@ -23,6 +23,8 @@ import Trade from "./pages/trade/Trade";
 import TradeOnboarding from "./pages/trade/TradeOnboarding";
 import Future from "./pages/future/Future";
 import UserSignal from "./pages/future/UserSignal";
+import Signals from "./pages/future/Signals";
+import SignalSettings from "./pages/future/Settings";
 
 const App = () => {
   const { setCurrentUser } = useUserStore();
@@ -163,6 +165,24 @@ const App = () => {
           element={
             <ProtectedRoute>
               <UserSignal />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/trade/future"
+          element={
+            <ProtectedRoute>
+              <Signals />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/trade/settings"
+          element={
+            <ProtectedRoute>
+              <SignalSettings />
             </ProtectedRoute>
           }
         />

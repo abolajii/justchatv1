@@ -2,9 +2,11 @@ import React from "react";
 import MainContainer from "./MainContainer";
 import { IoIosArrowRoundUp } from "react-icons/io";
 import styled from "styled-components";
+import SingleSignal from "./SingleSignal";
 
 const Container = styled.div`
   margin-top: 60px;
+  width: 100%;
   h1 {
     font-size: 20px;
     margin-right: 5px;
@@ -19,9 +21,9 @@ const Container = styled.div`
 const Widget = styled.div`
   background-color: #333;
   background-color: #151515;
-
+  width: 300px;
   margin-top: 10px;
-  padding: 15px;
+  padding: 12px;
   border: 1px solid rgba(34, 197, 94, 0.2);
   /* width: 350px; */
   border-radius: 6px;
@@ -101,6 +103,7 @@ const UserSignal = () => {
             </p> */}
           </div>
         </Widget>
+        <SingleSignal />
       </Container>
     </MainContainer>
   );
