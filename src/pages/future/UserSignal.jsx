@@ -21,7 +21,7 @@ const Container = styled.div`
 const Widget = styled.div`
   background-color: #333;
   background-color: #151515;
-  width: 300px;
+  width: 330px;
   margin-top: 10px;
   padding: 12px;
   border: 1px solid rgba(34, 197, 94, 0.2);
@@ -35,6 +35,11 @@ const Widget = styled.div`
     font-size: 14px;
     /* font-weight: 600; */
     color: #e9e9e9;
+  }
+
+  &:hover {
+    border-color: rgba(34, 197, 94, 0.4);
+    box-shadow: 0 0 10px rgba(34, 197, 94, 0.1);
   }
 `;
 
@@ -68,12 +73,12 @@ const UserSignal = () => {
   return (
     <MainContainer>
       <Container>
-        <h1>User Signal For Today</h1>
+        <h1>Signals For Today</h1>
         <Widget>
           <div>
             <p className="title">Signal Report</p>
             <Price className="flex align-end">
-              <h1>$300.06</h1>
+              <h1>$302.74</h1>
               <div className="flex align-center text-xs">
                 <IoIosArrowRoundUp size={20} color=" #22c55e" />
                 2.5%

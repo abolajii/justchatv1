@@ -68,7 +68,7 @@ const Toggle = styled.div`
 const IconContainer = styled.div`
   display: flex;
   gap: 5px;
-  color: #2563eb;
+  color: #22c55e;
 `;
 
 const MaskToggle = styled(Toggle)`

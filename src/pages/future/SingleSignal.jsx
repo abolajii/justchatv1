@@ -15,6 +15,7 @@ const Container = styled.div`
   padding: 16px;
   background-color: #151515;
   border: 1px solid rgba(34, 197, 94, 0.2);
+  cursor: pointer;
   border-radius: 4px;
   display: flex;
   align-items: center;
@@ -68,7 +69,7 @@ const IconWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  color: ${(props) => (props.active ? "#2563eb" : "#fff")};
+  color: ${(props) => (props.active ? "#22c55e" : "#fff")};
   cursor: pointer;
   transition: color 0.2s ease-in-out;
 
@@ -85,7 +86,7 @@ const IconWrapper = styled.div`
 const SingleSignal = ({ name, time, reminder }) => (
   <Container>
     <Avatar>
-      <RiSignalTowerFill size={24} color="#2563eb" />
+      <RiSignalTowerFill size={24} color="#22c55e" />
     </Avatar>
     <ContentWrapper>
       <SignalInfo>
@@ -95,9 +96,11 @@ const SingleSignal = ({ name, time, reminder }) => (
           <span>{time}</span>
         </TimeWrapper>
       </SignalInfo>
-      <IconWrapper active={reminder}>
-        <HiOutlineBellAlert />
-      </IconWrapper>
+      {reminder && (
+        <IconWrapper active={reminder}>
+          <HiOutlineBellAlert />
+        </IconWrapper>
+      )}
     </ContentWrapper>
   </Container>
 );

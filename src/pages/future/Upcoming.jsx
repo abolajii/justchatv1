@@ -64,8 +64,8 @@ const SignalTime = styled.p`
 const Tag = styled.div`
   background-color: #272727;
   color: #22c55e;
-  color: #2563eb;
-  border: 1px solid #2563eb;
+
+  border: 1px solid #22c55e;
 
   padding: 4px 12px;
   border-radius: 12px;
@@ -87,7 +87,7 @@ const Upcoming = () => {
       <Title>Upcoming Signals</Title>
       <Inner>
         <Avatar>
-          <RiSignalTowerFill size={24} color="#2563eb" />
+          <RiSignalTowerFill size={24} color="#22c55e" />
         </Avatar>
         <Content>
           <SignalInfo>

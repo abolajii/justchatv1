@@ -29,12 +29,12 @@ const NavItem = styled(Link)`
   border-radius: 8px;
   display: grid;
   place-items: center;
-  color: ${(props) => (props.active ? "#2563eb" : "#666666")};
+  color: ${(props) => (props.active ? "#22c55e" : "#666666")};
   background-color: ${(props) => (props.active ? "#272727" : "transparent")};
   transition: all 0.3s ease;
 
   &:hover {
-    color: #2563eb;
+    color: #22c55e;
     background-color: #272727;
   }
 `;
