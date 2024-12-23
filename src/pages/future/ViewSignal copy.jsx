@@ -3,19 +3,19 @@ import MainContainer from "./MainContainer";
 import { FaArrowRightLong } from "react-icons/fa6";
 import styled from "styled-components";
 import useSignalStore from "./store/useSignalStore";
-import { getSignal, getSignalById, getUserSignal } from "../../api/request";
+import { getSignal, getUserSignal } from "../../api/request";
 import { IoTimeOutline } from "react-icons/io5";
 import { useNavigate, useParams } from "react-router-dom";
 import { MdChevronLeft } from "react-icons/md";
 
-const Container = styled.div`
+const Container = styled.div
   display: flex;
   gap: 10px;
   align-items: center;
   margin-top: 20px;
-`;
+;
 
-const IconWrapper = styled.div`
+const IconWrapper = styled.div
   height: ${(props) => (props.small ? "30px" : "40px")};
   width: ${(props) => (props.small ? "30px" : "40px")};
   border-radius: 50%;
@@ -27,9 +27,9 @@ const IconWrapper = styled.div`
   color: #22c55e;
   font-size: ${(props) => (props.small ? "14px" : "18px")};
   flex-shrink: 0;
-`;
+;
 
-const Widget = styled.div`
+const Widget = styled.div
   padding: 16px;
   gap: 10px;
   min-height: 100px;
@@ -39,62 +39,61 @@ const Widget = styled.div`
   background-color: #151515;
   display: flex;
   flex-direction: column;
-`;
+;
 
-const Title = styled.h1`
+const Title = styled.h1
+  margin-top: 10px;
   font-size: 24px;
   color: #fff;
   font-weight: 500;
-`;
+;
 
-const StatusBadge = styled.div`
-  padding: 8px 16px;
-  border-radius: 6px;
-  background-color: ${(props) =>
-    props.active ? "rgba(34, 197, 94, 0.1)" : "#272727"};
-  color: ${(props) => (props.active ? "#22c55e" : "#e0e0e0")};
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  margin-top: 16px;
-  font-size: 14px;
-`;
-
-const Duration = styled.div`
+const Duration = styled.div
   color: #e0e0e0;
   font-size: 14px;
   margin-top: 4px;
   display: flex;
   align-items: center;
   gap: 5px;
-`;
+;
 
-const BackButton = styled.div`
+const StatusBadge = styled.div
+  padding: 8px 16px;
+  border-radius: 6px;
+  background-color: ${props => props.active ? 'rgba(34, 197, 94, 0.1)' : '#272727'};
+  color: ${props => props.active ? '#22c55e' : '#e0e0e0'};
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 16px;
+  font-size: 14px;
+;
+
+const BackButton = styled.div
   cursor: pointer;
-  /* padding: 8px; */
+  padding: 8px;
   border-radius: 4px;
-  margin-top: 30px;
-
   display: inline-flex;
   align-items: center;
   &:hover {
     background-color: #272727;
   }
-`;
+;
+
 const formatCurrency = (number, includeSymbol = false) => {
   const formatted = number.toLocaleString("en-US", {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   });
-  return includeSymbol ? `₦${formatted}` : formatted;
+  return includeSymbol ? ₦${formatted} : formatted;
 };
 
 const formatTime = (dateString) => {
   const date = new Date(dateString);
-  return date.toLocaleTimeString("en-US", {
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: true,
+  return date.toLocaleTimeString('en-US', { 
+    hour: '2-digit', 
+    minute: '2-digit', 
+    hour12: true 
   });
 };
 
@@ -113,6 +112,7 @@ const SignalWidget = ({ label, value, balance }) => (
 const ViewSignal = () => {
   const { defaultValue, setDefaultValue } = useSignalStore();
   const [signal, setSignal] = useState(null);
+  const [isActive, setIsActive] = useState(false);
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -132,22 +132,12 @@ const ViewSignal = () => {
     () => calculateSignalValues(defaultValue),
     [defaultValue]
   );
-  const time = {
-    startTime: "14:00",
-    endTime: "14:30",
-  };
 
   const checkTimeStatus = (startTime, endTime) => {
     const now = new Date();
-    const todayDate = now.toISOString().split("T")[0]; // Get the current date in YYYY-MM-DD format
-
-    const start = new Date(`${todayDate}T${startTime}:00`); // Combine date and time
-    const end = new Date(`${todayDate}T${endTime}:00`);
-
-    console.log("Now:", now);
-    console.log("Start:", start);
-    console.log("End:", end);
-
+    const start = new Date(startTime);
+    const end = new Date(endTime);
+    
     if (now < start) {
       return { active: false, message: "Signal not active yet" };
     } else if (now > end) {
@@ -168,23 +158,26 @@ const ViewSignal = () => {
     })();
   }, [setDefaultValue]);
 
-  console.log(signal);
-
   useEffect(() => {
     (async () => {
       try {
-        const response = await getSignalById(id);
-        setSignal(response?.data.signal || null);
+        const response = await getSignal(id);
+        const signalData = response?.data || null;
+        setSignal(signalData);
+        
+        if (signalData) {
+          const { active } = checkTimeStatus(signalData.startTime, signalData.endTime);
+          setIsActive(active);
+        }
       } catch (err) {
         console.error(err);
       }
     })();
   }, [id]);
 
-  const { active, message } = checkTimeStatus(
-    signal?.startTime,
-    signal?.endTime
-  );
+  if (!signal) return null;
+
+  const { active, message } = checkTimeStatus(signal.startTime, signal.endTime);
 
   return (
     <MainContainer>
@@ -195,31 +188,27 @@ const ViewSignal = () => {
         <Title>Signal Details</Title>
         <Duration>
           <IoTimeOutline />
-          <span>
-            {signal?.startTime} - {signal?.endTime}
-          </span>
+          <span>{formatTime(signal.startTime)} - {formatTime(signal.endTime)}</span>
         </Duration>
         <StatusBadge active={active}>
           <IoTimeOutline />
           {message}
         </StatusBadge>
-        {active && (
-          <Container>
-            <SignalWidget
-              label="From"
-              value={formatCurrency(current)}
-              balance={formatCurrency(current * NGN_TO_USD_RATE, true)}
-            />
-            <IconWrapper>
-              <FaArrowRightLong />
-            </IconWrapper>
-            <SignalWidget
-              label="To"
-              value={formatCurrency(next)}
-              balance={formatCurrency(next * NGN_TO_USD_RATE, true)}
-            />
-          </Container>
-        )}
+        <Container>
+          <SignalWidget
+            label="From"
+            value={formatCurrency(current)}
+            balance={formatCurrency(current * NGN_TO_USD_RATE, true)}
+          />
+          <IconWrapper>
+            <FaArrowRightLong />
+          </IconWrapper>
+          <SignalWidget
+            label="To"
+            value={formatCurrency(next)}
+            balance={formatCurrency(next * NGN_TO_USD_RATE, true)}
+          />
+        </Container>
       </div>
     </MainContainer>
   );

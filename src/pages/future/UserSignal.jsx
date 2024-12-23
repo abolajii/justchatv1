@@ -3,7 +3,7 @@ import MainContainer from "./MainContainer";
 import { IoIosArrowRoundUp } from "react-icons/io";
 import styled from "styled-components";
 import SingleSignal from "./SingleSignal";
-import { getSignal } from "../../api/request";
+import { getSignal, getUserSignal } from "../../api/request";
 
 const Container = styled.div`
   margin-top: 60px;
@@ -77,19 +77,9 @@ const UserSignal = () => {
       try {
         const response = await getSignal();
         setSignals(response);
-        // if (response?.startingCapital) {
-        //   const dollarAmount = response.startingCapital;
-        //   const nairaAmount = dollarAmount * countryValue;
-
-        //   // Initially show Naira as primary currency
-        //   setCurrencyValue(nairaAmount);
-        //   setDefaultValue(dollarAmount);
-        //   // setBalance(dollarAmount);
-        // }
       } catch (error) {
         console.error("Failed to fetch signal:", error);
       } finally {
-        // setIsLoading(false);
       }
     };
 
