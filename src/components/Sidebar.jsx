@@ -247,7 +247,6 @@ const Sidebar = () => {
     { label: "Notifications", path: "/notifications", icon: <FaBell /> },
     { label: "Conversations", path: "/conversations", icon: <FaComments /> },
     { label: "Bookmarks", path: "/bookmarks", icon: <FaBookmark /> },
-    { label: "Trade", path: "/trade", icon: <FaHandHoldingUsd /> },
     { label: "Profile", path: "/profile", icon: <FaUser /> },
   ];
 

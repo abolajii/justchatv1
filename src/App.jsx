@@ -17,7 +17,6 @@ import { AlertProvider, useAlert } from "./context/AlertContext";
 import { Alert } from "./components";
 import { getMe } from "./api/request";
 import useUserStore from "./store/useUserStore";
-import TradingProfitCalculator from "./ProfitCalculator";
 import BookmarkFolder from "./pages/bookmark/components/BookmarkFolder";
 import Trade from "./pages/trade/Trade";
 import TradeOnboarding from "./pages/trade/TradeOnboarding";
@@ -26,6 +25,7 @@ import UserSignal from "./pages/future/UserSignal";
 import Signals from "./pages/future/Signals";
 import SignalSettings from "./pages/future/Settings";
 import ViewSignal from "./pages/future/ViewSignal";
+import SignalCalculator from "./pages/future/SignalCalculator";
 
 const App = () => {
   const { setCurrentUser } = useUserStore();
@@ -130,7 +130,7 @@ const App = () => {
           path="/trade"
           element={
             <ProtectedRoute>
-              <TradingProfitCalculator />
+              <SignalCalculator />
             </ProtectedRoute>
           }
         />

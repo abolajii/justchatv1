@@ -278,3 +278,8 @@ export const getUserSignal = async () => {
   const response = await chatAppAuth.get(`/user/signal`);
   return response.data;
 };
+
+export const getSignal = async () => {
+  const response = await chatAppAuth.get(`/signal`);
+  return response.data;
+};

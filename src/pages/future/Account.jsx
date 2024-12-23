@@ -7,6 +7,7 @@ import { getUserSignal } from "../../api/request";
 import useUserStore from "../../store/useUserStore";
 import { MdChevronLeft } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
+import useSignalStore from "./store/useSignalStore";
 
 const Container = styled.div`
   margin-top: 20px;
@@ -104,10 +105,10 @@ const LoadingPlaceholder = styled.div`
 `;
 
 const Account = () => {
-  const countryValue = 1700.0; // NGN to USD rate
-  // const [balance, setBalance] = useState(null);
+  const countryValue = 1656.0; // NGN to USD rate
+  const { defaultValue, setDefaultValue } = useSignalStore();
+
   const [currencyValue, setCurrencyValue] = useState(0);
-  const [defaultValue, setDefaultValue] = useState(0);
   const [isNaira, setIsNaira] = useState(true);
   const [showBalance, setShowBalance] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
@@ -121,7 +122,6 @@ const Account = () => {
       try {
         setIsLoading(true);
         const response = await getUserSignal();
-        console.log(response);
         if (response?.startingCapital) {
           const dollarAmount = response.startingCapital;
           const nairaAmount = dollarAmount * countryValue;

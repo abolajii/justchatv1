@@ -7,6 +7,7 @@ import {
   RiSettings3Fill,
 } from "react-icons/ri";
 import { MdOutlineTimer } from "react-icons/md";
+import { FaHandHoldingUsd } from "react-icons/fa";
 
 const Container = styled.div`
   background-color: #000000;
@@ -63,6 +64,12 @@ const Sidebar = () => {
       path: "/trade/settings",
       icon: RiSettings3Fill,
       label: "Settings",
+    },
+    {
+      path: "/trade",
+      // { label: "Trade", path: "/trade", icon: < /> },
+      icon: FaHandHoldingUsd,
+      label: "Trade",
     },
   ];
 

@@ -106,19 +106,25 @@ const SingleSignal = ({ name, time, reminder, onClick }) => (
   </Container>
 );
 
-const SignalGrid = () => {
-  const signals = [
-    { id: 1, name: "Signal 1", time: "14:00 - 14:30", reminder: true },
-    { id: 2, name: "Signal 2", time: "15:00 - 15:30", reminder: false },
-    { id: 3, name: "Signal 3", time: "16:00 - 16:30", reminder: true },
-    { id: 4, name: "Signal 4", time: "17:00 - 17:30", reminder: false },
-  ];
+const formatSignalData = (apiSignal) => {
+  return {
+    id: apiSignal._id,
+    name: apiSignal.name,
+    time: `${apiSignal.startTime} - ${apiSignal.endTime}`,
+    reminder: apiSignal.reminder,
+    startingCapital: apiSignal.startingCapital,
+    userTrade: apiSignal.userTrade,
+  };
+};
+
+const SignalGrid = ({ signals }) => {
+  const formattedSignals = signals.map(formatSignalData);
 
   const navigate = useNavigate();
 
   return (
     <GridContainer>
-      {signals.map((signal) => (
+      {formattedSignals.map((signal) => (
         <SingleSignal
           onClick={() => {
             navigate(`/trade/view/${signal.id}`);

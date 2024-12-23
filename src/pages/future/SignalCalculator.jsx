@@ -2,14 +2,15 @@ import React, { useState, useMemo } from "react";
 import styled, { css } from "styled-components";
 import { parseISO, addDays, format } from "date-fns";
 
-import useThemeStore from "./store/useThemeStore";
-import MainContainer from "./pages/future/MainContainer";
+import useThemeStore from "../../store/useThemeStore";
+import MainContainer from "../../pages/future/MainContainer";
+import useSignalStore from "./store/useSignalStore";
 
 const Container = styled.div`
   /* max-width: 1400px; */
   /* margin: 0 auto; */
-  height: 100%;
-  overflow-y: scroll;
+  /* height: 100%; */
+  /* overflow-y: scroll; */
   padding: 20px 0;
   font-family: Arial, sans-serif;
   /* background-color: ${(props) =>
@@ -123,10 +124,11 @@ const formatCurrency = (value, currency = "NGN") => {
   }).format(value);
 };
 
-const TradingProfitCalculator = () => {
+const SignalCalculator = () => {
   const { isDarkMode } = useThemeStore();
+  const { defaultValue } = useSignalStore();
 
-  const [startCapital, setStartCapital] = useState("0");
+  const [startCapital, setStartCapital] = useState(defaultValue);
   const [startDate, setStartDate] = useState(format(new Date(), "yyyy-MM-dd"));
   const [endDate, setEndDate] = useState(format(new Date(), "yyyy-MM-dd"));
   const [pageSize, setPageSize] = useState(10);
@@ -144,7 +146,7 @@ const TradingProfitCalculator = () => {
     const end = parseISO(endDate);
     const results = [];
     let balance = parseFloat(startCapital);
-    const dailyProfitRate = 0.01 * 0.86; // 1% of capital with 88% profit
+    const dailyProfitRate = 0.01 * 0.87; // 1% of capital with 88% profit
     let totalProfit = 0;
     let lastMonthBonusPaid = null;
 
@@ -229,141 +231,145 @@ const TradingProfitCalculator = () => {
 
   return (
     <MainContainer>
-      <Container isDarkMode={isDarkMode}>
-        <InputContainer>
-          <Input
-            value={startCapital}
-            onChange={(e) => setStartCapital(e.target.value)}
-            placeholder="Starting Capital"
-            isDarkMode={isDarkMode}
-          />
-          <Input
-            type="date"
-            value={startDate}
-            onChange={(e) => setStartDate(e.target.value)}
-            isDarkMode={isDarkMode}
-          />
-          <Input
-            type="date"
-            value={endDate}
-            onChange={(e) => setEndDate(e.target.value)}
-            isDarkMode={isDarkMode}
-          />
-          <Input
-            value={multiplier}
-            onChange={(e) => setMultiplier(Number(e.target.value))}
-            placeholder="Multiplier"
-            isDarkMode={isDarkMode}
-          />
-          <Input
-            value={monthlyBonus}
-            onChange={(e) => setMonthlyBonus(Number(e.target.value))}
-            placeholder="Monthly Bonus"
-            isDarkMode={isDarkMode}
-          />
-          <Select
-            value={pageSize}
-            onChange={(e) => setPageSize(Number(e.target.value))}
-            isDarkMode={isDarkMode}
-          >
-            {[5, 10, 20, 50, 1000].map((size) => (
-              <option key={size} value={size}>
-                {size} rows
-              </option>
-            ))}
-          </Select>
-          <CalculateButton
-            onClick={calculateTradingResults}
-            isDarkMode={isDarkMode}
-          >
-            Calculate
-          </CalculateButton>
-        </InputContainer>
-        <div>
-          <p>Total Capital:</p>
-          <strong>{formatCurrency(startCapital * multiplier)}</strong>
-        </div>
-        {calculatedResults && (
-          <>
-            <Table isDarkMode={isDarkMode}>
-              <thead>
-                <tr>
-                  <th>Date</th>
-                  <th>Starting Capital</th>
-                  <th>1st Trade Amount</th>
-                  <th>1st Trade Profit</th>
-                  <th>Capital After 1st Trade</th>
-                  <th>2nd Trade Amount</th>
-                  <th>2nd Trade Profit</th>
-                  <th>Final Capital</th>
-                  <th>Daily Profit</th>
-                </tr>
-              </thead>
-              <tbody>
-                {paginatedResults.map((result, index) => (
-                  <tr key={index}>
-                    <td>{result.date}</td>
-                    <td>{result.startingCapital.toFixed(2)}</td>
-                    <td>{result.firstTradeAmount.toFixed(2)}</td>
-
-                    <td>{result.firstTradeProfit.toFixed(2)}</td>
-                    <td>{result.capitalAfterFirstTrade.toFixed(2)}</td>
-                    <td>{result.secondTradeAmount.toFixed(2)}</td>
-
-                    <td>{result.secondTradeProfit.toFixed(2)}</td>
-                    <td>{result.capitalAfterSecondTrade.toFixed(2)}</td>
-                    <td>{result.dailyProfit.toFixed(2)}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </Table>
-            {calculatedResults?.results.length > 0 && (
-              <Pagination isDarkMode={isDarkMode}>
-                {currentPage !== 1 && (
-                  <button
-                    onClick={() =>
-                      setCurrentPage((prev) => Math.max(prev - 1, 1))
-                    }
-                  >
-                    Prev
-                  </button>
-                )}
-                <span>
-                  Page {currentPage} of {totalPages}
-                </span>
-                {currentPage !== totalPages && (
-                  <button
-                    onClick={() =>
-                      setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-                    }
-                  >
-                    Next
-                  </button>
-                )}
-              </Pagination>
-            )}
-          </>
-        )}
-        {calculatedResults?.results.length > 0 && (
+      <div>
+        <h1 className="mb-4 mt-3">Welcome to Signal Calcultor.</h1>
+        <Container isDarkMode={isDarkMode}>
+          <InputContainer>
+            <Input
+              value={startCapital}
+              onChange={(e) => setStartCapital(e.target.value)}
+              placeholder="Starting Capital"
+              isDarkMode={isDarkMode}
+            />
+            <Input
+              type="date"
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
+              isDarkMode={isDarkMode}
+            />
+            <Input
+              type="date"
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
+              isDarkMode={isDarkMode}
+            />
+            <Input
+              value={multiplier}
+              onChange={(e) => setMultiplier(Number(e.target.value))}
+              placeholder="Multiplier"
+              isDarkMode={isDarkMode}
+            />
+            <Input
+              value={monthlyBonus}
+              onChange={(e) => setMonthlyBonus(Number(e.target.value))}
+              placeholder="Monthly Bonus"
+              isDarkMode={isDarkMode}
+            />
+            <Select
+              value={pageSize}
+              onChange={(e) => setPageSize(Number(e.target.value))}
+              isDarkMode={isDarkMode}
+            >
+              {[5, 10, 20, 50, 1000].map((size) => (
+                <option key={size} value={size}>
+                  {size} rows
+                </option>
+              ))}
+            </Select>
+            <CalculateButton
+              onClick={calculateTradingResults}
+              isDarkMode={isDarkMode}
+            >
+              Calculate
+            </CalculateButton>
+          </InputContainer>
           <div>
-            <p>
-              <strong>Number of Days:</strong> {calculatedResults?.numberOfDays}
-            </p>
-            <p>
-              <strong>Final Capital (Naira):</strong>{" "}
-              {formatCurrency(
-                calculatedResults?.finalCapitalInNaira.toFixed(2)
-              )}
-            </p>
-            <p>
-              <strong>Total Capital:</strong>{" "}
-              {calculatedResults?.totalCapital.toFixed(2)}
-            </p>
+            <p>Total Capital:</p>
+            <strong>{formatCurrency(startCapital * multiplier)}</strong>
           </div>
-        )}
-      </Container>
+          {calculatedResults && (
+            <>
+              <Table isDarkMode={isDarkMode}>
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Starting Capital</th>
+                    <th>1st Trade Amount</th>
+                    <th>1st Trade Profit</th>
+                    <th>Capital After 1st Trade</th>
+                    <th>2nd Trade Amount</th>
+                    <th>2nd Trade Profit</th>
+                    <th>Final Capital</th>
+                    <th>Daily Profit</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {paginatedResults.map((result, index) => (
+                    <tr key={index}>
+                      <td>{result.date}</td>
+                      <td>{result.startingCapital.toFixed(2)}</td>
+                      <td>{result.firstTradeAmount.toFixed(2)}</td>
+
+                      <td>{result.firstTradeProfit.toFixed(2)}</td>
+                      <td>{result.capitalAfterFirstTrade.toFixed(2)}</td>
+                      <td>{result.secondTradeAmount.toFixed(2)}</td>
+
+                      <td>{result.secondTradeProfit.toFixed(2)}</td>
+                      <td>{result.capitalAfterSecondTrade.toFixed(2)}</td>
+                      <td>{result.dailyProfit.toFixed(2)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
+              {calculatedResults?.results.length > 0 && (
+                <Pagination isDarkMode={isDarkMode}>
+                  {currentPage !== 1 && (
+                    <button
+                      onClick={() =>
+                        setCurrentPage((prev) => Math.max(prev - 1, 1))
+                      }
+                    >
+                      Prev
+                    </button>
+                  )}
+                  <span>
+                    Page {currentPage} of {totalPages}
+                  </span>
+                  {currentPage !== totalPages && (
+                    <button
+                      onClick={() =>
+                        setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+                      }
+                    >
+                      Next
+                    </button>
+                  )}
+                </Pagination>
+              )}
+            </>
+          )}
+          {calculatedResults?.results.length > 0 && (
+            <div>
+              <p>
+                <strong>Number of Days:</strong>{" "}
+                {calculatedResults?.numberOfDays}
+              </p>
+              <p>
+                <strong>Final Capital (Naira):</strong>{" "}
+                {formatCurrency(
+                  calculatedResults?.finalCapitalInNaira.toFixed(2)
+                )}
+              </p>
+              <p>
+                <strong>Total Capital:</strong>{" "}
+                {calculatedResults?.totalCapital.toFixed(2)}
+              </p>
+            </div>
+          )}
+        </Container>
+      </div>
     </MainContainer>
   );
 };
 
-export default TradingProfitCalculator;
+export default SignalCalculator;

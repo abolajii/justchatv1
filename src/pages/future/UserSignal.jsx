@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import MainContainer from "./MainContainer";
 import { IoIosArrowRoundUp } from "react-icons/io";
 import styled from "styled-components";
 import SingleSignal from "./SingleSignal";
+import { getSignal } from "../../api/request";
 
 const Container = styled.div`
   margin-top: 60px;
@@ -70,6 +71,30 @@ const userSignals = [
 ];
 
 const UserSignal = () => {
+  const [signals, setSignals] = useState([]);
+  useEffect(() => {
+    const fetchSignal = async () => {
+      try {
+        const response = await getSignal();
+        setSignals(response);
+        // if (response?.startingCapital) {
+        //   const dollarAmount = response.startingCapital;
+        //   const nairaAmount = dollarAmount * countryValue;
+
+        //   // Initially show Naira as primary currency
+        //   setCurrencyValue(nairaAmount);
+        //   setDefaultValue(dollarAmount);
+        //   // setBalance(dollarAmount);
+        // }
+      } catch (error) {
+        console.error("Failed to fetch signal:", error);
+      } finally {
+        // setIsLoading(false);
+      }
+    };
+
+    fetchSignal();
+  }, []);
   return (
     <MainContainer>
       <Container>
@@ -86,29 +111,8 @@ const UserSignal = () => {
             </Price>
             <AverageReturn> Avg. return $5.14</AverageReturn>
           </div>
-          <div>
-            <ProgressContainer>{/* {userSignals.map()} */}</ProgressContainer>
-            {/* <ProgressBar>
-              <ProgressContainer>
-                <div
-                  style={{
-                    width: `${
-                      (userSignals.filter((signal) => signal.isCompleted)
-                        .length /
-                        userSignals.length) *
-                      100
-                    }%`,
-                  }}
-                ></div>
-              </ProgressContainer>
-            </ProgressBar> */}
-            {/* <p className="text-xs">
-              {userSignals.filter((signal) => signal.isCompleted).length} /{" "}
-              {userSignals.length} signals completed
-            </p> */}
-          </div>
         </Widget>
-        <SingleSignal />
+        <SingleSignal signals={signals} />
       </Container>
     </MainContainer>
   );
