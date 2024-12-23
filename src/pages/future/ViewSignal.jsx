@@ -144,10 +144,6 @@ const ViewSignal = () => {
     const start = new Date(`${todayDate}T${startTime}:00`); // Combine date and time
     const end = new Date(`${todayDate}T${endTime}:00`);
 
-    console.log("Now:", now);
-    console.log("Start:", start);
-    console.log("End:", end);
-
     if (now < start) {
       return { active: false, message: "Signal not active yet" };
     } else if (now > end) {
@@ -167,8 +163,6 @@ const ViewSignal = () => {
       }
     })();
   }, [setDefaultValue]);
-
-  console.log(signal);
 
   useEffect(() => {
     (async () => {
@@ -199,11 +193,13 @@ const ViewSignal = () => {
             {signal?.startTime} - {signal?.endTime}
           </span>
         </Duration>
-        <StatusBadge active={active}>
-          <IoTimeOutline />
-          {message}
-        </StatusBadge>
-        {active && (
+        {signal && (
+          <StatusBadge active={active}>
+            <IoTimeOutline />
+            {message}
+          </StatusBadge>
+        )}
+        {message !== "Signal not active yet" && (
           <Container>
             <SignalWidget
               label="From"
