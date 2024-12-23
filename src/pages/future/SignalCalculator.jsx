@@ -232,7 +232,7 @@ const SignalCalculator = () => {
   return (
     <MainContainer>
       <div>
-        <h1 className="mb-4 mt-3">Welcome to Signal Calcultor.</h1>
+        <h1 className="mb-4 mt-3">Welcome to Signal Calculator.</h1>
         <Container isDarkMode={isDarkMode}>
           <InputContainer>
             <Input

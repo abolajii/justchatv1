@@ -4,6 +4,7 @@ import { IoIosArrowRoundUp } from "react-icons/io";
 import styled from "styled-components";
 import SingleSignal from "./SingleSignal";
 import { getSignal, getUserSignal } from "../../api/request";
+import useSignalStore from "./store/useSignalStore";
 
 const Container = styled.div`
   margin-top: 60px;
@@ -72,6 +73,9 @@ const userSignals = [
 
 const UserSignal = () => {
   const [signals, setSignals] = useState([]);
+  const { defaultValue, setDefaultValue } = useSignalStore();
+
+  //
   useEffect(() => {
     const fetchSignal = async () => {
       try {
@@ -85,6 +89,20 @@ const UserSignal = () => {
 
     fetchSignal();
   }, []);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const response = await getUserSignal();
+        setDefaultValue(response?.startingCapital || 0);
+        setIsLoading(false);
+      } catch (err) {
+        console.error(err);
+        setIsLoading(false);
+      }
+    })();
+  }, [setDefaultValue]);
+
   return (
     <MainContainer>
       <Container>
@@ -93,7 +111,7 @@ const UserSignal = () => {
           <div>
             <p className="title">Signal Report</p>
             <Price className="flex align-end">
-              <h1>$302.74</h1>
+              <h1>${defaultValue}</h1>
               <div className="flex align-center text-xs">
                 <IoIosArrowRoundUp size={20} color=" #22c55e" />
                 2.5%

@@ -3,10 +3,11 @@ import MainContainer from "./MainContainer";
 import { FaArrowRightLong } from "react-icons/fa6";
 import styled from "styled-components";
 import useSignalStore from "./store/useSignalStore";
-import { getSignal, getSignalById, getUserSignal } from "../../api/request";
+import { getSignalById, getUserSignal } from "../../api/request";
 import { IoTimeOutline } from "react-icons/io5";
 import { useNavigate, useParams } from "react-router-dom";
 import { MdChevronLeft } from "react-icons/md";
+import { Spinner } from "../../components";
 
 const Container = styled.div`
   display: flex;
@@ -117,6 +118,12 @@ const ViewSignal = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
 
+  useEffect(() => {
+    if (isLoading) {
+      setSignal(null);
+    }
+  }, [isLoading]);
+
   const NGN_TO_USD_RATE = 1656.0;
 
   const calculateSignalValues = (initialAmount) => {
@@ -182,7 +189,13 @@ const ViewSignal = () => {
   );
 
   if (isLoading) {
-    return <MainContainer>Loading...</MainContainer>;
+    return (
+      <MainContainer>
+        <div className="mt-4">
+          <Spinner size="20px" />
+        </div>
+      </MainContainer>
+    );
   }
 
   return (
