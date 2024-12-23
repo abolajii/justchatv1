@@ -3,10 +3,11 @@ import MainContainer from "./MainContainer";
 import { FaArrowRightLong } from "react-icons/fa6";
 import styled from "styled-components";
 import useSignalStore from "./store/useSignalStore";
-import { getSignal, getSignalById, getUserSignal } from "../../api/request";
+import { getSignalById, getUserSignal } from "../../api/request";
 import { IoTimeOutline } from "react-icons/io5";
 import { useNavigate, useParams } from "react-router-dom";
 import { MdChevronLeft } from "react-icons/md";
+import { Spinner } from "../../components";
 
 const Container = styled.div`
   display: flex;
@@ -115,6 +116,13 @@ const ViewSignal = () => {
   const [signal, setSignal] = useState(null);
   const { id } = useParams();
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    if (isLoading) {
+      setSignal(null);
+    }
+  }, [isLoading]);
 
   const NGN_TO_USD_RATE = 1656.0;
 
@@ -132,10 +140,6 @@ const ViewSignal = () => {
     () => calculateSignalValues(defaultValue),
     [defaultValue]
   );
-  const time = {
-    startTime: "14:00",
-    endTime: "14:30",
-  };
 
   const checkTimeStatus = (startTime, endTime) => {
     const now = new Date();
@@ -158,8 +162,10 @@ const ViewSignal = () => {
       try {
         const response = await getUserSignal();
         setDefaultValue(response?.startingCapital || 0);
+        setIsLoading(false);
       } catch (err) {
         console.error(err);
+        setIsLoading(false);
       }
     })();
   }, [setDefaultValue]);
@@ -169,8 +175,10 @@ const ViewSignal = () => {
       try {
         const response = await getSignalById(id);
         setSignal(response?.data.signal || null);
+        setIsLoading(false);
       } catch (err) {
         console.error(err);
+        setIsLoading(false);
       }
     })();
   }, [id]);
@@ -179,6 +187,16 @@ const ViewSignal = () => {
     signal?.startTime,
     signal?.endTime
   );
+
+  if (isLoading) {
+    return (
+      <MainContainer>
+        <div className="mt-4">
+          <Spinner size="20px" />
+        </div>
+      </MainContainer>
+    );
+  }
 
   return (
     <MainContainer>
