@@ -25,6 +25,7 @@ import Future from "./pages/future/Future";
 import UserSignal from "./pages/future/UserSignal";
 import Signals from "./pages/future/Signals";
 import SignalSettings from "./pages/future/Settings";
+import ViewSignal from "./pages/future/ViewSignal";
 
 const App = () => {
   const { setCurrentUser } = useUserStore();
@@ -183,6 +184,14 @@ const App = () => {
           element={
             <ProtectedRoute>
               <SignalSettings />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/trade/view/:id"
+          element={
+            <ProtectedRoute>
+              <ViewSignal />
             </ProtectedRoute>
           }
         />

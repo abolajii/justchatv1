@@ -2,6 +2,7 @@ import React from "react";
 import { HiOutlineBellAlert } from "react-icons/hi2";
 import { IoTimeOutline } from "react-icons/io5";
 import { RiSignalTowerFill } from "react-icons/ri";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 const GridContainer = styled.div`
@@ -83,8 +84,8 @@ const IconWrapper = styled.div`
   }
 `;
 
-const SingleSignal = ({ name, time, reminder }) => (
-  <Container>
+const SingleSignal = ({ name, time, reminder, onClick }) => (
+  <Container onClick={onClick}>
     <Avatar>
       <RiSignalTowerFill size={24} color="#22c55e" />
     </Avatar>
@@ -113,10 +114,15 @@ const SignalGrid = () => {
     { id: 4, name: "Signal 4", time: "17:00 - 17:30", reminder: false },
   ];
 
+  const navigate = useNavigate();
+
   return (
     <GridContainer>
       {signals.map((signal) => (
         <SingleSignal
+          onClick={() => {
+            navigate(`/trade/view/${signal.id}`);
+          }}
           key={signal.id}
           name={signal.name}
           time={signal.time}

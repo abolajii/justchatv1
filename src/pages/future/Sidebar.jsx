@@ -21,6 +21,7 @@ const Container = styled.div`
   align-items: center;
   gap: 10px;
   padding-top: 55px;
+  border-right: 1px solid rgba(34, 197, 94, 0.4);
 `;
 
 const NavItem = styled(Link)`

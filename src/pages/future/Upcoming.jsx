@@ -91,7 +91,7 @@ const Upcoming = () => {
         </Avatar>
         <Content>
           <SignalInfo>
-            <SignalName>Signal 2</SignalName>
+            <SignalName>Signal 1</SignalName>
             <TimeWrapper>
               <IoTimeOutline />
               <span>14:00 - 14:30</span>
