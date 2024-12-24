@@ -117,7 +117,7 @@ const formatSignalData = (apiSignal) => {
   };
 };
 
-const SignalGrid = ({ signals }) => {
+const SignalGrid = ({ signals, setSignals }) => {
   const formattedSignals = signals.map(formatSignalData);
 
   const navigate = useNavigate();
@@ -127,6 +127,7 @@ const SignalGrid = ({ signals }) => {
       {formattedSignals.map((signal) => (
         <SingleSignal
           onClick={() => {
+            // setSignals([]);
             navigate(`/trade/view/${signal.id}`);
           }}
           key={signal.id}

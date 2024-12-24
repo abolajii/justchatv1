@@ -120,7 +120,7 @@ const UserSignal = () => {
             <AverageReturn> Avg. return $5.14</AverageReturn>
           </div>
         </Widget>
-        <SingleSignal signals={signals} />
+        <SingleSignal signals={signals} setSignals={setSignals} />
       </Container>
     </MainContainer>
   );

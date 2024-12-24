@@ -21,6 +21,9 @@ const Container = styled.div`
     font-size: 13px;
     color: ${(props) => (props.isDarkMode ? "#e0e0e0" : "#000000")};
   }
+
+  overflow: scroll;
+  height: calc(100% - 80px);
 `;
 
 const InputContainer = styled.div`
