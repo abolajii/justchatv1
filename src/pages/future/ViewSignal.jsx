@@ -1,12 +1,10 @@
 import React, { useEffect, useState, useMemo } from "react";
 import MainContainer from "./MainContainer";
 import { FaArrowRightLong } from "react-icons/fa6";
-import styled from "styled-components";
-import useSignalStore from "./store/useSignalStore";
-import { getSignal, getSignalById, getUserSignal } from "../../api/request";
 import { IoTimeOutline } from "react-icons/io5";
 import { useNavigate, useParams } from "react-router-dom";
 import { MdChevronLeft } from "react-icons/md";
+import styled from "styled-components";
 
 const Container = styled.div`
   display: flex;
@@ -71,31 +69,21 @@ const Duration = styled.div`
 
 const BackButton = styled.div`
   cursor: pointer;
-  /* padding: 8px; */
   border-radius: 4px;
   margin-top: 30px;
-
   display: inline-flex;
   align-items: center;
   &:hover {
     background-color: #272727;
   }
 `;
+
 const formatCurrency = (number, includeSymbol = false) => {
   const formatted = number.toLocaleString("en-US", {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   });
   return includeSymbol ? `₦${formatted}` : formatted;
-};
-
-const formatTime = (dateString) => {
-  const date = new Date(dateString);
-  return date.toLocaleTimeString("en-US", {
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: true,
-  });
 };
 
 const SignalWidget = ({ label, value, balance }) => (
@@ -105,45 +93,37 @@ const SignalWidget = ({ label, value, balance }) => (
       <div>{value}</div>
     </div>
     <div>
-      {label === "To" ? "Est. return" : "Balance"}: {balance}
+      {label === "To" ? "Est. Profit" : "Capital"}: {balance}
     </div>
   </Widget>
 );
 
 const ViewSignal = () => {
-  const { defaultValue, setDefaultValue } = useSignalStore();
   const [signal, setSignal] = useState(null);
   const { id } = useParams();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
 
-  const NGN_TO_USD_RATE = 1656.0;
-
-  const calculateSignalValues = (initialAmount) => {
-    if (!initialAmount) return { current: 0, next: 0 };
-    const tradingAmount = initialAmount * 0.01;
-    const profitAmount = tradingAmount * 0.88;
+  const calculateSignalValues = (capital, profit) => {
     return {
-      current: initialAmount,
-      next: initialAmount + profitAmount,
+      current: parseFloat(capital) || 0,
+      next: parseFloat(profit) || 0,
     };
   };
 
-  const { current, next } = useMemo(
-    () => calculateSignalValues(defaultValue),
-    [defaultValue]
-  );
+  const checkTimeStatus = (timeRange) => {
+    if (!timeRange) return { active: false, message: "Invalid time range" };
 
-  const checkTimeStatus = (startTime, endTime) => {
+    const [startTime, endTime] = timeRange.split(" - ");
     const now = new Date();
-    const todayDate = now.toISOString().split("T")[0]; // Get the current date in YYYY-MM-DD format
+    const currentTime =
+      now.getHours().toString().padStart(2, "0") +
+      ":" +
+      now.getMinutes().toString().padStart(2, "0");
 
-    const start = new Date(`${todayDate}T${startTime}:00`); // Combine date and time
-    const end = new Date(`${todayDate}T${endTime}:00`);
-
-    if (now < start) {
+    if (currentTime < startTime) {
       return { active: false, message: "Signal not active yet" };
-    } else if (now > end) {
+    } else if (currentTime > endTime) {
       return { active: false, message: "Signal has ended" };
     } else {
       return { active: true, message: "Signal is active" };
@@ -151,35 +131,39 @@ const ViewSignal = () => {
   };
 
   useEffect(() => {
-    (async () => {
+    const fetchSignal = async () => {
       try {
-        const response = await getUserSignal();
-        setDefaultValue(response?.startingCapital || 0);
+        // Simulating API call with the provided data
+        const mockSignal = {
+          _id: "676a8f31d08be40b3bba718e",
+          user: "6721f7014917e063ba3dc449",
+          userTrade: false,
+          capital: 0,
+          name: "Signal 1",
+          reminder: true,
+          time: "14:00 - 14:30",
+          prevProfit: "0",
+          profit: "0",
+          createdAt: "2024-12-24T10:38:41.060Z",
+          updatedAt: "2024-12-24T10:38:41.060Z",
+        };
+        setSignal(mockSignal);
         setIsLoading(false);
       } catch (err) {
         console.error(err);
         setIsLoading(false);
       }
-    })();
-  }, [setDefaultValue]);
+    };
 
-  useEffect(() => {
-    (async () => {
-      try {
-        const response = await getSignalById(id);
-        setSignal(response?.data.signal || null);
-        setIsLoading(false);
-      } catch (err) {
-        console.error(err);
-        setIsLoading(false);
-      }
-    })();
+    fetchSignal();
   }, [id]);
 
-  const { active, message } = checkTimeStatus(
-    signal?.startTime,
-    signal?.endTime
+  const { current, next } = useMemo(
+    () => calculateSignalValues(signal?.capital, signal?.profit),
+    [signal]
   );
+
+  const { active, message } = checkTimeStatus(signal?.time);
 
   if (isLoading) {
     return <MainContainer>Loading...</MainContainer>;
@@ -191,33 +175,29 @@ const ViewSignal = () => {
         <BackButton onClick={() => navigate(-1)}>
           <MdChevronLeft size={20} />
         </BackButton>
-        <Title>Signal Details</Title>
+        <Title>{signal?.name}</Title>
         <Duration>
           <IoTimeOutline />
-          <span>
-            {signal?.startTime} - {signal?.endTime}
-          </span>
+          <span>{signal?.time}</span>
         </Duration>
-        {signal && (
-          <StatusBadge active={active}>
-            <IoTimeOutline />
-            {message}
-          </StatusBadge>
-        )}
+        <StatusBadge active={active}>
+          <IoTimeOutline />
+          {message}
+        </StatusBadge>
         {message !== "Signal not active yet" && (
           <Container>
             <SignalWidget
-              label="From"
+              label="Capital"
               value={formatCurrency(current)}
-              balance={formatCurrency(current * NGN_TO_USD_RATE, true)}
+              balance={formatCurrency(current, true)}
             />
             <IconWrapper>
               <FaArrowRightLong />
             </IconWrapper>
             <SignalWidget
-              label="To"
+              label="Profit"
               value={formatCurrency(next)}
-              balance={formatCurrency(next * NGN_TO_USD_RATE, true)}
+              balance={formatCurrency(next, true)}
             />
           </Container>
         )}
