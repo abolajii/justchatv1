@@ -3,7 +3,7 @@ import MainContainer from "./MainContainer";
 import { IoIosArrowRoundUp } from "react-icons/io";
 import styled from "styled-components";
 import SingleSignal from "./SingleSignal";
-import { getSignal, getUserSignal } from "../../api/request";
+import { fecthDailySignal, getSignal, getUserSignal } from "../../api/request";
 import useSignalStore from "./store/useSignalStore";
 
 const Container = styled.div`
@@ -66,21 +66,17 @@ const ProgressBar = styled.div`
 
 const ProgressContainer = styled.div``;
 
-const userSignals = [
-  { id: 1, isCompleted: true },
-  { id: 2, isCompleted: true },
-];
-
 const UserSignal = () => {
   const [signals, setSignals] = useState([]);
   const { defaultValue, setDefaultValue } = useSignalStore();
+  const [isLoading, setIsLoading] = useState(true);
 
   //
   useEffect(() => {
     const fetchSignal = async () => {
       try {
         const response = await getSignal();
-        setSignals(response);
+        // setSignals(response);
       } catch (error) {
         console.error("Failed to fetch signal:", error);
       } finally {
@@ -99,6 +95,22 @@ const UserSignal = () => {
       } catch (err) {
         console.error(err);
         setIsLoading(false);
+      }
+    })();
+  }, [setDefaultValue]);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const response = await fecthDailySignal();
+        console.log(response);
+        setSignals(response.data);
+
+        // setDefaultValue(response?.startingCapital || 0);
+        // setIsLoading(false);
+      } catch (err) {
+        console.error(err);
+        // setIsLoading(false);
       }
     })();
   }, [setDefaultValue]);

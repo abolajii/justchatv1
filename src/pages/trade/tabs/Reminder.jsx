@@ -138,15 +138,19 @@ const Reminder = ({ error }) => {
     reminder,
     setReminder,
   } = useCbexStore();
+
+  console.log(reminderSettings);
+
   useEffect(() => {
     if (!Array.isArray(reminderSettings) || reminderSettings.length === 0) {
       // Initialize settings from signalTimeStartAndEndDate if reminderSettings is empty
       const initialSettings = signalTimeStartAndEndDate.map(
         (signal, index) => ({
           id: index + 1,
-          time: signal.startTime || "",
+          startTime: signal.startTime || "",
           isEnabled: false,
           endTime: signal.endTime || "",
+          time: `${signal.startTime} - ${signal.endTime || ""}`,
         })
       );
       setReminderSettings(initialSettings);

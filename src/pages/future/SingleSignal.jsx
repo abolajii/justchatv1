@@ -110,14 +110,14 @@ const formatSignalData = (apiSignal) => {
   return {
     id: apiSignal._id,
     name: apiSignal.name,
-    time: `${apiSignal.startTime} - ${apiSignal.endTime}`,
+    time: apiSignal.time,
     reminder: apiSignal.reminder,
     startingCapital: apiSignal.startingCapital,
     userTrade: apiSignal.userTrade,
   };
 };
 
-const SignalGrid = ({ signals, setSignals }) => {
+const SignalGrid = ({ signals }) => {
   const formattedSignals = signals.map(formatSignalData);
 
   const navigate = useNavigate();

@@ -5,6 +5,7 @@ import styled from "styled-components";
 import { ArrowRight, Hand } from "lucide-react";
 import icon from "../assets/invest.svg";
 import { useNavigate } from "react-router-dom";
+import useUserStore from "../store/useUserStore";
 
 const waveAnimation = keyframes`
   0% { transform: rotate(0deg); }
@@ -119,7 +120,10 @@ const AdvertWidget = () => {
 
   const { isDarkMode } = useThemeStore();
   const theme = isDarkMode ? darkTheme : lightTheme;
-  if (!isVisible) return null;
+
+  const { user } = useUserStore();
+
+  if (!isVisible || user.isUserSignal) return null;
 
   return (
     <Padding>
