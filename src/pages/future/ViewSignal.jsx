@@ -82,11 +82,11 @@ const BackButton = styled.div`
 `;
 
 const formatCurrency = (number, includeSymbol = false) => {
-  const formatted = number.toLocaleString("en-US", {
+  const formatted = number.toFixed(2).toLocaleString("en-US", {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   });
-  return includeSymbol ? `₦${formatted}` : formatted;
+  return includeSymbol ? `$${formatted}` : formatted;
 };
 
 const ConfirmationContainer = styled.div`
@@ -134,6 +134,14 @@ const Button = styled.button`
     cursor: not-allowed;
   }
 `;
+
+const formatNumber = (number) => {
+  const [integerPart, decimalPart] = number.toFixed(2).split(".");
+  return {
+    integerPart: new Intl.NumberFormat().format(parseInt(integerPart)),
+    decimalPart,
+  };
+};
 
 const SignalWidget = ({ label, value, balance }) => (
   <Widget>
@@ -241,24 +249,23 @@ const ViewSignal = () => {
           {message}
         </StatusBadge>
 
+        <Container>
+          <SignalWidget
+            label="Capital"
+            value={formatCurrency(current)}
+            balance={formatCurrency(current, true)}
+          />
+          <IconWrapper>
+            <FaArrowRightLong />
+          </IconWrapper>
+          <SignalWidget
+            label="Profit"
+            value={formatCurrency(next)}
+            balance={formatCurrency(next, true)}
+          />
+        </Container>
+
         {message === "Signal has ended" && (
-          <Container>
-            <SignalWidget
-              label="Capital"
-              value={formatCurrency(current)}
-              balance={formatCurrency(current, true)}
-            />
-            <IconWrapper>
-              <FaArrowRightLong />
-            </IconWrapper>
-            <SignalWidget
-              label="Profit"
-              value={formatCurrency(next)}
-              balance={formatCurrency(next, true)}
-            />
-          </Container>
-        )}
-        {message !== "Signal has ended" && (
           <ConfirmationContainer>
             <Question>Did you receive this signal?</Question>
             <ButtonGroup>

@@ -69,6 +69,9 @@ const ProgressContainer = styled.div``;
 const UserSignal = () => {
   const [signals, setSignals] = useState([]);
   const { defaultValue, setDefaultValue } = useSignalStore();
+
+  console.log(defaultValue);
+
   const [isLoading, setIsLoading] = useState(true);
 
   //
@@ -114,6 +117,14 @@ const UserSignal = () => {
       }
     })();
   }, [setDefaultValue]);
+
+  if (isLoading) {
+    return (
+      <MainContainer>
+        <Container>Loading...</Container>
+      </MainContainer>
+    );
+  }
 
   return (
     <MainContainer>
