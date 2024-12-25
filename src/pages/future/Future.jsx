@@ -42,7 +42,7 @@ const Future = () => {
           <Account />
           {/* <Upcoming /> */}
         </One>
-        <Two>{/* <CalendarGrid /> */}</Two>
+        <Two>{<CalendarGrid />}</Two>
       </div>
     </MainContainer>
   );

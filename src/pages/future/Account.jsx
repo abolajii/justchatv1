@@ -14,9 +14,9 @@ const Container = styled.div`
   color: #abb3c0;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   width: 80%;
-  height: 280px;
-  border-radius: 6px;
+  height: 340px;
   position: relative;
+  border-radius: 8px;
 `;
 
 const Inner = styled.div`
