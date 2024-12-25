@@ -288,34 +288,34 @@ const ViewSignal = () => {
           <SignalNotActive v1={v1} v2={v2} b1={b1} b2={b2} active />
         )} */}
 
-        {/* {message === "Signal has ended" && signal.status !== "pending" && (
+        {message === "Signal has ended" && signal.status !== "pending" && (
           <SignalResult signal={signal} />
-        )} */}
+        )}
 
-        {/* {message === "Signal has ended" && signal.status === "pending" && ( */}
-        <>
-          <SignalNotActive v1={v1} v2={v2} b1={b1} b2={b2} active />
-          <ConfirmationContainer>
-            <Question>Did you receive this signal?</Question>
-            <ButtonGroup>
-              <Button
-                variant="yes"
-                onClick={() => handleSignalResponse(true)}
-                disabled={signalReceived !== null}
-              >
-                Yes
-              </Button>
-              <Button
-                variant="no"
-                onClick={() => handleSignalResponse(false)}
-                disabled={signalReceived !== null}
-              >
-                No
-              </Button>
-            </ButtonGroup>
-          </ConfirmationContainer>
-        </>
-        {/* )} */}
+        {message === "Signal has ended" && signal.status === "pending" && (
+          <>
+            <SignalNotActive v1={v1} v2={v2} b1={b1} b2={b2} active />
+            <ConfirmationContainer>
+              <Question>Did you receive this signal?</Question>
+              <ButtonGroup>
+                <Button
+                  variant="yes"
+                  onClick={() => handleSignalResponse(true)}
+                  disabled={signalReceived !== null}
+                >
+                  Yes
+                </Button>
+                <Button
+                  variant="no"
+                  onClick={() => handleSignalResponse(false)}
+                  disabled={signalReceived !== null}
+                >
+                  No
+                </Button>
+              </ButtonGroup>
+            </ConfirmationContainer>
+          </>
+        )}
       </div>
     </MainContainer>
   );
