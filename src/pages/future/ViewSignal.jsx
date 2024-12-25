@@ -12,24 +12,7 @@ import { RiSignalTowerFill } from "react-icons/ri";
 import SignalNotActive from "./SignalNotActive";
 
 const Container = styled.div`
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  margin-top: 20px;
-`;
-
-const IconWrapper = styled.div`
-  height: ${(props) => (props.small ? "30px" : "40px")};
-  width: ${(props) => (props.small ? "30px" : "40px")};
-  border-radius: 50%;
-  border: 1px solid rgba(34, 197, 94, 0.2);
-  background-color: #272727;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #22c55e;
-  font-size: ${(props) => (props.small ? "14px" : "18px")};
-  flex-shrink: 0;
+  margin-top: 60px;
 `;
 
 const Widget = styled.div`
@@ -75,7 +58,7 @@ const Duration = styled.div`
 const BackButton = styled.div`
   cursor: pointer;
   border-radius: 4px;
-  margin-top: 30px;
+  margin-top: 60px;
   display: inline-flex;
   align-items: center;
   padding: 4px;
@@ -250,7 +233,11 @@ const ViewSignal = () => {
   };
 
   if (isLoading) {
-    return <MainContainer>Loading...</MainContainer>;
+    return (
+      <MainContainer>
+        <Container>Loading...</Container>
+      </MainContainer>
+    );
   }
 
   if (error || !signal) {
