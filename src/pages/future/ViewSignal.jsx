@@ -282,29 +282,39 @@ const ViewSignal = () => {
         {message === "Signal is active" && (
           <SignalNotActive v1={v1} v2={v2} b1={b1} b2={b2} active />
         )}
+
+        {/* 
+        {message === "Signal has ended" && (
+          <SignalNotActive v1={v1} v2={v2} b1={b1} b2={b2} active />
+        )} */}
+
         {message === "Signal has ended" && signal.status !== "pending" && (
           <SignalResult signal={signal} />
         )}
+
         {message === "Signal has ended" && signal.status === "pending" && (
-          <ConfirmationContainer>
-            <Question>Did you receive this signal?</Question>
-            <ButtonGroup>
-              <Button
-                variant="yes"
-                onClick={() => handleSignalResponse(true)}
-                disabled={signalReceived !== null}
-              >
-                Yes
-              </Button>
-              <Button
-                variant="no"
-                onClick={() => handleSignalResponse(false)}
-                disabled={signalReceived !== null}
-              >
-                No
-              </Button>
-            </ButtonGroup>
-          </ConfirmationContainer>
+          <>
+            <SignalNotActive v1={v1} v2={v2} b1={b1} b2={b2} active />
+            <ConfirmationContainer>
+              <Question>Did you receive this signal?</Question>
+              <ButtonGroup>
+                <Button
+                  variant="yes"
+                  onClick={() => handleSignalResponse(true)}
+                  disabled={signalReceived !== null}
+                >
+                  Yes
+                </Button>
+                <Button
+                  variant="no"
+                  onClick={() => handleSignalResponse(false)}
+                  disabled={signalReceived !== null}
+                >
+                  No
+                </Button>
+              </ButtonGroup>
+            </ConfirmationContainer>
+          </>
         )}
       </div>
     </MainContainer>
