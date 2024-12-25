@@ -235,6 +235,8 @@ const ViewSignal = () => {
       setSignalReceived(received);
       if (received) {
         await updateSignalById(id);
+        const updatedSignal = { ...signal, status: "completed" };
+        setSignal(updatedSignal);
         showAlert("success", "Signal updated successfully");
       }
     } catch (error) {
