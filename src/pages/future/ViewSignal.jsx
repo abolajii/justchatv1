@@ -9,6 +9,7 @@ import { useAlert } from "../../context/AlertContext";
 import MainContainer from "./MainContainer";
 import SignalResult from "./SignalResults";
 import { RiSignalTowerFill } from "react-icons/ri";
+import SignalNotActive from "./SignalNotActive";
 
 const Container = styled.div`
   display: flex;
@@ -268,44 +269,36 @@ const ViewSignal = () => {
   const { current, next } = calculateSignalValues(signal.capital);
   const { active, message } = checkTimeStatus(signal.time);
 
+  const v1 = formatCurrency(current, true);
+  const b1 = formatCurrency(current * NGN_TO_USD_RATE, true, "naira");
+
+  const v2 = formatCurrency(next, true);
+  const b2 = formatCurrency(next * NGN_TO_USD_RATE, true, "naira");
+
   return (
     <MainContainer>
       <div>
         <BackButton onClick={() => navigate(-1)}>
           <MdChevronLeft size={20} />
         </BackButton>
-
         <Title>{signal.name}</Title>
-
         <Duration>
           <IoTimeOutline />
           <span>{signal.time}</span>
         </Duration>
-
         <StatusBadge active={active}>
           <RiSignalTowerFill />
           {message}
         </StatusBadge>
-        {signal.status === "pending" && (
-          <Container>
-            <SignalWidget
-              label="From"
-              value={formatCurrency(current, true)}
-              balance={formatCurrency(current * NGN_TO_USD_RATE, true, "naira")} // Naira value
-            />
-            <IconWrapper>
-              <FaArrowRightLong />
-            </IconWrapper>
-            <SignalWidget
-              label="To"
-              value={formatCurrency(next, true)}
-              balance={formatCurrency(current * NGN_TO_USD_RATE, true, "naira")} // Naira value
-            />
-          </Container>
+
+        {message === "Signal not active yet" && <SignalNotActive />}
+
+        {message === "Signal is active" && (
+          <SignalNotActive v1={v1} v2={v2} b1={b1} b2={b2} active />
         )}
-
-        {message === "Signal has ended" && <SignalResult signal={signal} />}
-
+        {message === "Signal has ended" && signal.status !== "pending" && (
+          <SignalResult signal={signal} />
+        )}
         {message === "Signal has ended" && signal.status === "pending" && (
           <ConfirmationContainer>
             <Question>Did you receive this signal?</Question>
