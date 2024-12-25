@@ -5,6 +5,7 @@ import { IoTimeOutline } from "react-icons/io5";
 import { useNavigate, useParams } from "react-router-dom";
 import { MdChevronLeft } from "react-icons/md";
 import styled from "styled-components";
+import { getSignalById } from "../../api/request";
 
 const Container = styled.div`
   display: flex;
@@ -133,21 +134,10 @@ const ViewSignal = () => {
   useEffect(() => {
     const fetchSignal = async () => {
       try {
-        // Simulating API call with the provided data
-        const mockSignal = {
-          _id: "676a8f31d08be40b3bba718e",
-          user: "6721f7014917e063ba3dc449",
-          userTrade: false,
-          capital: 0,
-          name: "Signal 1",
-          reminder: true,
-          time: "14:00 - 14:30",
-          prevProfit: "0",
-          profit: "0",
-          createdAt: "2024-12-24T10:38:41.060Z",
-          updatedAt: "2024-12-24T10:38:41.060Z",
-        };
-        setSignal(mockSignal);
+        const response = await getSignalById(id);
+
+        console.log(response);
+        setSignal(response.data.signal);
         setIsLoading(false);
       } catch (err) {
         console.error(err);
