@@ -284,7 +284,7 @@ const ViewSignal = () => {
           <IoTimeOutline />
           {message}
         </StatusBadge>
-        {(message === "Signal is active" || signal.status === "pending") && (
+        {signal.status === "pending" && (
           <Container>
             <SignalWidget
               label="From"
