@@ -7,6 +7,7 @@ import styled from "styled-components";
 import { getSignalById, updateSignalById } from "../../api/request";
 import { useAlert } from "../../context/AlertContext";
 import MainContainer from "./MainContainer";
+import SignalResult from "./SignalResults";
 
 const Container = styled.div`
   display: flex;
@@ -297,11 +298,12 @@ const ViewSignal = () => {
             <SignalWidget
               label="To"
               value={formatCurrency(next, true)}
-              // balance={formatCurrency(next * NGN_TO_USD_RATE, true)}
               balance={formatCurrency(current * NGN_TO_USD_RATE, true, "naira")} // Naira value
             />
           </Container>
         )}
+
+        {message === "Signal has ended" && <SignalResult signal={signal} />}
 
         {message === "Signal has ended" && signal.status === "pending" && (
           <ConfirmationContainer>
