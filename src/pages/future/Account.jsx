@@ -10,7 +10,7 @@ import { useNavigate } from "react-router-dom";
 import useSignalStore from "./store/useSignalStore";
 
 const Container = styled.div`
-  margin-top: 20px;
+  margin-top: 60px;
   color: #abb3c0;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   width: 80%;

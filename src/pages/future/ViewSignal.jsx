@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { FaArrowRightLong } from "react-icons/fa6";
 import { IoTimeOutline } from "react-icons/io5";
 import { MdChevronLeft } from "react-icons/md";
 import styled from "styled-components";
