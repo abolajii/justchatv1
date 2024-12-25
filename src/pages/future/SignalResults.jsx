@@ -7,7 +7,9 @@ const ResultContainer = styled.div`
   background-color: #151515;
   border: 1px solid rgba(34, 197, 94, 0.2);
   border-radius: 9px;
-  width: 450px;
+  min-width: 500px;
+
+  width: 100%;
 `;
 
 const Header = styled.div`
