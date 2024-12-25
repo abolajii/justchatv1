@@ -219,7 +219,7 @@ const ViewSignal = () => {
     try {
       setSignalReceived(received);
       if (received) {
-        await updateSignalById(id);
+        await updateSignalById(id, received);
         const updatedSignal = { ...signal, status: "completed" };
         setSignal(updatedSignal);
         showAlert("success", "Signal updated successfully");
