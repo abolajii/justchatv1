@@ -5,9 +5,7 @@ import { IoTimeOutline } from "react-icons/io5";
 import { useNavigate, useParams } from "react-router-dom";
 import { MdChevronLeft } from "react-icons/md";
 import styled from "styled-components";
-import { getSignalById, updateSignalById } from "../../api/request";
-
-import { useAlert } from "../../context/AlertContext";
+import { getSignalById } from "../../api/request";
 
 const Container = styled.div`
   display: flex;
@@ -89,52 +87,6 @@ const formatCurrency = (number, includeSymbol = false) => {
   return includeSymbol ? `₦${formatted}` : formatted;
 };
 
-const ConfirmationContainer = styled.div`
-  margin-top: 32px;
-  padding: 24px;
-  background-color: #151515;
-  border: 1px solid rgba(34, 197, 94, 0.2);
-  border-radius: 9px;
-`;
-
-const Question = styled.div`
-  color: #fff;
-  font-size: 16px;
-  margin-bottom: 16px;
-`;
-
-const ButtonGroup = styled.div`
-  display: flex;
-  gap: 12px;
-`;
-
-const Button = styled.button`
-  padding: 8px 24px;
-  border-radius: 6px;
-  border: none;
-  font-size: 14px;
-  cursor: pointer;
-  transition: opacity 0.2s;
-
-  background-color: ${(props) =>
-    props.variant === "yes"
-      ? "rgba(34, 197, 94, 1)"
-      : props.variant === "no"
-      ? "#dc2626"
-      : "#272727"};
-
-  color: white;
-
-  &:hover {
-    opacity: 0.8;
-  }
-
-  &:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-`;
-
 const SignalWidget = ({ label, value, balance }) => (
   <Widget>
     <div>
@@ -149,12 +101,9 @@ const SignalWidget = ({ label, value, balance }) => (
 
 const ViewSignal = () => {
   const [signal, setSignal] = useState(null);
-  const [signalReceived, setSignalReceived] = useState(null);
   const { id } = useParams();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
-
-  const { showAlert } = useAlert();
 
   const calculateSignalValues = (capital, profit) => {
     return {
@@ -182,27 +131,12 @@ const ViewSignal = () => {
     }
   };
 
-  const handleSignalResponse = async (received) => {
-    try {
-      setSignalReceived(received);
-      // Here you would typically make an API call to update the signal status
-
-      if (received) {
-        console.log(`Signal ${received ? "received" : "not received"}`);
-        await updateSignalById(id);
-        // console.log(response);
-        showAlert("success", "Signal updated successfully");
-      }
-    } catch (error) {
-      console.error("Error updating signal status:", error);
-      showAlert("error", "Error updating signal status:");
-    }
-  };
-
   useEffect(() => {
     const fetchSignal = async () => {
       try {
         const response = await getSignalById(id);
+
+        console.log(response);
         setSignal(response.data.signal);
         setIsLoading(false);
       } catch (err) {
@@ -256,26 +190,23 @@ const ViewSignal = () => {
             balance={formatCurrency(next, true)}
           />
         </Container>
-
-        <ConfirmationContainer>
-          <Question>Did you receive this signal?</Question>
-          <ButtonGroup>
-            <Button
-              variant="yes"
-              onClick={() => handleSignalResponse(true)}
-              disabled={signalReceived !== null}
-            >
-              Yes
-            </Button>
-            <Button
-              variant="no"
-              onClick={() => handleSignalResponse(false)}
-              disabled={signalReceived !== null}
-            >
-              No
-            </Button>
-          </ButtonGroup>
-        </ConfirmationContainer>
+        {message !== "Signal not active yet" && (
+          <Container>
+            <SignalWidget
+              label="Capital"
+              value={formatCurrency(current)}
+              balance={formatCurrency(current, true)}
+            />
+            <IconWrapper>
+              <FaArrowRightLong />
+            </IconWrapper>
+            <SignalWidget
+              label="Profit"
+              value={formatCurrency(next)}
+              balance={formatCurrency(next, true)}
+            />
+          </Container>
+        )}
       </div>
     </MainContainer>
   );

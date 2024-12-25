@@ -289,6 +289,11 @@ export const getSignalById = async (id) => {
   return response.data;
 };
 
+export const updateSignalById = async (id) => {
+  const response = await chatAppAuth.put(`/signal/${id}`);
+  return response.data;
+};
+
 export const fecthDailySignal = async () => {
   const response = await chatAppAuth.get(`/signal/daily`);
   return response.data;

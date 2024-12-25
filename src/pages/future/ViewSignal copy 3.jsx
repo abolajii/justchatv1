@@ -5,9 +5,7 @@ import { IoTimeOutline } from "react-icons/io5";
 import { useNavigate, useParams } from "react-router-dom";
 import { MdChevronLeft } from "react-icons/md";
 import styled from "styled-components";
-import { getSignalById, updateSignalById } from "../../api/request";
-
-import { useAlert } from "../../context/AlertContext";
+import { getSignalById } from "../../api/request";
 
 const Container = styled.div`
   display: flex;
@@ -154,8 +152,6 @@ const ViewSignal = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
 
-  const { showAlert } = useAlert();
-
   const calculateSignalValues = (capital, profit) => {
     return {
       current: parseFloat(capital) || 0,
@@ -186,16 +182,10 @@ const ViewSignal = () => {
     try {
       setSignalReceived(received);
       // Here you would typically make an API call to update the signal status
-
-      if (received) {
-        console.log(`Signal ${received ? "received" : "not received"}`);
-        await updateSignalById(id);
-        // console.log(response);
-        showAlert("success", "Signal updated successfully");
-      }
+      // await updateSignalStatus(id, received);
+      console.log(`Signal ${received ? "received" : "not received"}`);
     } catch (error) {
       console.error("Error updating signal status:", error);
-      showAlert("error", "Error updating signal status:");
     }
   };
 
