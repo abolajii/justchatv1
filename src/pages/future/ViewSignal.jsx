@@ -8,6 +8,7 @@ import { getSignalById, updateSignalById } from "../../api/request";
 import { useAlert } from "../../context/AlertContext";
 import MainContainer from "./MainContainer";
 import SignalResult from "./SignalResults";
+import { RiSignalTowerFill } from "react-icons/ri";
 
 const Container = styled.div`
   display: flex;
@@ -282,7 +283,7 @@ const ViewSignal = () => {
         </Duration>
 
         <StatusBadge active={active}>
-          <IoTimeOutline />
+          <RiSignalTowerFill />
           {message}
         </StatusBadge>
         {signal.status === "pending" && (
