@@ -301,7 +301,7 @@ const ViewSignal = () => {
           </Container>
         )}
 
-        {message === "Signal has ended" && (
+        {message === "Signal has ended" && signal.status === "pending" && (
           <ConfirmationContainer>
             <Question>Did you receive this signal?</Question>
             <ButtonGroup>

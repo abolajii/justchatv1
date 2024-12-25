@@ -227,6 +227,7 @@ const SignalCalculator = () => {
   return (
     <MainContainer>
       <div>
+        /';;p'
         <h1 className="mb-4 mt-3">Welcome to Signal Calculator.</h1>
         <Container>
           <InputContainer>
