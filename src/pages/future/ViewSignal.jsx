@@ -282,23 +282,24 @@ const ViewSignal = () => {
           <IoTimeOutline />
           {message}
         </StatusBadge>
-
-        <Container>
-          <SignalWidget
-            label="From"
-            value={formatCurrency(current, true)}
-            balance={formatCurrency(current * NGN_TO_USD_RATE, true, "naira")} // Naira value
-          />
-          <IconWrapper>
-            <FaArrowRightLong />
-          </IconWrapper>
-          <SignalWidget
-            label="To"
-            value={formatCurrency(next, true)}
-            // balance={formatCurrency(next * NGN_TO_USD_RATE, true)}
-            balance={formatCurrency(current * NGN_TO_USD_RATE, true, "naira")} // Naira value
-          />
-        </Container>
+        {message !== "Signal not active yet" && (
+          <Container>
+            <SignalWidget
+              label="From"
+              value={formatCurrency(current, true)}
+              balance={formatCurrency(current * NGN_TO_USD_RATE, true, "naira")} // Naira value
+            />
+            <IconWrapper>
+              <FaArrowRightLong />
+            </IconWrapper>
+            <SignalWidget
+              label="To"
+              value={formatCurrency(next, true)}
+              // balance={formatCurrency(next * NGN_TO_USD_RATE, true)}
+              balance={formatCurrency(current * NGN_TO_USD_RATE, true, "naira")} // Naira value
+            />
+          </Container>
+        )}
 
         {message === "Signal has ended" && (
           <ConfirmationContainer>
