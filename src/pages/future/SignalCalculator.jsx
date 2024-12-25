@@ -15,11 +15,11 @@ const Container = styled.div`
   font-family: Arial, sans-serif;
   /* background-color: ${(props) =>
     props.isDarkMode ? "#1e1e1e" : "#ffffff"}; */
-  color: ${(props) => (props.isDarkMode ? "#e0e0e0" : "#000000")};
+  color: #e0e0e0;
 
   p {
     font-size: 13px;
-    color: ${(props) => (props.isDarkMode ? "#e0e0e0" : "#000000")};
+    color: #e0e0e0;
   }
 
   overflow: scroll;
@@ -40,30 +40,27 @@ const baseInputStyles = css`
 
 const Input = styled.input`
   ${baseInputStyles}
-  border: 1px solid ${(props) => (props.isDarkMode ? "#444" : "#ddd")};
-  background-color: ${(props) => (props.isDarkMode ? "#1e1e1e" : "#ffffff")};
-  color: ${(props) => (props.isDarkMode ? "#e0e0e0" : "#000000")};
+  border: 1px solid #444;
+  color: #e0e0e0;
+  background-color: #1e1e1e;
 `;
 
 const Select = styled.select`
   ${baseInputStyles}
-  border: 1px solid ${(props) => (props.isDarkMode ? "#444" : "#ddd")};
-  background-color: ${(props) => (props.isDarkMode ? "#1e1e1e" : "#ffffff")};
-  color: ${(props) => (props.isDarkMode ? "#e0e0e0" : "#000000")};
+  border: 1px solid #444;
+  color: #e0e0e0;
+  background-color: #1e1e1e;
 `;
 
 const CalculateButton = styled.button`
   padding: 8px 16px;
-  background-color: ${(props) => (props.isDarkMode ? "#4caf50" : "#4caf50")};
+  border: 1px solid #444;
+  background-color: #4caf50;
   color: white;
   border: none;
   border-radius: 4px;
   cursor: pointer;
   transition: background-color 0.3s ease;
-
-  &:hover {
-    background-color: ${(props) => (props.isDarkMode ? "#6a6f83" : "#45a049")};
-  }
 `;
 
 const Table = styled.table`
@@ -73,14 +70,17 @@ const Table = styled.table`
 
   th,
   td {
-    border: 1px solid ${(props) => (props.isDarkMode ? "#444" : "#ddd")};
+    border: 1px solid #444;
+    color: #e0e0e0;
+    background-color: #1e1e1e;
+    /* border: 1px solid ${(props) => (props.isDarkMode ? "#444" : "#ddd")}; */
     padding: 2px;
     font-size: 12px;
-    color: ${(props) => (props.isDarkMode ? "#e0e0e0" : "#000000")};
+    /* color: ${(props) => (props.isDarkMode ? "#e0e0e0" : "#000000")}; */
   }
 
   th {
-    background-color: ${(props) => (props.isDarkMode ? "#1e1e1e" : "#f2f2f2")};
+    background-color: #1e1e1e;
     font-weight: bold;
   }
 `;
@@ -93,29 +93,22 @@ const Pagination = styled.div`
 
   button {
     padding: 8px 12px;
-    background-color: ${(props) => (props.isDarkMode ? "#2a2a3f" : "#f2f2f2")};
-    border: 1px solid ${(props) => (props.isDarkMode ? "#444" : "#ddd")};
+    border: 1px solid #444;
+    color: #e0e0e0;
+    background-color: #1e1e1e;
     border-radius: 4px;
-    color: ${(props) => (props.isDarkMode ? "#e0e0e0" : "#000000")};
     cursor: pointer;
     transition: background-color 0.3s ease;
 
     &:hover {
-      background-color: ${(props) => (props.isDarkMode ? "#3a3a4f" : "#ddd")};
-    }
-
-    &:disabled {
-      cursor: not-allowed;
-      background-color: ${(props) =>
-        props.isDarkMode ? "#1a1a2e" : "#e0e0e0"};
-      color: ${(props) => (props.isDarkMode ? "#666" : "#999")};
+      background-color: #1e1e1e;
     }
   }
 
   span {
     padding: 8px;
     font-size: 14px;
-    color: ${(props) => (props.isDarkMode ? "#e0e0e0" : "#000000")};
+    color: #e0e0e0;
   }
 `;
 
@@ -128,7 +121,6 @@ const formatCurrency = (value, currency = "NGN") => {
 };
 
 const SignalCalculator = () => {
-  const { isDarkMode } = useThemeStore();
   const { defaultValue } = useSignalStore();
 
   const [startCapital, setStartCapital] = useState(defaultValue);
@@ -236,42 +228,36 @@ const SignalCalculator = () => {
     <MainContainer>
       <div>
         <h1 className="mb-4 mt-3">Welcome to Signal Calculator.</h1>
-        <Container isDarkMode={isDarkMode}>
+        <Container>
           <InputContainer>
             <Input
               value={startCapital}
               onChange={(e) => setStartCapital(e.target.value)}
               placeholder="Starting Capital"
-              isDarkMode={isDarkMode}
             />
             <Input
               type="date"
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
-              isDarkMode={isDarkMode}
             />
             <Input
               type="date"
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
-              isDarkMode={isDarkMode}
             />
             <Input
               value={multiplier}
               onChange={(e) => setMultiplier(Number(e.target.value))}
               placeholder="Multiplier"
-              isDarkMode={isDarkMode}
             />
             <Input
               value={monthlyBonus}
               onChange={(e) => setMonthlyBonus(Number(e.target.value))}
               placeholder="Monthly Bonus"
-              isDarkMode={isDarkMode}
             />
             <Select
               value={pageSize}
               onChange={(e) => setPageSize(Number(e.target.value))}
-              isDarkMode={isDarkMode}
             >
               {[5, 10, 20, 50, 1000].map((size) => (
                 <option key={size} value={size}>
@@ -279,10 +265,7 @@ const SignalCalculator = () => {
                 </option>
               ))}
             </Select>
-            <CalculateButton
-              onClick={calculateTradingResults}
-              isDarkMode={isDarkMode}
-            >
+            <CalculateButton onClick={calculateTradingResults}>
               Calculate
             </CalculateButton>
           </InputContainer>
@@ -292,7 +275,7 @@ const SignalCalculator = () => {
           </div>
           {calculatedResults && (
             <>
-              <Table isDarkMode={isDarkMode}>
+              <Table>
                 <thead>
                   <tr>
                     <th>Date</th>
@@ -325,7 +308,7 @@ const SignalCalculator = () => {
                 </tbody>
               </Table>
               {calculatedResults?.results.length > 0 && (
-                <Pagination isDarkMode={isDarkMode}>
+                <Pagination>
                   {currentPage !== 1 && (
                     <button
                       onClick={() =>

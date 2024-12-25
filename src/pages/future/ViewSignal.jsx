@@ -1,13 +1,12 @@
-import React, { useEffect, useState, useMemo } from "react";
-import MainContainer from "./MainContainer";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { FaArrowRightLong } from "react-icons/fa6";
 import { IoTimeOutline } from "react-icons/io5";
-import { useNavigate, useParams } from "react-router-dom";
 import { MdChevronLeft } from "react-icons/md";
 import styled from "styled-components";
 import { getSignalById, updateSignalById } from "../../api/request";
-
 import { useAlert } from "../../context/AlertContext";
+import MainContainer from "./MainContainer";
 
 const Container = styled.div`
   display: flex;
@@ -76,18 +75,12 @@ const BackButton = styled.div`
   margin-top: 30px;
   display: inline-flex;
   align-items: center;
+  padding: 4px;
+
   &:hover {
     background-color: #272727;
   }
 `;
-
-const formatCurrency = (number, includeSymbol = false) => {
-  const formatted = number.toFixed(2).toLocaleString("en-US", {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  });
-  return includeSymbol ? `$${formatted}` : formatted;
-};
 
 const ConfirmationContainer = styled.div`
   margin-top: 32px;
@@ -135,103 +128,141 @@ const Button = styled.button`
   }
 `;
 
-const formatNumber = (number) => {
-  const [integerPart, decimalPart] = number.toFixed(2).split(".");
+// Utility functions
+const calculateSignalValues = (initialAmount = 0) => {
+  const tradingAmount = initialAmount * 0.01;
+  const profitAmount = tradingAmount * 0.88;
   return {
-    integerPart: new Intl.NumberFormat().format(parseInt(integerPart)),
-    decimalPart,
+    current: initialAmount,
+    next: initialAmount + profitAmount,
   };
 };
+
+const checkTimeStatus = (timeRange) => {
+  if (!timeRange) return { active: false, message: "Invalid time range" };
+
+  const [startTime, endTime] = timeRange.split(" - ");
+  const now = new Date();
+  const currentTime = now.toLocaleTimeString("en-US", {
+    hour12: false,
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+
+  if (currentTime < startTime) {
+    return { active: false, message: "Signal not active yet" };
+  } else if (currentTime > endTime) {
+    return { active: false, message: "Signal has ended" };
+  }
+  return { active: true, message: "Signal is active" };
+};
+
+const formatCurrency = (number, includeSymbol = false, currency = "usd") => {
+  if (typeof number !== "number" || isNaN(number)) return "0.00";
+
+  // Get the whole number part and decimal part
+  const parts = number.toFixed(2).split(".");
+  const wholeNumber = parts[0];
+  const decimal = parts[1];
+
+  // Add commas to the whole number
+  const formattedWholeNumber = wholeNumber.replace(
+    /\B(?=(\d{3})+(?!\d))/g,
+    ","
+  );
+
+  // Combine whole number and decimal
+  const formatted = `${formattedWholeNumber}.${decimal}`;
+
+  if (currency === "naira") {
+    return `₦${formatted}`;
+  }
+  return includeSymbol ? `$${formatted}` : formatted;
+};
+// Sub-components
 
 const SignalWidget = ({ label, value, balance }) => (
   <Widget>
     <div>
-      <div>{label}</div>
-      <div>{value}</div>
+      <div style={{ color: "#e0e0e0", marginBottom: "8px" }}>{label}</div>
+      <div style={{ color: "#fff", fontSize: "18px", fontWeight: "500" }}>
+        {value}
+      </div>
     </div>
-    <div>
+    <div style={{ color: "#22c55e", fontSize: "14px", marginTop: "auto" }}>
       {label === "To" ? "Est. Profit" : "Capital"}: {balance}
     </div>
   </Widget>
 );
 
+// Main component
 const ViewSignal = () => {
   const [signal, setSignal] = useState(null);
   const [signalReceived, setSignalReceived] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+
   const { id } = useParams();
   const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState(true);
-
   const { showAlert } = useAlert();
 
-  const calculateSignalValues = (capital, profit) => {
-    return {
-      current: parseFloat(capital) || 0,
-      next: parseFloat(profit) || 0,
-    };
-  };
-
-  const checkTimeStatus = (timeRange) => {
-    if (!timeRange) return { active: false, message: "Invalid time range" };
-
-    const [startTime, endTime] = timeRange.split(" - ");
-    const now = new Date();
-    const currentTime =
-      now.getHours().toString().padStart(2, "0") +
-      ":" +
-      now.getMinutes().toString().padStart(2, "0");
-
-    if (currentTime < startTime) {
-      return { active: false, message: "Signal not active yet" };
-    } else if (currentTime > endTime) {
-      return { active: false, message: "Signal has ended" };
-    } else {
-      return { active: true, message: "Signal is active" };
-    }
-  };
-
-  const handleSignalResponse = async (received) => {
-    try {
-      setSignalReceived(received);
-      // Here you would typically make an API call to update the signal status
-
-      if (received) {
-        console.log(`Signal ${received ? "received" : "not received"}`);
-        await updateSignalById(id);
-        // console.log(response);
-        showAlert("success", "Signal updated successfully");
-      }
-    } catch (error) {
-      console.error("Error updating signal status:", error);
-      showAlert("error", "Error updating signal status:");
-    }
-  };
+  const NGN_TO_USD_RATE = 1656.0;
 
   useEffect(() => {
     const fetchSignal = async () => {
       try {
         const response = await getSignalById(id);
+        if (!response?.data?.signal) {
+          throw new Error("Signal not found");
+        }
         setSignal(response.data.signal);
-        setIsLoading(false);
-      } catch (err) {
-        console.error(err);
+      } catch (error) {
+        console.error("Error fetching signal:", error);
+        setError(error.message || "Failed to fetch signal details");
+        showAlert("error", "Failed to fetch signal details");
+      } finally {
         setIsLoading(false);
       }
     };
 
-    fetchSignal();
-  }, [id]);
+    if (id) {
+      fetchSignal();
+    }
+  }, [id, showAlert]);
 
-  const { current, next } = useMemo(
-    () => calculateSignalValues(signal?.capital, signal?.profit),
-    [signal]
-  );
-
-  const { active, message } = checkTimeStatus(signal?.time);
+  const handleSignalResponse = async (received) => {
+    try {
+      setSignalReceived(received);
+      if (received) {
+        await updateSignalById(id);
+        showAlert("success", "Signal updated successfully");
+      }
+    } catch (error) {
+      console.error("Error updating signal status:", error);
+      showAlert("error", "Failed to update signal status");
+      setSignalReceived(null); // Reset on error
+    }
+  };
 
   if (isLoading) {
     return <MainContainer>Loading...</MainContainer>;
   }
+
+  if (error || !signal) {
+    return (
+      <MainContainer>
+        <BackButton onClick={() => navigate(-1)}>
+          <MdChevronLeft size={20} />
+        </BackButton>
+        <div style={{ color: "#fff", marginTop: "20px" }}>
+          {error || "Signal not found"}
+        </div>
+      </MainContainer>
+    );
+  }
+
+  const { current, next } = calculateSignalValues(signal.capital);
+  const { active, message } = checkTimeStatus(signal.time);
 
   return (
     <MainContainer>
@@ -239,32 +270,35 @@ const ViewSignal = () => {
         <BackButton onClick={() => navigate(-1)}>
           <MdChevronLeft size={20} />
         </BackButton>
-        <Title>{signal?.name}</Title>
+
+        <Title>{signal.name}</Title>
+
         <Duration>
           <IoTimeOutline />
-          <span>{signal?.time}</span>
+          <span>{signal.time}</span>
         </Duration>
+
         <StatusBadge active={active}>
           <IoTimeOutline />
           {message}
         </StatusBadge>
-        {/* {message === "Signal has ended" && (
-          <Container>
-            <SignalWidget
-              label="Capital"
-              value={formatCurrency(current)}
-              balance={formatCurrency(current, true)}
-            />
-            <IconWrapper>
-              <FaArrowRightLong />
-            </IconWrapper>
-            <SignalWidget
-              label="Profit"
-              value={formatCurrency(next)}
-              balance={formatCurrency(next, true)}
-            />
-          </Container>
-        )} */}
+
+        <Container>
+          <SignalWidget
+            label="From"
+            value={formatCurrency(current, true)}
+            balance={formatCurrency(current * NGN_TO_USD_RATE, true, "naira")} // Naira value
+          />
+          <IconWrapper>
+            <FaArrowRightLong />
+          </IconWrapper>
+          <SignalWidget
+            label="To"
+            value={formatCurrency(next, true)}
+            // balance={formatCurrency(next * NGN_TO_USD_RATE, true)}
+            balance={formatCurrency(current * NGN_TO_USD_RATE, true, "naira")} // Naira value
+          />
+        </Container>
 
         {message === "Signal has ended" && (
           <ConfirmationContainer>
