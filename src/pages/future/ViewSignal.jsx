@@ -248,22 +248,23 @@ const ViewSignal = () => {
           <IoTimeOutline />
           {message}
         </StatusBadge>
-
-        <Container>
-          <SignalWidget
-            label="Capital"
-            value={formatCurrency(current)}
-            balance={formatCurrency(current, true)}
-          />
-          <IconWrapper>
-            <FaArrowRightLong />
-          </IconWrapper>
-          <SignalWidget
-            label="Profit"
-            value={formatCurrency(next)}
-            balance={formatCurrency(next, true)}
-          />
-        </Container>
+        {/* {message === "Signal has ended" && (
+          <Container>
+            <SignalWidget
+              label="Capital"
+              value={formatCurrency(current)}
+              balance={formatCurrency(current, true)}
+            />
+            <IconWrapper>
+              <FaArrowRightLong />
+            </IconWrapper>
+            <SignalWidget
+              label="Profit"
+              value={formatCurrency(next)}
+              balance={formatCurrency(next, true)}
+            />
+          </Container>
+        )} */}
 
         {message === "Signal has ended" && (
           <ConfirmationContainer>
