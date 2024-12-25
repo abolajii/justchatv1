@@ -284,6 +284,11 @@ export const getSignal = async () => {
   return response.data;
 };
 
+export const getAllSignal = async () => {
+  const response = await chatAppAuth.get(`/all/signal`);
+  return response.data;
+};
+
 export const getSignalById = async (id) => {
   const response = await chatAppAuth.get(`/signal/${id}`);
   return response.data;

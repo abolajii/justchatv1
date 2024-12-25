@@ -27,11 +27,6 @@ const One = styled.div`
   flex-direction: column;
 `;
 
-const Two = styled.div`
-  flex: 1;
-  display: flex;
-`;
-
 const MainContainer = ({ children }) => {
   //
   return (

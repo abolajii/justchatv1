@@ -25,6 +25,7 @@ import UserSignal from "./pages/future/UserSignal";
 import Signals from "./pages/future/Signals";
 import SignalSettings from "./pages/future/Settings";
 import ViewSignal from "./pages/future/ViewSignal";
+import AllSignals from "./pages/future/AllSignals";
 import SignalCalculator from "./pages/future/SignalCalculator";
 
 const App = () => {
@@ -166,6 +167,15 @@ const App = () => {
           element={
             <ProtectedRoute>
               <UserSignal />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/trade/all"
+          element={
+            <ProtectedRoute>
+              <AllSignals />
             </ProtectedRoute>
           }
         />

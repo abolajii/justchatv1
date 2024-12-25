@@ -8,6 +8,7 @@ import {
 } from "react-icons/ri";
 import { MdOutlineTimer } from "react-icons/md";
 import { FaHandHoldingUsd } from "react-icons/fa";
+import { SiSignal } from "react-icons/si";
 
 const Container = styled.div`
   background-color: #000000;
@@ -54,6 +55,11 @@ const Sidebar = () => {
       path: "/trade/signal",
       icon: RiSignalTowerFill,
       label: "Signals",
+    },
+    {
+      path: "/trade/all",
+      icon: SiSignal,
+      label: "All Signals",
     },
     {
       path: "/trade/future",
