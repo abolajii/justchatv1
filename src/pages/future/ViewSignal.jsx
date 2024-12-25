@@ -241,41 +241,44 @@ const ViewSignal = () => {
           {message}
         </StatusBadge>
 
-        <Container>
-          <SignalWidget
-            label="Capital"
-            value={formatCurrency(current)}
-            balance={formatCurrency(current, true)}
-          />
-          <IconWrapper>
-            <FaArrowRightLong />
-          </IconWrapper>
-          <SignalWidget
-            label="Profit"
-            value={formatCurrency(next)}
-            balance={formatCurrency(next, true)}
-          />
-        </Container>
-
-        <ConfirmationContainer>
-          <Question>Did you receive this signal?</Question>
-          <ButtonGroup>
-            <Button
-              variant="yes"
-              onClick={() => handleSignalResponse(true)}
-              disabled={signalReceived !== null}
-            >
-              Yes
-            </Button>
-            <Button
-              variant="no"
-              onClick={() => handleSignalResponse(false)}
-              disabled={signalReceived !== null}
-            >
-              No
-            </Button>
-          </ButtonGroup>
-        </ConfirmationContainer>
+        {message === "Signal has ended" && (
+          <Container>
+            <SignalWidget
+              label="Capital"
+              value={formatCurrency(current)}
+              balance={formatCurrency(current, true)}
+            />
+            <IconWrapper>
+              <FaArrowRightLong />
+            </IconWrapper>
+            <SignalWidget
+              label="Profit"
+              value={formatCurrency(next)}
+              balance={formatCurrency(next, true)}
+            />
+          </Container>
+        )}
+        {message !== "Signal has ended" && (
+          <ConfirmationContainer>
+            <Question>Did you receive this signal?</Question>
+            <ButtonGroup>
+              <Button
+                variant="yes"
+                onClick={() => handleSignalResponse(true)}
+                disabled={signalReceived !== null}
+              >
+                Yes
+              </Button>
+              <Button
+                variant="no"
+                onClick={() => handleSignalResponse(false)}
+                disabled={signalReceived !== null}
+              >
+                No
+              </Button>
+            </ButtonGroup>
+          </ConfirmationContainer>
+        )}
       </div>
     </MainContainer>
   );

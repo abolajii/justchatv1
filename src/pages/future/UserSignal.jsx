@@ -90,7 +90,7 @@ const UserSignal = () => {
     (async () => {
       try {
         const response = await getUserSignal();
-        setDefaultValue(response?.startingCapital || 0);
+        setDefaultValue(response?.startingCapital.toFixed(2) || 0);
         setIsLoading(false);
       } catch (err) {
         console.error(err);
