@@ -27,6 +27,7 @@ import SignalSettings from "./pages/future/Settings";
 import ViewSignal from "./pages/future/ViewSignal";
 import AllSignals from "./pages/future/AllSignals";
 import SignalCalculator from "./pages/future/SignalCalculator";
+import DailySignal from "./pages/future/DailySignal";
 
 const App = () => {
   const { setCurrentUser } = useUserStore();
@@ -172,10 +173,19 @@ const App = () => {
         />
 
         <Route
-          path="/trade/all"
+          path="/signal/all"
           element={
             <ProtectedRoute>
               <AllSignals />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/signal/day/:day"
+          element={
+            <ProtectedRoute>
+              <DailySignal />
             </ProtectedRoute>
           }
         />

@@ -57,7 +57,7 @@ const Sidebar = () => {
       label: "Signals",
     },
     {
-      path: "/trade/all",
+      path: "/signal/all",
       icon: SiSignal,
       label: "All Signals",
     },

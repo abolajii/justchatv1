@@ -3,7 +3,9 @@ import MainContainer from "./MainContainer";
 import styled from "styled-components";
 import { getAllSignal } from "../../api/request";
 import { useNavigate } from "react-router-dom";
-import { MdDateRange } from "react-icons/md";
+import { Calendar } from "lucide-react";
+import useSignalStore from "./store/useSignalStore";
+
 const Container = styled.div`
   margin-top: 60px;
   h1 {
@@ -12,16 +14,24 @@ const Container = styled.div`
     color: #fff;
     margin-bottom: 24px;
   }
-
-  svg {
-    margin-right: 3px;
-  }
 `;
 
 const SignalGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(4, 1fr);
   gap: 20px;
+
+  @media (max-width: 1200px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  @media (max-width: 900px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (max-width: 600px) {
+    grid-template-columns: 1fr;
+  }
 `;
 
 const SignalCard = styled.div`
@@ -33,11 +43,17 @@ const SignalCard = styled.div`
   transition: transform 0.2s;
 `;
 
+const DateRow = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+`;
+
 const DateText = styled.h3`
   color: #fff;
   font-size: 18px;
   font-weight: 500;
-  margin-bottom: 12px;
 `;
 
 const StatsRow = styled.div`
@@ -59,6 +75,7 @@ const AllSignals = () => {
   const [isLoading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+  const { setSignals } = useSignalStore();
 
   useEffect(() => {
     const fetchSignals = async () => {
@@ -112,12 +129,15 @@ const AllSignals = () => {
             return (
               <SignalCard
                 key={day._id}
-                // onClick={() => navigate(`/signals/day/${day._id}`)}
+                onClick={() => {
+                  navigate(`/signal/day/${day._id}`);
+                  setSignals(day.signals);
+                }}
               >
-                <DateText className="flex align-center">
-                  <MdDateRange />
-                  {formatDate(day._id)}
-                </DateText>
+                <DateRow>
+                  <Calendar size={20} color="#22c55e" />
+                  <DateText>{formatDate(day._id)}</DateText>
+                </DateRow>
                 <StatsRow>
                   <StatItem>
                     Completed:<span>{completed}</span>
