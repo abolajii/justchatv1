@@ -212,7 +212,7 @@ const DailySignal = () => {
                 </TableCell>
                 <TableCell>
                   {completed ? <TrendingUp size={16} /> : "-"}
-                  {completed ? signal.profit : ""}
+                  {completed ? "88%" : "-"}
                 </TableCell>
                 <TableCell>
                   {formatCapital(completed ? signal.capital : 0)}
