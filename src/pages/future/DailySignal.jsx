@@ -20,7 +20,7 @@ const BackButton = styled.div`
 
 const Container = styled.div`
   margin-top: 60px;
-  width: 100%;
+  width: 98.5%;
 `;
 
 const Header = styled.div`
