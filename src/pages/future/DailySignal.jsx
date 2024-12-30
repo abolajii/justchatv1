@@ -509,12 +509,12 @@ const DailySignal = () => {
                       </ButtonGroup>
                     </ConfirmationContainer>
                   )}
-                {selectedSignal.status === "failed" && (
+                {/* {selectedSignal.status === "failed" && (
                   <FailedSignalMessage>
                     This signal has failed. Please check the details and try
                     again.
                   </FailedSignalMessage>
-                )}
+                )} */}
                 {/* {isTimeElapsed(selectedSignal) && (
                   <TimeElapsedMessage>
                     This signal has expired. Please check the details and try
