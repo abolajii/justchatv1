@@ -515,12 +515,12 @@ const DailySignal = () => {
                     again.
                   </FailedSignalMessage>
                 )}
-                {isTimeElapsed(selectedSignal) && (
+                {/* {isTimeElapsed(selectedSignal) && (
                   <TimeElapsedMessage>
                     This signal has expired. Please check the details and try
                     again.
                   </TimeElapsedMessage>
-                )}
+                )} */}
               </ModalDetail>
             </ModalContent>
           </ModalOverlay>
