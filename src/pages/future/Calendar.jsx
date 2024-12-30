@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-
 import styled from "styled-components";
 import {
   format,
@@ -14,12 +13,9 @@ import {
 const Container = styled.div`
   margin-top: 80px;
   color: #abb3c0;
-  /* box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); */
   width: 80%;
   height: 350px;
-  /* background-color: #272727; */
   background-color: #151515;
-
   border-radius: 6px;
   padding: 15px;
   position: relative;
@@ -59,6 +55,7 @@ const DaysGrid = styled.div`
 `;
 
 const DayCell = styled.div`
+  position: relative;
   height: 2.5rem;
   display: flex;
   align-items: center;
@@ -77,9 +74,31 @@ const EmptyCell = styled.div`
   height: 2.5rem;
 `;
 
+const HoverContent = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: ${(props) => (props.isToday ? "9999px" : "8px")};
+  background-color: ${(props) => (props.isToday ? "#22c55e" : "transparent")};
+  color: #ffffff;
+  display: ${(props) => (props.isVisible ? "flex" : "none")};
+  /* align-items: center; */
+  /* justify-content: center; */
+  font-size: 0.875rem;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+
+  ${DayCell}:hover & {
+    opacity: 1;
+  }
+`;
+
 const Calendar = () => {
   const today = new Date();
   const [currentDate, setCurrentDate] = useState(today);
+  const [hoveredDate, setHoveredDate] = useState(null);
 
   const monthStart = startOfMonth(currentDate);
   const monthEnd = endOfMonth(currentDate);
@@ -119,8 +138,19 @@ const Calendar = () => {
         ))}
 
         {days.map((date) => (
-          <DayCell key={date.toString()} isToday={isSameDay(date, today)}>
+          <DayCell
+            key={date.toString()}
+            isToday={isSameDay(date, today)}
+            onMouseEnter={() => setHoveredDate(date)}
+            onMouseLeave={() => setHoveredDate(null)}
+          >
             {format(date, "d")}
+            <HoverContent
+              isVisible={isSameDay(date, hoveredDate)}
+              isToday={isSameDay(date, today)}
+            >
+              -{/* {format(date, "MMM d")} */}
+            </HoverContent>
           </DayCell>
         ))}
       </DaysGrid>

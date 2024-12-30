@@ -283,11 +283,6 @@ const ViewSignal = () => {
           <SignalNotActive v1={v1} v2={v2} b1={b1} b2={b2} active />
         )}
 
-        {/* 
-        {message === "Signal has ended" && (
-          <SignalNotActive v1={v1} v2={v2} b1={b1} b2={b2} active />
-        )} */}
-
         {message === "Signal has ended" && signal.status !== "pending" && (
           <SignalResult signal={signal} />
         )}

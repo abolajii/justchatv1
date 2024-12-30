@@ -24,6 +24,10 @@ const Container = styled.div`
 
   overflow: scroll;
   height: calc(100% - 80px);
+
+  &::-webkit-scrollbar {
+    width: 0px;
+  }
 `;
 
 const InputContainer = styled.div`
@@ -189,7 +193,6 @@ const SignalCalculator = () => {
         date: format(date, "yyyy-MM-dd"),
         startingCapital: startingBalance,
         monthlyBonus: shouldPayBonus ? monthlyBonus : 0,
-
         firstTradeAmount: firstTradeTotalAmount,
         firstTradeRemainingBalance,
         firstTradeProfit,
@@ -199,6 +202,7 @@ const SignalCalculator = () => {
         secondTradeProfit,
         capitalAfterSecondTrade: balance,
         dailyProfit,
+        profitNaira: dailyProfit * multiplier,
       });
     }
 
@@ -227,7 +231,6 @@ const SignalCalculator = () => {
   return (
     <MainContainer>
       <div>
-        /';;p'
         <h1 className="mb-4 mt-3">Welcome to Signal Calculator.</h1>
         <Container>
           <InputContainer>
@@ -288,6 +291,7 @@ const SignalCalculator = () => {
                     <th>2nd Trade Profit</th>
                     <th>Final Capital</th>
                     <th>Daily Profit</th>
+                    <th>Daily Profit (NGN)</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -304,6 +308,7 @@ const SignalCalculator = () => {
                       <td>{result.secondTradeProfit.toFixed(2)}</td>
                       <td>{result.capitalAfterSecondTrade.toFixed(2)}</td>
                       <td>{result.dailyProfit.toFixed(2)}</td>
+                      <td>{formatCurrency(result.profitNaira.toFixed(2))}</td>
                     </tr>
                   ))}
                 </tbody>

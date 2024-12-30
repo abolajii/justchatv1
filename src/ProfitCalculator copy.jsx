@@ -123,6 +123,7 @@ const TradingProfitCalculator = () => {
         secondTradeProfit: secondTradeAmount,
         capitalAfterSecondTrade: currentCapital,
         dailyProfit,
+        profitNaira: dailyProfit * multiplier,
       });
     }
 
@@ -196,6 +197,7 @@ const TradingProfitCalculator = () => {
                 <th>2nd Trade Profit</th>
                 <th>Capital After 2nd Trade</th>
                 <th>Daily Profit</th>
+                <th>Daily Profit(NGN)</th>
               </tr>
             </thead>
             <tbody>

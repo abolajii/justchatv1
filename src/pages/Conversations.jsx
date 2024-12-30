@@ -9,6 +9,10 @@ const Inner = styled.div`
   height: 100%;
 `;
 
+const DayCell = styled.div`
+  padding: 9px;
+`;
+
 const Conversation = () => {
   const { isDarkMode } = useThemeStore();
 
@@ -16,7 +20,9 @@ const Conversation = () => {
     <MainContainer>
       <Header>
         <Inner isDarkMode={isDarkMode}>
-          <div>Search</div>
+          {/* <div>Search</div> */}
+
+          <DayCell>1</DayCell>
         </Inner>
       </Header>
     </MainContainer>

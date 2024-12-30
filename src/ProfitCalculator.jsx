@@ -202,6 +202,7 @@ const TradingProfitCalculator = () => {
         secondTradeProfit,
         capitalAfterSecondTrade: balance,
         dailyProfit,
+        profitNaira: dailyProfit * multiplier,
       });
     }
 
@@ -297,6 +298,7 @@ const TradingProfitCalculator = () => {
                   <th>2nd Trade Profit</th>
                   <th>Final Capital</th>
                   <th>Daily Profit</th>
+                  <th>Daily Profit(NGN)</th>
                 </tr>
               </thead>
               <tbody>
@@ -305,14 +307,13 @@ const TradingProfitCalculator = () => {
                     <td>{result.date}</td>
                     <td>{result.startingCapital.toFixed(2)}</td>
                     <td>{result.firstTradeAmount.toFixed(2)}</td>
-
                     <td>{result.firstTradeProfit.toFixed(2)}</td>
                     <td>{result.capitalAfterFirstTrade.toFixed(2)}</td>
                     <td>{result.secondTradeAmount.toFixed(2)}</td>
-
                     <td>{result.secondTradeProfit.toFixed(2)}</td>
                     <td>{result.capitalAfterSecondTrade.toFixed(2)}</td>
                     <td>{result.dailyProfit.toFixed(2)}</td>
+                    {formatCurrency(result.profitNaira.toFixed(2))}
                   </tr>
                 ))}
               </tbody>
