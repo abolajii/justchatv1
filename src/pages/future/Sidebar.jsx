@@ -62,20 +62,20 @@ const Sidebar = () => {
       label: "All Signals",
     },
     {
-      path: "/trade/future",
-      icon: MdOutlineTimer,
-      label: "Future",
-    },
-    {
-      path: "/trade/settings",
-      icon: RiSettings3Fill,
-      label: "Settings",
-    },
-    {
       path: "/trade",
       // { label: "Trade", path: "/trade", icon: < /> },
       icon: FaHandHoldingUsd,
       label: "Trade",
+    },
+    // {
+    //   path: "/trade/future",
+    //   icon: MdOutlineTimer,
+    //   label: "Future",
+    // },
+    {
+      path: "/trade/settings",
+      icon: RiSettings3Fill,
+      label: "Settings",
     },
   ];
 
