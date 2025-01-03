@@ -317,7 +317,7 @@ const DailySignal = () => {
   const [selectedSignal, setSelectedSignal] = useState(null);
   const [signalReceived, setSignalReceived] = useState(null);
 
-  const totalCapital = signals[signals.length - 1]?.capital;
+  const totalCapital = signals[signals.length - 1]?.recentCapital;
 
   const handleOpenModal = (signal) => {
     setSelectedSignal(signal);
