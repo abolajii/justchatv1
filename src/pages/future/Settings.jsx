@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import MainContainer from "./MainContainer";
 import { Bell, Calculator, DollarSign } from "lucide-react";
+import useSignalStore from "./store/useSignalStore";
 
 // Styled Components
 
@@ -188,13 +189,14 @@ const CardsContainer = styled.div`
 
 // Main Component
 const Settings = () => {
+  const { defaultValue } = useSignalStore();
+
   const [settings, setSettings] = useState({
-    capital: 1000,
+    capital: defaultValue,
     signalReminder: true,
     dailySignals: [
-      { id: 1, name: "Morning Signal", enabled: true },
-      { id: 2, name: "Afternoon Signal", enabled: true },
-      { id: 3, name: "Evening Signal", enabled: false },
+      { id: 1, name: "Signal 1", enabled: true },
+      { id: 2, name: "Signal 2", enabled: true },
     ],
     autoCalculate: true,
     calculateAfter5Min: true,
