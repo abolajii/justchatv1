@@ -139,24 +139,24 @@ const SignalCalculator = () => {
   const [monthlyBonus, setMonthlyBonus] = useState(0);
 
   const calculateTradingResults = () => {
-    // ... (same implementation as original code)
-    // This part remains unchanged from the previous implementation
     const start = parseISO(startDate);
     const end = parseISO(endDate);
     const results = [];
     let balance = parseFloat(startCapital);
-    const dailyProfitRate = 0.01 * 0.87; // 1% of capital with 88% profit
+    const dailyProfitRate = 0.01 * 0.88; // 1% of capital with 88% profit
     let totalProfit = 0;
     let lastMonthBonusPaid = null;
 
     for (let date = start; date <= end; date = addDays(date, 1)) {
       const currentMonth = format(date, "MM");
       const currentDay = format(date, "dd");
+      const currentYear = format(date, "yyyy");
 
-      // Check for monthly bonus
+      // Check for monthly bonus - only if year is before 2026
       const isBonusDay =
-        (currentMonth !== "12" && currentDay === "24") ||
-        (currentMonth === "12" && currentDay === "17");
+        currentYear < "2026" &&
+        ((currentMonth !== "12" && currentDay === "24") ||
+          (currentMonth === "12" && currentDay === "18"));
 
       const shouldPayBonus = isBonusDay && currentMonth !== lastMonthBonusPaid;
 
@@ -193,7 +193,7 @@ const SignalCalculator = () => {
         date: format(date, "yyyy-MM-dd"),
         startingCapital: startingBalance,
         monthlyBonus: shouldPayBonus ? monthlyBonus : 0,
-        firstTradeAmount: firstTradeTotalAmount,
+        firstTradeAmount: firstTradeTotalAmount.toFixed(1),
         firstTradeRemainingBalance,
         firstTradeProfit,
         capitalAfterFirstTrade,
@@ -299,7 +299,7 @@ const SignalCalculator = () => {
                     <tr key={index}>
                       <td>{result.date}</td>
                       <td>{result.startingCapital.toFixed(2)}</td>
-                      <td>{result.firstTradeAmount.toFixed(2)}</td>
+                      <td>{result.firstTradeAmount}</td>
 
                       <td>{result.firstTradeProfit.toFixed(2)}</td>
                       <td>{result.capitalAfterFirstTrade.toFixed(2)}</td>

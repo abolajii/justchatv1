@@ -396,7 +396,7 @@ const DailySignal = () => {
                   "-"
                 )}
               </TableCell>
-              <TableCell>{formatCapital(signal.capital)}</TableCell>
+              <TableCell>{formatCapital(signal.recentCapital)}</TableCell>
               <TableCell>
                 <Status
                   completed={signal.status === "completed"}

@@ -21,12 +21,11 @@ const Container = styled.div`
 `;
 
 const Widget = styled.div`
-  background-color: #333;
   background-color: #151515;
+  border: 1px solid rgba(34, 197, 94, 0.2);
   width: 330px;
   margin-top: 10px;
   padding: 12px;
-  border: 1px solid rgba(34, 197, 94, 0.2);
   /* width: 350px; */
   border-radius: 6px;
   display: flex;

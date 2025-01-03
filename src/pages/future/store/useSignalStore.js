@@ -2,7 +2,7 @@ import { create } from "zustand";
 
 const useSignalStore = create((set) => {
   return {
-    defaultValue: 0,
+    defaultValue: 0.0,
     setDefaultValue: (defaultValue) => set({ defaultValue }),
     signals: [],
     setSignals: (signals) => set({ signals }),

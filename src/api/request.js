@@ -303,3 +303,67 @@ export const fecthDailySignal = async () => {
   const response = await chatAppAuth.get(`/signal/daily`);
   return response.data;
 };
+
+// Create a new folder
+export const createFolderList = async (folderName) => {
+  const response = await chatAppAuth.post("/folder", {
+    name: folderName,
+  });
+  return response.data;
+};
+
+// Get all folders
+export const getAllFoldersList = async () => {
+  const response = await chatAppAuth.get("/folder");
+  return response.data;
+};
+
+// Get a specific folder
+export const getFolder = async (folderId) => {
+  const response = await chatAppAuth.get(`/${folderId}`);
+  return response.data;
+};
+
+// Add item to folder
+export const addItemToFolderList = async (folderId, itemData) => {
+  const response = await chatAppAuth.post(`/folder/${folderId}/items`, {
+    name: itemData.name,
+    date: itemData.date,
+    price: itemData.price,
+    currency: itemData.currency,
+  });
+  return response.data;
+};
+
+// Update item in folder
+export const updateItem = async (folderId, itemId, itemData) => {
+  const response = await chatAppAuth.put(
+    `/${folderId}/items/${itemId}`,
+    itemData
+  );
+  return response.data;
+};
+
+// Delete item from folder
+export const deleteItem = async (folderId, itemId) => {
+  const response = await chatAppAuth.delete(`/${folderId}/items/${itemId}`);
+  return response.data;
+};
+
+// Delete folder
+export const deleteFolderList = async (folderId) => {
+  const response = await chatAppAuth.delete(`/${folderId}`);
+  return response.data;
+};
+
+// Get folder statistics
+export const getFolderStats = async (folderId) => {
+  const response = await chatAppAuth.get(`/${folderId}/stats`);
+  return response.data;
+};
+
+// Search folders
+export const searchFolders = async (searchQuery) => {
+  const response = await chatAppAuth.get(`/search/${searchQuery}`);
+  return response.data;
+};
