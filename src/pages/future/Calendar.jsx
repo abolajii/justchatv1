@@ -15,6 +15,9 @@ import {
   addItemToFolderList,
 } from "../../api/request";
 import { useAlert } from "../../context/AlertContext";
+import useSignalStore from "./store/useSignalStore";
+import ReuseableModal from "./list/Modal";
+import ViewListItem from "./list/ViewListItem";
 
 const Container = styled.div`
   margin-top: 80px;
@@ -253,65 +256,6 @@ const ViewButton = styled(Button)`
   background-color: #374151;
 `;
 
-const ItemsModal = styled(ModalContent)`
-  max-width: 600px;
-`;
-
-const ItemsTable = styled.div`
-  margin-top: 1rem;
-`;
-
-const ItemsHeader = styled.div`
-  display: grid;
-  grid-template-columns: 2fr 1fr 1fr;
-  padding: 0.5rem;
-  background-color: #374151;
-  border-radius: 4px;
-  margin-bottom: 0.5rem;
-  color: #d1d5db;
-  font-weight: 500;
-`;
-
-const ItemRow = styled.div`
-  display: grid;
-  grid-template-columns: 2fr 1fr 1fr;
-  padding: 0.5rem;
-  border-bottom: 1px solid #374151;
-  color: #d1d5db;
-`;
-
-const ModalActions = styled.div`
-  display: flex;
-  justify-content: space-between;
-  margin-top: 1.5rem;
-`;
-
-const SummarySection = styled.div`
-  margin-top: 1.5rem;
-  padding-top: 1.5rem;
-  border-top: 1px solid #374151;
-  display: flex;
-  justify-content: space-between;
-  color: #d1d5db;
-`;
-
-const SummaryItem = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-`;
-
-const SummaryLabel = styled.span`
-  font-size: 0.875rem;
-  color: #9ca3af;
-`;
-
-const SummaryValue = styled.span`
-  font-size: 1rem;
-  font-weight: bold;
-  color: #ffffff;
-`;
-
 // Inside the Calendar component, add this helper function
 const calculateDaysFromNow = (targetDate) => {
   const now = new Date();
@@ -324,6 +268,9 @@ const calculateDaysFromNow = (targetDate) => {
 const Calendar = () => {
   const { showAlert } = useAlert();
   const today = new Date();
+
+  const { defaultValue } = useSignalStore();
+
   const [currentDate, setCurrentDate] = useState(today);
   const [hoveredDate, setHoveredDate] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -338,6 +285,22 @@ const Calendar = () => {
   const [currentFolder, setCurrentFolder] = useState(null);
   const [viewingFolder, setViewingFolder] = useState(null);
 
+  const NGN_TO_USD_RATE = 1656.0;
+
+  const totalUserCapitalInDollars = defaultValue;
+  const totaluserSignalsInADay = 2;
+
+  // so now i need to do few things when u view items in a folder
+  // 1. calculate if a user can get the all items based on total user capital how a value Whether user can get the item based on the total Items price, so if the user cant, show th item that the capital can get
+  // list the item the user can get in green but the ones he cant get be red and show how much is left to get that anfd also i need u to show in how many day would they attain the item based totalSignal In a day, then 1% of the totalCapitalIndollars after u get that do 88% of the 1% then add the result to the rest of the totalCapiatl e.g
+  //   const firstTradeTotalAmount = signal.capital * 0.01;
+  // const firstTradeRemainingBalance = signal.capital - firstTradeTotalAmount;
+  // const firstTradeProfit = firstTradeTotalAmount * 0.88;
+  // const finalAmount =
+  // firstTradeRemainingBalance + firstTradeTotalAmount + firstTradeProfit;
+  // return finalAmount - signal.capital;
+  // based on the number of signal of the user u calculate how much profit and the finalCapital in a day before he can get the item. so if he has two signal e.g after the first signal we have 203.38 on signal two u do 1% of 203.38 and get the  final capital for the day
+
   const monthStart = startOfMonth(currentDate);
   const monthEnd = endOfMonth(currentDate);
   const days = eachDayOfInterval({ start: monthStart, end: monthEnd });
@@ -349,7 +312,6 @@ const Calendar = () => {
     const loadFolders = async () => {
       try {
         const foldersData = await getAllFoldersList();
-        console.log(foldersData);
         setFolders(foldersData);
       } catch (error) {
         console.error("Error loading folders:", error);
@@ -521,6 +483,23 @@ const Calendar = () => {
       )}
 
       {isViewModalOpen && viewingFolder !== null && (
+        <ReuseableModal
+          title={folders[viewingFolder].name}
+          body={
+            <ViewListItem folders={folders} viewingFolder={viewingFolder} />
+          }
+          footer={
+            <>
+              <Button onClick={() => setIsViewModalOpen(false)}>Close</Button>
+              <Button onClick={() => addItemToFolder(viewingFolder)}>
+                Add Item
+              </Button>
+            </>
+          }
+        />
+      )}
+
+      {/* {isViewModalOpen && viewingFolder !== null && (
         <Modal onClick={() => setIsViewModalOpen(false)}>
           <ItemsModal onClick={(e) => e.stopPropagation()}>
             <ModalHeader>
@@ -599,7 +578,7 @@ const Calendar = () => {
             </ModalActions>
           </ItemsModal>
         </Modal>
-      )}
+      )} */}
 
       <Container>
         <CalendarContainer>
