@@ -445,19 +445,20 @@ const DailySignal = () => {
                   </NairaValue>
                 </DetailCard>
 
-                <DetailCard>
-                  <Label>Final Amount</Label>
-                  <Value>{formatCapital(selectedSignal.capital)}</Value>
-                  <NairaValue>
-                    ₦
-                    {(selectedSignal?.capital * NGN_TO_USD_RATE).toLocaleString(
-                      "en-US",
-                      {
+                {selectedSignal.staus === "completed" && (
+                  <DetailCard>
+                    <Label>Final Amount</Label>
+                    <Value>{formatCapital(selectedSignal.capital)}</Value>
+                    <NairaValue>
+                      ₦
+                      {(
+                        selectedSignal?.capital * NGN_TO_USD_RATE
+                      ).toLocaleString("en-US", {
                         minimumFractionDigits: 2,
-                      }
-                    )}
-                  </NairaValue>
-                </DetailCard>
+                      })}
+                    </NairaValue>
+                  </DetailCard>
+                )}
 
                 {selectedSignal.status === "completed" && (
                   <ProfitCard>
