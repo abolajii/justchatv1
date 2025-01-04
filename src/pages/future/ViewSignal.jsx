@@ -116,7 +116,7 @@ const Button = styled.button`
 // Utility functions
 const calculateSignalValues = (initialAmount = 0) => {
   const tradingAmount = initialAmount * 0.01;
-  const profitAmount = tradingAmount * 0.88;
+  const profitAmount = tradingAmount * 0.89;
   return {
     current: initialAmount,
     next: initialAmount + profitAmount,
@@ -252,7 +252,7 @@ const ViewSignal = () => {
     );
   }
 
-  const { current, next } = calculateSignalValues(signal.capital);
+  const { current, next } = calculateSignalValues(signal.recentCapital);
   const { active, message } = checkTimeStatus(signal.time);
 
   const v1 = formatCurrency(current, true);
