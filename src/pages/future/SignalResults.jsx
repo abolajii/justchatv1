@@ -102,14 +102,15 @@ const SignalResult = ({ signal }) => {
   const NGN_TO_USD_RATE = 1656.0;
 
   // Correct calculation based on the provided formula
-  const firstTradeTotalAmount = signal.capital * 0.01;
-  const firstTradeRemainingBalance = signal.capital - firstTradeTotalAmount;
-  const firstTradeProfit = firstTradeTotalAmount * 0.88;
+  const firstTradeTotalAmount = signal.recentCapital * 0.01;
+  const firstTradeRemainingBalance =
+    signal.recentCapital - firstTradeTotalAmount;
+  const firstTradeProfit = firstTradeTotalAmount * 0.89;
   const finalAmount =
     firstTradeRemainingBalance + firstTradeTotalAmount + firstTradeProfit;
-  const profitAmount = finalAmount - signal.capital;
+  const profitAmount = finalAmount - signal.recentCapital;
   const profitPercentage = (
-    ((finalAmount - signal.capital) / signal.capital) *
+    ((finalAmount - signal.recentCapital) / signal.recentCapital) *
     100
   ).toFixed(2);
 
@@ -146,13 +147,13 @@ const SignalResult = ({ signal }) => {
           <Label>Final Amount</Label>
           <Value>
             $
-            {signal.capital.toLocaleString("en-US", {
+            {signal.recentCapital.toLocaleString("en-US", {
               minimumFractionDigits: 2,
             })}
           </Value>
           <NairaValue>
             ₦
-            {(signal.capital * NGN_TO_USD_RATE).toLocaleString("en-US", {
+            {(signal.recentCapital * NGN_TO_USD_RATE).toLocaleString("en-US", {
               minimumFractionDigits: 2,
             })}
           </NairaValue>
