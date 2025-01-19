@@ -47,7 +47,6 @@ const CurrencyToggle = styled.button`
 
   &:hover {
     background: #374151;
-    /* transform: translateY(-1px); */
   }
 `;
 
@@ -174,6 +173,12 @@ const StatusTag = styled.span`
 
   ${(props) => {
     switch (props.$status.toLowerCase()) {
+      case "not started":
+        return `
+
+          background-color: #065F46;
+          color: #A7F3D0;
+        `;
       case "pending":
         return `
           background-color: #374151;
@@ -187,7 +192,8 @@ const StatusTag = styled.span`
       case "complete":
       case "completed":
         return `
-          background-color: #065F46;
+       background-color: #13aa5e;
+          color: #f4f4f4;
           color: #A7F3D0;
         `;
       default:
@@ -205,7 +211,7 @@ const formatCurrency = (amount, currency) => {
   let convertedAmount = amount;
 
   if (currency === "NGN") {
-    convertedAmount = amount * conversionRate; // Convert USD to NGN
+    convertedAmount = amount * conversionRate;
   } else if (currency !== "USD") {
     throw new Error(`Unsupported currency: ${currency}`);
   }
@@ -218,10 +224,9 @@ const formatCurrency = (amount, currency) => {
 };
 
 const Weekly = () => {
-  //   const [initialBalance, _] = useState("956.99");
   const { defaultValue } = useSignalStore();
-
   const [currency, setCurrency] = useState("USD");
+  const [signalsStatus, setSignalsStatus] = useState("not started");
 
   const calculateDayProfits = (initialBalance) => {
     const firstTradeTotalAmount = initialBalance * 0.01;
@@ -269,6 +274,16 @@ const Weekly = () => {
 
       const dayProfits = calculateDayProfits(runningCapital);
 
+      // Determine status based on the day comparison
+      let status;
+      if (i < currentDay) {
+        status = "completed";
+      } else if (i === currentDay) {
+        status = signalsStatus; // Use the current signalsStatus for today
+      } else {
+        status = "pending";
+      }
+
       const dayData = {
         day: `${days[dayIndex]}, ${date.toLocaleDateString("en-US", {
           month: "long",
@@ -278,7 +293,7 @@ const Weekly = () => {
         startingCapital: runningCapital,
         totalProfit: dayProfits.totalProfit,
         finalCapital: dayProfits.finalBalance,
-        status: i <= currentDay ? "pending" : "pending",
+        status: status,
         firstSignalProfit: dayProfits.signal1Profit,
         secondSignalProfit: dayProfits.signal2Profit,
         differenceInProfit: dayProfits.signal2Profit - dayProfits.signal1Profit,
@@ -328,7 +343,10 @@ const Weekly = () => {
               </CurrencyToggle>
             </HeaderContainer>
           </CardHeader>
-          <SignalWidget />
+          <SignalWidget
+            setSignalsStatus={setSignalsStatus}
+            signalsStatus={signalsStatus}
+          />
           <CardContent>
             <WeeklySummary>
               <SummaryItem>
@@ -365,7 +383,12 @@ const Weekly = () => {
             {weeklyData.map((day, index) => (
               <DayCard key={index}>
                 <DayHeader>
-                  <DayTitle>{day.day}</DayTitle>
+                  <div className="flex justify-between align-center">
+                    <DayTitle>{day.day}</DayTitle>
+                    {day.status === "not started" && (
+                      <StatusTag $status={day.status}>Today</StatusTag>
+                    )}
+                  </div>
                   <StatusTag $status={day.status}>
                     {day.status.toLocaleUpperCase()}
                   </StatusTag>
@@ -379,8 +402,7 @@ const Weekly = () => {
                         Starting: {formatAmount(day.startingCapital)}
                       </ValueText>
                       <ValueText>
-                        Final:
-                        {formatAmount(day.finalCapital)}
+                        Final: {formatAmount(day.finalCapital)}
                       </ValueText>
                     </SignalGrid>
                   </Section>
