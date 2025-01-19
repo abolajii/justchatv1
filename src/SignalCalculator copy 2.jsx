@@ -11,7 +11,6 @@ import {
   Eye,
   EyeOff,
 } from "lucide-react";
-import MainContainer from "./MainContainer";
 
 const CountdownGrid = styled.div`
   display: grid;
@@ -19,6 +18,7 @@ const CountdownGrid = styled.div`
   gap: 1rem;
   margin-top: 1rem;
   background: #1e1e1e;
+  /* padding: 1rem; */
   border-radius: 8px;
 
   @media (min-width: 768px) {
@@ -103,18 +103,19 @@ const SummaryRow = styled.div`
 // `;
 
 const Container = styled.div`
+  padding: 2rem;
   width: 100%;
   margin: 0 auto;
-  /* background: #121212; */
+  background: #121212;
+  min-height: 100vh;
   color: #fff;
   font-size: 15px;
-  min-height: 100vh;
-  overflow: scroll;
 `;
 
 const Card = styled.div`
-  /* background: #1e1e1e; */
+  background: #1e1e1e;
   border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
   padding: 1.5rem;
 `;
 
@@ -894,370 +895,365 @@ const SignalCalculator = () => {
   };
 
   return (
-    <MainContainer>
-      <Container>
-        <Card>
-          <CardHeader>
-            <HeaderContainer>
-              <Title>Signal Profit Calculator</Title>
-              <ToggleButton onClick={() => setShowNumbers(!showNumbers)}>
-                <IconWrapper>
-                  {showNumbers ? <EyeOff size={16} /> : <Eye size={16} />}
-                </IconWrapper>
-                <ButtonText>
-                  {showNumbers ? "Hide Value" : "Show Value"}
-                </ButtonText>
-              </ToggleButton>
-            </HeaderContainer>
-          </CardHeader>
+    <Container>
+      <Card>
+        <CardHeader>
+          <HeaderContainer>
+            <Title>Signal Profit Calculator</Title>
+            <ToggleButton onClick={() => setShowNumbers(!showNumbers)}>
+              <IconWrapper>
+                {showNumbers ? <EyeOff size={16} /> : <Eye size={16} />}
+              </IconWrapper>
+              <ButtonText>
+                {showNumbers ? "Hide Value" : "Show Value"}
+              </ButtonText>
+            </ToggleButton>
+          </HeaderContainer>
+        </CardHeader>
 
-          <InputGroup>
-            <FormGroup>
-              <Label>Capital Amount ({isNaira ? "NGN" : "USD"})</Label>
-              <Input
-                type="number"
-                value={capital}
-                onChange={(e) => setCapital(e.target.value)}
-                placeholder="Enter capital amount"
-              />
-            </FormGroup>
+        <InputGroup>
+          <FormGroup>
+            <Label>Capital Amount ({isNaira ? "NGN" : "USD"})</Label>
+            <Input
+              type="number"
+              value={capital}
+              onChange={(e) => setCapital(e.target.value)}
+              placeholder="Enter capital amount"
+            />
+          </FormGroup>
 
-            <FormGroup>
-              <Label>Start Date</Label>
-              <Input
-                type="date"
-                value={startDate}
-                onChange={(e) => setStartDate(e.target.value)}
-              />
-            </FormGroup>
+          <FormGroup>
+            <Label>Start Date</Label>
+            <Input
+              type="date"
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
+            />
+          </FormGroup>
 
-            <FormGroup>
-              <Label>End Date</Label>
-              <Input
-                type="date"
-                value={endDate}
-                onChange={(e) => setEndDate(e.target.value)}
-              />
-            </FormGroup>
-          </InputGroup>
-          {/* have button to show or hide numbers */}
-          <CurrencySection>
-            <StyledToggleContainer>
-              <CurrencyIcon>
-                <ArrowRightLeft size={24} />
-              </CurrencyIcon>
-              <div>
-                <Label>Select Currency:</Label>
-                <ToggleLabel>
-                  <ToggleInput
-                    type="checkbox"
-                    checked={isNaira}
-                    onChange={handleCurrencyChange}
-                  />
-                  <ToggleSwitch isNaira={isNaira}>
-                    <CurrencyOption active={!isNaira}>USD</CurrencyOption>
-                    <CurrencyOption active={isNaira}>NGN</CurrencyOption>
-                  </ToggleSwitch>
-                </ToggleLabel>
-              </div>
-            </StyledToggleContainer>
-            {dailyProfits.length > 0 && (
-              <DateRangeDisplay>
-                <DateIcon>
-                  <Calendar size={24} />
-                </DateIcon>
-                <DateInfo>
-                  <DateLabel>Date Range</DateLabel>
-                  <DateRange>
-                    {new Date(startDate).toLocaleDateString("en-US", {
-                      month: "short",
-                      day: "numeric",
-                      year: "numeric",
-                    })}
-                    <DateDivider>→</DateDivider>
-                    {new Date(endDate).toLocaleDateString("en-US", {
-                      month: "short",
-                      day: "numeric",
-                      year: "numeric",
-                    })}
-                  </DateRange>
-                </DateInfo>
-              </DateRangeDisplay>
-            )}
-            <CapitalDisplay>
-              <CapitalIcon>
-                <DollarSign size={24} />
-              </CapitalIcon>
-              <CapitalInfo>
-                <CapitalLabel>Starting Capital</CapitalLabel>
-                <CapitalValue>
-                  {/* showNumbers show else mask */}
-                  {maskNumber(formatCurrency(parseFloat(capital), isNaira))}
-                </CapitalValue>
-              </CapitalInfo>
-            </CapitalDisplay>
-          </CurrencySection>
-
-          <CountdownGrid>
-            <CountdownCard>
-              <CountdownIcon>
-                <Clock size={24} />
-              </CountdownIcon>
-              <CountdownInfo>
-                <CountdownLabel>Days Until Resignation</CountdownLabel>
-                <CountdownValue>
-                  {/* showNumbers show else mask */}
-                  {maskNumber(countdownInfo.totalDaysLeft)}
-                </CountdownValue>
-              </CountdownInfo>
-            </CountdownCard>
-
-            <CountdownCard>
-              <CountdownIcon>
-                <Briefcase size={24} />
-              </CountdownIcon>
-              <CountdownInfo>
-                <CountdownLabel>Working Days Left</CountdownLabel>
-                <CountdownValue>
-                  {/* showNumbers show else mask */}
-
-                  {maskNumber(countdownInfo.workingDaysLeft)}
-                </CountdownValue>
-              </CountdownInfo>
-            </CountdownCard>
-
-            <CountdownCard>
-              <CountdownIcon>
-                <Calendar size={24} />
-              </CountdownIcon>
-              <CountdownInfo>
-                <CountdownLabel>Resignation Date</CountdownLabel>
-                <CountdownValue>
-                  {/* showNumbers show else mask */}
-
-                  {maskNumber(formatDate(new Date(resignationDate)))}
-                </CountdownValue>
-              </CountdownInfo>
-            </CountdownCard>
-
-            <CountdownCard>
-              <CountdownIcon>
-                <Users size={24} />
-              </CountdownIcon>
-              <CountdownInfo>
-                <CountdownLabel>Leave Days Remaining</CountdownLabel>
-                <CountdownValue>
-                  {/* showNumbers show else mask */}
-
-                  {maskNumber(
-                    leaveDays.reduce(
-                      (total, leave) => total + leave.length,
-                      0
-                    ) - totalLeaveDays
-                  )}
-                </CountdownValue>
-              </CountdownInfo>
-            </CountdownCard>
-          </CountdownGrid>
-
-          {/* Enhanced Summary Section */}
-          {dailyProfits.length > 0 && (
-            <EnhancedSummary>
-              <SummaryCard>
-                <SummaryCardTitle>Time Analysis</SummaryCardTitle>
-                <SummaryRow>
-                  <SummaryLabel>Total Days:</SummaryLabel>
-                  <SummaryValue>{totalDays}</SummaryValue>
-                </SummaryRow>
-                {totalWorkingDays > 0 && (
-                  <SummaryRow>
-                    <SummaryLabel>Working Days:</SummaryLabel>
-                    <SummaryValue>{totalWorkingDays}</SummaryValue>
-                  </SummaryRow>
-                )}
-
-                {totalDays - totalWorkingDays > 0 && (
-                  <SummaryRow>
-                    <SummaryLabel>Non-Working Days:</SummaryLabel>
-                    <SummaryValue>{totalDays - totalWorkingDays}</SummaryValue>
-                  </SummaryRow>
-                )}
-
-                {totalLeaveDays > 0 && (
-                  <SummaryRow>
-                    <SummaryLabel>Leave Days:</SummaryLabel>
-                    <SummaryValue>{totalLeaveDays}</SummaryValue>
-                  </SummaryRow>
-                )}
-                {totalHolidays > 0 && (
-                  <SummaryRow>
-                    <SummaryLabel>Holidays:</SummaryLabel>
-                    <SummaryValue>{totalHolidays}</SummaryValue>
-                  </SummaryRow>
-                )}
-              </SummaryCard>
-
-              <SummaryCard>
-                <SummaryCardTitle>Financial Progress</SummaryCardTitle>
-                <SummaryRow>
-                  <SummaryLabel>Initial Capital:</SummaryLabel>
-                  <SummaryValue>
-                    {formatCurrency(parseFloat(capital), isNaira)}
-                  </SummaryValue>
-                </SummaryRow>
-                <SummaryRow>
-                  <SummaryLabel>Total Profits:</SummaryLabel>
-                  <SummaryValue>
-                    {formatCurrency(totalProfits, isNaira)}
-                  </SummaryValue>
-                </SummaryRow>
-                <SummaryRow>
-                  <SummaryLabel>ROI:</SummaryLabel>
-                  <SummaryValue>
-                    {capital > 0
-                      ? `${((totalProfits / parseFloat(capital)) * 100).toFixed(
-                          2
-                        )}%`
-                      : "0%"}
-                  </SummaryValue>
-                </SummaryRow>
-              </SummaryCard>
-
-              <SummaryCard>
-                <SummaryCardTitle>Current Status</SummaryCardTitle>
-                <SummaryRow>
-                  <SummaryLabel>Current Balance:</SummaryLabel>
-                  <SummaryValue>
-                    {formatCurrency(finalBalance, isNaira)}
-                  </SummaryValue>
-                </SummaryRow>
-                <SummaryRow>
-                  <SummaryLabel>Daily Avg Profit:</SummaryLabel>
-                  <SummaryValue>
-                    {formatCurrency(
-                      totalWorkingDays > 0
-                        ? totalProfits / totalWorkingDays
-                        : 0,
-                      isNaira
-                    )}
-                  </SummaryValue>
-                </SummaryRow>
-                <SummaryRow>
-                  <SummaryLabel>Currency:</SummaryLabel>
-                  <SummaryValue>{isNaira ? "NGN" : "USD"}</SummaryValue>
-                </SummaryRow>
-              </SummaryCard>
-            </EnhancedSummary>
-          )}
-
-          {dailyProfits.length > 0 && (
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "flex-end",
-                marginBottom: "1rem",
-              }}
-            >
-              <FormGroup style={{ width: "auto" }}>
-                <Label>Rows per page</Label>
-                <RowSelector
-                  value={rowsPerPage}
-                  onChange={handleRowsPerPageChange}
-                >
-                  <option value={5}>5</option>
-                  <option value={10}>10</option>
-                  <option value={20}>20</option>
-                  <option value={50}>50</option>
-                  <option value={100}>100</option>
-                  <option value={1000}>1000</option>
-                </RowSelector>
-              </FormGroup>
+          <FormGroup>
+            <Label>End Date</Label>
+            <Input
+              type="date"
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
+            />
+          </FormGroup>
+        </InputGroup>
+        {/* have button to show or hide numbers */}
+        <CurrencySection>
+          <StyledToggleContainer>
+            <CurrencyIcon>
+              <ArrowRightLeft size={24} />
+            </CurrencyIcon>
+            <div>
+              <Label>Select Currency:</Label>
+              <ToggleLabel>
+                <ToggleInput
+                  type="checkbox"
+                  checked={isNaira}
+                  onChange={handleCurrencyChange}
+                />
+                <ToggleSwitch isNaira={isNaira}>
+                  <CurrencyOption active={!isNaira}>USD</CurrencyOption>
+                  <CurrencyOption active={isNaira}>NGN</CurrencyOption>
+                </ToggleSwitch>
+              </ToggleLabel>
             </div>
-          )}
-
+          </StyledToggleContainer>
           {dailyProfits.length > 0 && (
-            <>
-              <Table>
-                <thead>
-                  <tr>
-                    <Th>Date</Th>
-                    <Th>Signal 1 Capital</Th>
-                    <Th>Signal 1 Profit</Th>
-                    <Th>Signal 2 Capital</Th>
-                    <Th>Signal 2 Profit</Th>
-                    <Th>Total Profit</Th>
-                    <Th>Balance</Th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {currentData.map((day, index) => {
-                    const holidayInfo = getHolidayInfo(day.date);
-                    return (
-                      <tr key={index}>
-                        <Td>
-                          <DateCell>
-                            {formatDate(day.date)}
-                            {holidayInfo && (
-                              <>
-                                <HolidayIndicator>
-                                  {holidayInfo.name}
-                                  {holidayInfo.isAdjusted &&
-                                    " (Moved from weekend)"}
-                                </HolidayIndicator>
-                              </>
-                            )}
-                            {getLeaveInfo(day.date) && (
-                              <HolidayIndicator>
-                                {getLeaveInfo(day.date).title}
-                              </HolidayIndicator>
-                            )}
-                          </DateCell>
-                        </Td>
-                        <Td>{formatCurrency(day.signal1Capital, isNaira)}</Td>
-                        <Td>{formatCurrency(day.signal1Profit, isNaira)}</Td>
-                        <Td>{formatCurrency(day.signal2Capital, isNaira)}</Td>
-                        <Td>{formatCurrency(day.signal2Profit, isNaira)}</Td>
-                        <Td>{formatCurrency(day.totalProfit, isNaira)}</Td>
-                        <Td>{formatCurrency(day.finalBalance, isNaira)}</Td>
-                      </tr>
-                    );
+            <DateRangeDisplay>
+              <DateIcon>
+                <Calendar size={24} />
+              </DateIcon>
+              <DateInfo>
+                <DateLabel>Date Range</DateLabel>
+                <DateRange>
+                  {new Date(startDate).toLocaleDateString("en-US", {
+                    month: "short",
+                    day: "numeric",
+                    year: "numeric",
                   })}
-                </tbody>
-              </Table>
+                  <DateDivider>→</DateDivider>
+                  {new Date(endDate).toLocaleDateString("en-US", {
+                    month: "short",
+                    day: "numeric",
+                    year: "numeric",
+                  })}
+                </DateRange>
+              </DateInfo>
+            </DateRangeDisplay>
+          )}
+          <CapitalDisplay>
+            <CapitalIcon>
+              <DollarSign size={24} />
+            </CapitalIcon>
+            <CapitalInfo>
+              <CapitalLabel>Starting Capital</CapitalLabel>
+              <CapitalValue>
+                {/* showNumbers show else mask */}
+                {maskNumber(formatCurrency(parseFloat(capital), isNaira))}
+              </CapitalValue>
+            </CapitalInfo>
+          </CapitalDisplay>
+        </CurrencySection>
 
-              <PaginationContainer>
-                <PaginationControls>
-                  <PageButton
-                    disabled={currentPage === 1}
-                    onClick={() => handlePageChange(currentPage - 1)}
-                  >
-                    Previous
-                  </PageButton>
-                  {Array.from({ length: totalPages }, (_, i) => i + 1).map(
-                    (page) => (
-                      <PageButton
-                        key={page}
-                        active={currentPage === page}
-                        onClick={() => handlePageChange(page)}
-                      >
-                        {page}
-                      </PageButton>
-                    )
+        <CountdownGrid>
+          <CountdownCard>
+            <CountdownIcon>
+              <Clock size={24} />
+            </CountdownIcon>
+            <CountdownInfo>
+              <CountdownLabel>Days Until Resignation</CountdownLabel>
+              <CountdownValue>
+                {/* showNumbers show else mask */}
+                {maskNumber(countdownInfo.totalDaysLeft)}
+              </CountdownValue>
+            </CountdownInfo>
+          </CountdownCard>
+
+          <CountdownCard>
+            <CountdownIcon>
+              <Briefcase size={24} />
+            </CountdownIcon>
+            <CountdownInfo>
+              <CountdownLabel>Working Days Left</CountdownLabel>
+              <CountdownValue>
+                {/* showNumbers show else mask */}
+
+                {maskNumber(countdownInfo.workingDaysLeft)}
+              </CountdownValue>
+            </CountdownInfo>
+          </CountdownCard>
+
+          <CountdownCard>
+            <CountdownIcon>
+              <Calendar size={24} />
+            </CountdownIcon>
+            <CountdownInfo>
+              <CountdownLabel>Resignation Date</CountdownLabel>
+              <CountdownValue>
+                {/* showNumbers show else mask */}
+
+                {maskNumber(formatDate(new Date(resignationDate)))}
+              </CountdownValue>
+            </CountdownInfo>
+          </CountdownCard>
+
+          <CountdownCard>
+            <CountdownIcon>
+              <Users size={24} />
+            </CountdownIcon>
+            <CountdownInfo>
+              <CountdownLabel>Leave Days Remaining</CountdownLabel>
+              <CountdownValue>
+                {/* showNumbers show else mask */}
+
+                {maskNumber(
+                  leaveDays.reduce((total, leave) => total + leave.length, 0) -
+                    totalLeaveDays
+                )}
+              </CountdownValue>
+            </CountdownInfo>
+          </CountdownCard>
+        </CountdownGrid>
+
+        {/* Enhanced Summary Section */}
+        {dailyProfits.length > 0 && (
+          <EnhancedSummary>
+            <SummaryCard>
+              <SummaryCardTitle>Time Analysis</SummaryCardTitle>
+              <SummaryRow>
+                <SummaryLabel>Total Days:</SummaryLabel>
+                <SummaryValue>{totalDays}</SummaryValue>
+              </SummaryRow>
+              {totalWorkingDays > 0 && (
+                <SummaryRow>
+                  <SummaryLabel>Working Days:</SummaryLabel>
+                  <SummaryValue>{totalWorkingDays}</SummaryValue>
+                </SummaryRow>
+              )}
+
+              {totalDays - totalWorkingDays > 0 && (
+                <SummaryRow>
+                  <SummaryLabel>Non-Working Days:</SummaryLabel>
+                  <SummaryValue>{totalDays - totalWorkingDays}</SummaryValue>
+                </SummaryRow>
+              )}
+
+              {totalLeaveDays > 0 && (
+                <SummaryRow>
+                  <SummaryLabel>Leave Days:</SummaryLabel>
+                  <SummaryValue>{totalLeaveDays}</SummaryValue>
+                </SummaryRow>
+              )}
+              {totalHolidays > 0 && (
+                <SummaryRow>
+                  <SummaryLabel>Holidays:</SummaryLabel>
+                  <SummaryValue>{totalHolidays}</SummaryValue>
+                </SummaryRow>
+              )}
+            </SummaryCard>
+
+            <SummaryCard>
+              <SummaryCardTitle>Financial Progress</SummaryCardTitle>
+              <SummaryRow>
+                <SummaryLabel>Initial Capital:</SummaryLabel>
+                <SummaryValue>
+                  {formatCurrency(parseFloat(capital), isNaira)}
+                </SummaryValue>
+              </SummaryRow>
+              <SummaryRow>
+                <SummaryLabel>Total Profits:</SummaryLabel>
+                <SummaryValue>
+                  {formatCurrency(totalProfits, isNaira)}
+                </SummaryValue>
+              </SummaryRow>
+              <SummaryRow>
+                <SummaryLabel>ROI:</SummaryLabel>
+                <SummaryValue>
+                  {capital > 0
+                    ? `${((totalProfits / parseFloat(capital)) * 100).toFixed(
+                        2
+                      )}%`
+                    : "0%"}
+                </SummaryValue>
+              </SummaryRow>
+            </SummaryCard>
+
+            <SummaryCard>
+              <SummaryCardTitle>Current Status</SummaryCardTitle>
+              <SummaryRow>
+                <SummaryLabel>Current Balance:</SummaryLabel>
+                <SummaryValue>
+                  {formatCurrency(finalBalance, isNaira)}
+                </SummaryValue>
+              </SummaryRow>
+              <SummaryRow>
+                <SummaryLabel>Daily Avg Profit:</SummaryLabel>
+                <SummaryValue>
+                  {formatCurrency(
+                    totalWorkingDays > 0 ? totalProfits / totalWorkingDays : 0,
+                    isNaira
                   )}
-                  <PageButton
-                    disabled={currentPage === totalPages}
-                    onClick={() => handlePageChange(currentPage + 1)}
-                  >
-                    Next
-                  </PageButton>
-                </PaginationControls>
-                <PageInfo>
-                  Showing {startIndex + 1} to {endIndex} of{" "}
-                  {dailyProfits.length} entries
-                </PageInfo>
-              </PaginationContainer>
+                </SummaryValue>
+              </SummaryRow>
+              <SummaryRow>
+                <SummaryLabel>Currency:</SummaryLabel>
+                <SummaryValue>{isNaira ? "NGN" : "USD"}</SummaryValue>
+              </SummaryRow>
+            </SummaryCard>
+          </EnhancedSummary>
+        )}
 
-              {/* <Summary>
+        {dailyProfits.length > 0 && (
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "flex-end",
+              marginBottom: "1rem",
+            }}
+          >
+            <FormGroup style={{ width: "auto" }}>
+              <Label>Rows per page</Label>
+              <RowSelector
+                value={rowsPerPage}
+                onChange={handleRowsPerPageChange}
+              >
+                <option value={5}>5</option>
+                <option value={10}>10</option>
+                <option value={20}>20</option>
+                <option value={50}>50</option>
+                <option value={100}>100</option>
+                <option value={1000}>1000</option>
+              </RowSelector>
+            </FormGroup>
+          </div>
+        )}
+
+        {dailyProfits.length > 0 && (
+          <>
+            <Table>
+              <thead>
+                <tr>
+                  <Th>Date</Th>
+                  <Th>Signal 1 Capital</Th>
+                  <Th>Signal 1 Profit</Th>
+                  <Th>Signal 2 Capital</Th>
+                  <Th>Signal 2 Profit</Th>
+                  <Th>Total Profit</Th>
+                  <Th>Balance</Th>
+                </tr>
+              </thead>
+              <tbody>
+                {currentData.map((day, index) => {
+                  const holidayInfo = getHolidayInfo(day.date);
+                  return (
+                    <tr key={index}>
+                      <Td>
+                        <DateCell>
+                          {formatDate(day.date)}
+                          {holidayInfo && (
+                            <>
+                              <HolidayIndicator>
+                                {holidayInfo.name}
+                                {holidayInfo.isAdjusted &&
+                                  " (Moved from weekend)"}
+                              </HolidayIndicator>
+                            </>
+                          )}
+                          {getLeaveInfo(day.date) && (
+                            <HolidayIndicator>
+                              {getLeaveInfo(day.date).title}
+                            </HolidayIndicator>
+                          )}
+                        </DateCell>
+                      </Td>
+                      <Td>{formatCurrency(day.signal1Capital, isNaira)}</Td>
+                      <Td>{formatCurrency(day.signal1Profit, isNaira)}</Td>
+                      <Td>{formatCurrency(day.signal2Capital, isNaira)}</Td>
+                      <Td>{formatCurrency(day.signal2Profit, isNaira)}</Td>
+                      <Td>{formatCurrency(day.totalProfit, isNaira)}</Td>
+                      <Td>{formatCurrency(day.finalBalance, isNaira)}</Td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </Table>
+
+            <PaginationContainer>
+              <PaginationControls>
+                <PageButton
+                  disabled={currentPage === 1}
+                  onClick={() => handlePageChange(currentPage - 1)}
+                >
+                  Previous
+                </PageButton>
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                  (page) => (
+                    <PageButton
+                      key={page}
+                      active={currentPage === page}
+                      onClick={() => handlePageChange(page)}
+                    >
+                      {page}
+                    </PageButton>
+                  )
+                )}
+                <PageButton
+                  disabled={currentPage === totalPages}
+                  onClick={() => handlePageChange(currentPage + 1)}
+                >
+                  Next
+                </PageButton>
+              </PaginationControls>
+              <PageInfo>
+                Showing {startIndex + 1} to {endIndex} of {dailyProfits.length}{" "}
+                entries
+              </PageInfo>
+            </PaginationContainer>
+
+            {/* <Summary>
               <SummaryItem>
                 <SummaryLabel>Total Days</SummaryLabel>
                 <SummaryValue>{totalDays}</SummaryValue>
@@ -1290,124 +1286,121 @@ const SignalCalculator = () => {
                 </SummaryValue>
               </SummaryItem>
             </Summary> */}
-            </>
-          )}
+          </>
+        )}
 
-          {leaveDates.length > 0 && (
+        {leaveDates.length > 0 && (
+          <div
+            style={{
+              marginTop: "1rem",
+              padding: "1rem",
+              background: "#2d2d2d",
+              borderRadius: "4px",
+            }}
+          >
+            <h3 style={{ marginBottom: "1rem", color: "#4dc5b9" }}>
+              Leave Days in Selected Range:
+            </h3>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "1rem" }}>
+              {leaveDates.map((date, index) => {
+                //  const daysUntil = calculateDaysUntilHoliday(
+                //    new Date(date.),
+                //    holiday.adjustedDate
+                //  );
+                return (
+                  <HolidayTag key={index}>
+                    <HolidayName>
+                      {
+                        leaveDays.find(
+                          (leave) =>
+                            date >= leave.startDate && date <= leave.endDate
+                        )?.title
+                      }
+                    </HolidayName>
+                    <HolidayDate>{formatDate(date)}</HolidayDate>
+                  </HolidayTag>
+                );
+              })}
+            </div>
+          </div>
+        )}
+        {holidayDates.length > 0 && (
+          <div
+            style={{
+              marginTop: "1rem",
+              padding: "1rem",
+              background: "#2d2d2d",
+              borderRadius: "4px",
+            }}
+          >
+            <h3 style={{ marginBottom: "1rem", color: "#4dc5b9" }}>
+              Upcoming Holidays:
+            </h3>
             <div
               style={{
-                marginTop: "1rem",
-                padding: "1rem",
-                background: "#2d2d2d",
-                borderRadius: "4px",
+                display: "flex",
+                // flexDirection: "column",
+                gap: "0.5rem",
               }}
             >
-              <h3 style={{ marginBottom: "1rem", color: "#4dc5b9" }}>
-                Leave Days in Selected Range:
-              </h3>
-              <div style={{ display: "flex", flexWrap: "wrap", gap: "1rem" }}>
-                {leaveDates.map((date, index) => {
-                  //  const daysUntil = calculateDaysUntilHoliday(
-                  //    new Date(date.),
-                  //    holiday.adjustedDate
-                  //  );
-                  return (
-                    <HolidayTag key={index}>
-                      <HolidayName>
-                        {
-                          leaveDays.find(
-                            (leave) =>
-                              date >= leave.startDate && date <= leave.endDate
-                          )?.title
-                        }
-                      </HolidayName>
-                      <HolidayDate>{formatDate(date)}</HolidayDate>
-                    </HolidayTag>
-                  );
-                })}
-              </div>
-            </div>
-          )}
-          {holidayDates.length > 0 && (
-            <div
-              style={{
-                marginTop: "1rem",
-                padding: "1rem",
-                background: "#2d2d2d",
-                borderRadius: "4px",
-              }}
-            >
-              <h3 style={{ marginBottom: "1rem", color: "#4dc5b9" }}>
-                Upcoming Holidays:
-              </h3>
-              <div
-                style={{
-                  display: "flex",
-                  // flexDirection: "column",
-                  gap: "0.5rem",
-                }}
-              >
-                {getUpcomingHolidays(startDate, endDate).map(
-                  (holiday, index) => {
-                    const daysUntil = calculateDaysUntilHoliday(
-                      new Date(startDate),
-                      holiday.adjustedDate
-                    );
-                    return (
-                      <div
-                        key={index}
-                        // style={{ display: "flex", alignItems: "center" }}
-                      >
-                        <HolidayTag>
-                          <HolidayName>
-                            {holiday.name}
-                            {holiday.isAdjusted && " (Moved from weekend)"}
-                          </HolidayName>
-                          <HolidayDate>
-                            {formatDate(holiday.adjustedDate)}
-                          </HolidayDate>
-                        </HolidayTag>
-                        <HolidayInfo>
-                          {daysUntil > 0 ? `${daysUntil} days away` : "Today"}
-                        </HolidayInfo>
-                      </div>
-                    );
-                  }
-                )}
-              </div>
-            </div>
-          )}
-
-          {finalBalance > 0 && (
-            <SubtractSection>
-              <SubtractButton
-                onClick={() => setShowSubtractInput(!showSubtractInput)}
-              >
-                {showSubtractInput ? "Cancel" : "Subtract Amount"}
-              </SubtractButton>
-
-              {showSubtractInput && (
-                <div style={{ marginTop: "1rem" }}>
-                  <Label>Amount to Subtract ({isNaira ? "NGN" : "USD"})</Label>
-                  <SubtractInput
-                    type="number"
-                    value={amountToSubtract}
-                    onChange={(e) => setAmountToSubtract(e.target.value)}
-                    placeholder={`Enter amount to subtract`}
-                  />
-                  <SubtractButton
-                    onClick={handleSubtract}
-                    style={{ marginTop: "0.5rem" }}
+              {getUpcomingHolidays(startDate, endDate).map((holiday, index) => {
+                const daysUntil = calculateDaysUntilHoliday(
+                  new Date(startDate),
+                  holiday.adjustedDate
+                );
+                return (
+                  <div
+                    key={index}
+                    // style={{ display: "flex", alignItems: "center" }}
                   >
-                    Confirm Subtraction
-                  </SubtractButton>
-                </div>
-              )}
-            </SubtractSection>
-          )}
-        </Card>
-      </Container>
-    </MainContainer>
+                    <HolidayTag>
+                      <HolidayName>
+                        {holiday.name}
+                        {holiday.isAdjusted && " (Moved from weekend)"}
+                      </HolidayName>
+                      <HolidayDate>
+                        {formatDate(holiday.adjustedDate)}
+                      </HolidayDate>
+                    </HolidayTag>
+                    <HolidayInfo>
+                      {daysUntil > 0 ? `${daysUntil} days away` : "Today"}
+                    </HolidayInfo>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {finalBalance > 0 && (
+          <SubtractSection>
+            <SubtractButton
+              onClick={() => setShowSubtractInput(!showSubtractInput)}
+            >
+              {showSubtractInput ? "Cancel" : "Subtract Amount"}
+            </SubtractButton>
+
+            {showSubtractInput && (
+              <div style={{ marginTop: "1rem" }}>
+                <Label>Amount to Subtract ({isNaira ? "NGN" : "USD"})</Label>
+                <SubtractInput
+                  type="number"
+                  value={amountToSubtract}
+                  onChange={(e) => setAmountToSubtract(e.target.value)}
+                  placeholder={`Enter amount to subtract`}
+                />
+                <SubtractButton
+                  onClick={handleSubtract}
+                  style={{ marginTop: "0.5rem" }}
+                >
+                  Confirm Subtraction
+                </SubtractButton>
+              </div>
+            )}
+          </SubtractSection>
+        )}
+      </Card>
+    </Container>
   );
 };
 

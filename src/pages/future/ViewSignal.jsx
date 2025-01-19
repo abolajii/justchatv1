@@ -252,7 +252,9 @@ const ViewSignal = () => {
     );
   }
 
-  const { current, next } = calculateSignalValues(signal.recentCapital);
+  console.log(signal);
+
+  const { current, next } = calculateSignalValues(signal.prevCapital);
   const { active, message } = checkTimeStatus(signal.time);
 
   const v1 = formatCurrency(current, true);

@@ -6,7 +6,7 @@ import {
   RiSignalTowerFill,
   RiSettings3Fill,
 } from "react-icons/ri";
-import { MdOutlineTimer } from "react-icons/md";
+import { BsCalendar2WeekFill } from "react-icons/bs";
 import { FaHandHoldingUsd } from "react-icons/fa";
 import { SiSignal } from "react-icons/si";
 
@@ -67,11 +67,11 @@ const Sidebar = () => {
       icon: FaHandHoldingUsd,
       label: "Trade",
     },
-    // {
-    //   path: "/trade/future",
-    //   icon: MdOutlineTimer,
-    //   label: "Future",
-    // },
+    {
+      path: "/weekly",
+      icon: BsCalendar2WeekFill,
+      label: "Weekly",
+    },
     {
       path: "/trade/settings",
       icon: RiSettings3Fill,
