@@ -116,7 +116,8 @@ const Container = styled.div`
 const Card = styled.div`
   /* background: #1e1e1e; */
   border-radius: 8px;
-  padding: 1.5rem;
+  padding-top: 1.5rem;
+  padding-right: 1.5rem;
 `;
 
 const CardHeader = styled.div`
