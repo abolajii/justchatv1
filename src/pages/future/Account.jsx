@@ -311,12 +311,16 @@ const Account = () => {
   return (
     <>
       <Container>
-        <div
-          className="flex text-sm align-center mb-3 pointer"
-          onClick={() => navigate("/dashboard")}
-        >
-          <MdChevronLeft size={20} />
-          Back to JustChat
+        <div>
+          {/* <SubmitButton>delete</SubmitButton> */}
+
+          <div
+            className="flex text-sm align-center mb-3 pointer"
+            onClick={() => navigate("/dashboard")}
+          >
+            <MdChevronLeft size={20} />
+            Back to JustChat
+          </div>
         </div>
         <Inner>
           <div className="flex items-center justify-between">
@@ -365,6 +369,7 @@ const Account = () => {
 
         <DateDisplay>{formatDate()}</DateDisplay>
       </Container>
+
       {showModal && (
         <ModalOverlay
           onClick={(e) => e.target === e.currentTarget && setShowModal(false)}

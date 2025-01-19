@@ -12,6 +12,7 @@ import {
   EyeOff,
 } from "lucide-react";
 import MainContainer from "./MainContainer";
+import useSignalStore from "./store/useSignalStore";
 
 const CountdownGrid = styled.div`
   display: grid;
@@ -698,7 +699,9 @@ const leaveDays = [
 const adjustedHolidaysWithDates = adjustHolidayDates(holidaysWithDates);
 
 const SignalCalculator = () => {
-  const [capital, setCapital] = useState("956.99");
+  const { defaultValue } = useSignalStore();
+
+  const [capital, setCapital] = useState(defaultValue);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [isNaira, setIsNaira] = useState(false);
