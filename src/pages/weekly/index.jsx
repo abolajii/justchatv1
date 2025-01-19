@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { IoIosTrendingUp, IoIosTrendingDown } from "react-icons/io";
 import MainContainer from "../future/MainContainer";
 import useSignalStore from "../future/store/useSignalStore";
+import SignalWidget from "../future/SignalWidget";
 
 // Styled Components
 const Container = styled.div`
@@ -46,11 +47,7 @@ const CurrencyToggle = styled.button`
 
   &:hover {
     background: #374151;
-    transform: translateY(-1px);
-  }
-
-  &:active {
-    transform: translateY(0);
+    /* transform: translateY(-1px); */
   }
 `;
 
@@ -83,7 +80,7 @@ const SummaryLabel = styled.span`
 `;
 
 const SummaryValue = styled.span`
-  color: #f3f4f6;
+  color: #34d399;
   font-size: 1.25rem;
   font-weight: 600;
 `;
@@ -96,7 +93,6 @@ const DayCard = styled.div`
   transition: all 0.2s ease-in-out;
 
   &:hover {
-    transform: translateY(-2px);
     box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
   }
 `;
@@ -117,7 +113,7 @@ const Section = styled.div`
 `;
 
 const SectionTitle = styled.h4`
-  font-size: 0.875rem;
+  font-size: 0.805rem;
   color: #9ca3af;
   margin: 0;
   text-transform: uppercase;
@@ -127,7 +123,7 @@ const SectionTitle = styled.h4`
 const ProfitText = styled.span`
   color: ${(props) => (props.$isPositive ? "#34D399" : "#F87171")};
   font-weight: 600;
-  font-size: ${(props) => (props.$isLarge ? "1.5rem" : "1.125rem")};
+  font-size: ${(props) => (props.$isLarge ? "1rem" : "1rem")};
   text-shadow: 0 0 10px
     ${(props) =>
       props.$isPositive
@@ -166,6 +162,41 @@ const ValueText = styled.div`
 const SignalGrid = styled.div`
   display: grid;
   gap: 0.5rem;
+`;
+
+const StatusTag = styled.span`
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.6rem;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+
+  ${(props) => {
+    switch (props.$status.toLowerCase()) {
+      case "pending":
+        return `
+          background-color: #374151;
+          color: #9CA3AF;
+        `;
+      case "inprogress":
+        return `
+          background-color: #854D0E;
+          color: #FDE68A;
+        `;
+      case "complete":
+      case "completed":
+        return `
+          background-color: #065F46;
+          color: #A7F3D0;
+        `;
+      default:
+        return `
+          background-color: #374151;
+          color: #9CA3AF;
+        `;
+    }
+  }}
 `;
 
 // Currency formatter utility
@@ -226,7 +257,7 @@ const Weekly = () => {
       "Friday",
       "Saturday",
     ];
-    const currentDate = new Date("2025-01-19");
+    const currentDate = new Date();
     const currentDay = currentDate.getDay();
     let weeklyData = [];
     let runningCapital = defaultValue;
@@ -247,7 +278,7 @@ const Weekly = () => {
         startingCapital: runningCapital,
         totalProfit: dayProfits.totalProfit,
         finalCapital: dayProfits.finalBalance,
-        status: i <= currentDay ? "Complete" : "Pending",
+        status: i <= currentDay ? "pending" : "pending",
         firstSignalProfit: dayProfits.signal1Profit,
         secondSignalProfit: dayProfits.signal2Profit,
         differenceInProfit: dayProfits.signal2Profit - dayProfits.signal1Profit,
@@ -297,6 +328,7 @@ const Weekly = () => {
               </CurrencyToggle>
             </HeaderContainer>
           </CardHeader>
+          <SignalWidget />
           <CardContent>
             <WeeklySummary>
               <SummaryItem>
@@ -334,7 +366,9 @@ const Weekly = () => {
               <DayCard key={index}>
                 <DayHeader>
                   <DayTitle>{day.day}</DayTitle>
-                  <StatusText>{day.status}</StatusText>
+                  <StatusTag $status={day.status}>
+                    {day.status.toLocaleUpperCase()}
+                  </StatusTag>
                 </DayHeader>
 
                 <Grid>
@@ -345,7 +379,8 @@ const Weekly = () => {
                         Starting: {formatAmount(day.startingCapital)}
                       </ValueText>
                       <ValueText>
-                        Final: {formatAmount(day.finalCapital)}
+                        Final:
+                        {formatAmount(day.finalCapital)}
                       </ValueText>
                     </SignalGrid>
                   </Section>
@@ -371,10 +406,7 @@ const Weekly = () => {
                   <Section>
                     <SectionTitle>Total Profit</SectionTitle>
                     <ValueText>
-                      <ProfitText
-                        $isPositive={day.totalProfit > 0}
-                        $isLarge={true}
-                      >
+                      <ProfitText $isPositive={day.totalProfit > 0}>
                         {day.totalProfit > 0 ? "+" : ""}
                         {formatAmount(day.totalProfit)}
                       </ProfitText>

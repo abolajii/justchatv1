@@ -946,25 +946,18 @@ const SignalCalculator = () => {
           </InputGroup>
           {/* have button to show or hide numbers */}
           <CurrencySection>
-            <StyledToggleContainer>
-              <CurrencyIcon>
-                <ArrowRightLeft size={24} />
-              </CurrencyIcon>
-              <div>
-                <Label>Select Currency:</Label>
-                <ToggleLabel>
-                  <ToggleInput
-                    type="checkbox"
-                    checked={isNaira}
-                    onChange={handleCurrencyChange}
-                  />
-                  <ToggleSwitch isNaira={isNaira}>
-                    <CurrencyOption active={!isNaira}>USD</CurrencyOption>
-                    <CurrencyOption active={isNaira}>NGN</CurrencyOption>
-                  </ToggleSwitch>
-                </ToggleLabel>
-              </div>
-            </StyledToggleContainer>
+            <CapitalDisplay>
+              <CapitalIcon>
+                <DollarSign size={24} />
+              </CapitalIcon>
+              <CapitalInfo>
+                <CapitalLabel>Starting Capital</CapitalLabel>
+                <CapitalValue>
+                  {/* showNumbers show else mask */}
+                  {maskNumber(formatCurrency(parseFloat(capital), isNaira))}
+                </CapitalValue>
+              </CapitalInfo>
+            </CapitalDisplay>
             {dailyProfits.length > 0 && (
               <DateRangeDisplay>
                 <DateIcon>
@@ -988,18 +981,26 @@ const SignalCalculator = () => {
                 </DateInfo>
               </DateRangeDisplay>
             )}
-            <CapitalDisplay>
-              <CapitalIcon>
-                <DollarSign size={24} />
-              </CapitalIcon>
-              <CapitalInfo>
-                <CapitalLabel>Starting Capital</CapitalLabel>
-                <CapitalValue>
-                  {/* showNumbers show else mask */}
-                  {maskNumber(formatCurrency(parseFloat(capital), isNaira))}
-                </CapitalValue>
-              </CapitalInfo>
-            </CapitalDisplay>
+
+            <StyledToggleContainer>
+              <CurrencyIcon>
+                <ArrowRightLeft size={24} />
+              </CurrencyIcon>
+              <div>
+                <Label>Select Currency:</Label>
+                <ToggleLabel>
+                  <ToggleInput
+                    type="checkbox"
+                    checked={isNaira}
+                    onChange={handleCurrencyChange}
+                  />
+                  <ToggleSwitch isNaira={isNaira}>
+                    <CurrencyOption active={!isNaira}>USD</CurrencyOption>
+                    <CurrencyOption active={isNaira}>NGN</CurrencyOption>
+                  </ToggleSwitch>
+                </ToggleLabel>
+              </div>
+            </StyledToggleContainer>
           </CurrencySection>
 
           <CountdownGrid>
