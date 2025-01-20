@@ -197,7 +197,7 @@ const SignalWidget = ({ signalsStatus, setSignalsStatus }) => {
     );
 
     if (allCompleted) {
-      setSignalsStatus("done");
+      setSignalsStatus("completed");
     } else if (hasInProgress) {
       setSignalsStatus("inprogress");
     } else if (hasCompleted) {

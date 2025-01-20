@@ -281,34 +281,20 @@ const Weekly = () => {
       "Friday",
       "Saturday",
     ];
-
     const currentDate = new Date();
     const currentDay = currentDate.getDay();
-
-    // Get the date of the most recent Sunday
-    const sundayDate = new Date(currentDate);
-    sundayDate.setDate(currentDate.getDate() - currentDay);
-
     let weeklyData = [];
     let runningCapital = weeklyCapital;
 
-    // Generate data for each day starting from Sunday
     for (let i = 0; i < 7; i++) {
-      const date = new Date(sundayDate);
-      date.setDate(sundayDate.getDate() + i);
+      const dayIndex = (i + currentDay) % 7;
+      const date = new Date(currentDate);
+      date.setDate(date.getDate() - (currentDay - i));
 
       const dayProfits = calculateDayProfits(runningCapital);
 
-      // Determine status based on comparison with current date
+      // Determine status based on the day comparison
       let status;
-      // if (date.getTime() < currentDate.setHours(0, 0, 0, 0)) {
-      //   status = "completed";
-      // } else if (date.getTime() === currentDate.setHours(0, 0, 0, 0)) {
-      //   status = signalsStatus;
-      // } else {
-      //   status = "pending";
-      // }
-
       if (i < currentDay) {
         status = "completed";
       } else if (i === currentDay) {
@@ -318,7 +304,7 @@ const Weekly = () => {
       }
 
       const dayData = {
-        day: `${days[i]}, ${date.toLocaleDateString("en-US", {
+        day: `${days[dayIndex]}, ${date.toLocaleDateString("en-US", {
           month: "long",
           day: "numeric",
           year: "numeric",

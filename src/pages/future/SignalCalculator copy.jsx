@@ -730,7 +730,7 @@ const MonthlyGrid = styled.div`
 
 const MonthWidget = styled.div`
   border-radius: 12px;
-  padding: 1rem 0.8rem;
+  padding: 1rem 0.6rem;
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
@@ -795,7 +795,7 @@ const DayMetric = styled.div`
   align-items: center;
   text-align: center;
   border: 1px solid #6ac7bc50;
-  padding: 3px 2px;
+  padding: 5px 1px;
   font-size: 12px;
   border-radius: 4px;
 `;
@@ -833,7 +833,7 @@ const isWeekend = (date) => {
 const SignalCalculator = () => {
   const { defaultValue } = useSignalStore();
 
-  const [capital, setCapital] = useState(defaultValue.toFixed(2));
+  const [capital, setCapital] = useState(defaultValue);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [isNaira, setIsNaira] = useState(false);

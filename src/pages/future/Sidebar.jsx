@@ -61,16 +61,17 @@ const Sidebar = () => {
       icon: SiSignal,
       label: "All Signals",
     },
+
+    {
+      path: "/weekly",
+      icon: BsCalendar2WeekFill,
+      label: "Weekly",
+    },
     {
       path: "/trade",
       // { label: "Trade", path: "/trade", icon: < /> },
       icon: FaHandHoldingUsd,
       label: "Trade",
-    },
-    {
-      path: "/weekly",
-      icon: BsCalendar2WeekFill,
-      label: "Weekly",
     },
     {
       path: "/trade/settings",

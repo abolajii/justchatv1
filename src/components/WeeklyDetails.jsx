@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 import { ArrowTrendingUpIcon, ArrowTrendingDownIcon } from "lucide-react";
+import useSignalStore from "../pages/future/store/useSignalStore";
+import { getUserSignal } from "../api/request";
 
 // Styled Components
 const Container = styled.div`
@@ -81,6 +83,8 @@ const StatusText = styled.span`
 `;
 
 const WeeklyDetails = () => {
+  const { setWeeklyCapital, weeklyCapital } = useSignalStore();
+
   // Function to calculate profits based on initial balance
   const calculateDayProfits = (initialBalance) => {
     const firstTradeTotalAmount = initialBalance * 0.01;
@@ -106,6 +110,23 @@ const WeeklyDetails = () => {
     };
   };
 
+  useEffect(() => {
+    const fetchSignal = async () => {
+      try {
+        const response = await getUserSignal();
+        if (response?.startingCapital) {
+          // Initially show Naira as primary currency
+          setWeeklyCapital(response.weeklyCapital);
+          // setBalance(dollarAmount);
+        }
+      } catch (error) {
+        console.error("Failed to fetch signal:", error);
+      }
+    };
+
+    fetchSignal();
+  }, []);
+
   // Function to generate weekly data based on current date
   const generateWeeklyData = () => {
     const days = [
@@ -120,7 +141,7 @@ const WeeklyDetails = () => {
     const currentDate = new Date("2025-01-19"); // Using the date from your example
     const currentDay = currentDate.getDay();
     let weeklyData = [];
-    let runningCapital = 956.99; // Initial capital from your example
+    let runningCapital = weeklyCapital; // Initial capital from your example
 
     // Generate data for each day
     for (let i = 0; i < 7; i++) {
