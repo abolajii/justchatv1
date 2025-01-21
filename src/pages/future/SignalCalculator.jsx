@@ -1135,7 +1135,7 @@ const SignalCalculator = () => {
               </div>
             </StyledToggleContainer>
           </CurrencySection>
-
+          {/* 
           <CountdownGrid>
             <CountdownCard>
               <CountdownIcon>
@@ -1144,7 +1144,6 @@ const SignalCalculator = () => {
               <CountdownInfo>
                 <CountdownLabel>Days Until Birthday</CountdownLabel>
                 <CountdownValue>
-                  {/* showNumbers show else mask */}
                   {maskNumber(calculateDaysLeft("2025-08-26"))}
                 </CountdownValue>
               </CountdownInfo>
@@ -1156,7 +1155,6 @@ const SignalCalculator = () => {
               <CountdownInfo>
                 <CountdownLabel>Days Until Resignation</CountdownLabel>
                 <CountdownValue>
-                  {/* showNumbers show else mask */}
                   {maskNumber(countdownInfo.totalDaysLeft)}
                 </CountdownValue>
               </CountdownInfo>
@@ -1169,7 +1167,6 @@ const SignalCalculator = () => {
               <CountdownInfo>
                 <CountdownLabel>Working Days Left</CountdownLabel>
                 <CountdownValue>
-                  {/* showNumbers show else mask */}
 
                   {maskNumber(countdownInfo.workingDaysLeft)}
                 </CountdownValue>
@@ -1183,7 +1180,6 @@ const SignalCalculator = () => {
               <CountdownInfo>
                 <CountdownLabel>Resignation Date</CountdownLabel>
                 <CountdownValue>
-                  {/* showNumbers show else mask */}
 
                   {maskNumber(formatDate(new Date(resignationDate)))}
                 </CountdownValue>
@@ -1197,7 +1193,6 @@ const SignalCalculator = () => {
               <CountdownInfo>
                 <CountdownLabel>Leave Days Remaining</CountdownLabel>
                 <CountdownValue>
-                  {/* showNumbers show else mask */}
 
                   {maskNumber(
                     leaveDays.reduce(
@@ -1209,6 +1204,7 @@ const SignalCalculator = () => {
               </CountdownInfo>
             </CountdownCard>
           </CountdownGrid>
+           */}
 
           {/* Enhanced Summary Section */}
           {dailyProfits.length > 0 && (
@@ -1368,22 +1364,22 @@ const SignalCalculator = () => {
                           <DayMetricLabel>Total Days</DayMetricLabel>
                           <DayMetricValue>{totalDaysInMonth}</DayMetricValue>
                         </DayMetric>
-                        <DayMetric>
+                        {/* <DayMetric>
                           <DayMetricLabel>Work Days</DayMetricLabel>
                           <DayMetricValue>{totalWorkDays}</DayMetricValue>
-                        </DayMetric>
+                        </DayMetric> */}
                         {totalHolidays > 0 && (
                           <DayMetric>
                             <DayMetricLabel>Holidays</DayMetricLabel>
                             <DayMetricValue>{totalHolidays}</DayMetricValue>
                           </DayMetric>
                         )}
-                        {totalLeaves > 0 && (
+                        {/* {totalLeaves > 0 && (
                           <DayMetric>
                             <DayMetricLabel>Leave Days</DayMetricLabel>
                             <DayMetricValue>{totalLeaves}</DayMetricValue>
                           </DayMetric>
-                        )}
+                        )} */}
                       </DaysGrid>
                       <MetricRow>
                         <MetricLabel>Signal Days:</MetricLabel>
