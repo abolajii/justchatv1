@@ -681,8 +681,8 @@ const isLeaveDay = (date) => {
 const leaveDays = [
   {
     title: "First leave",
-    startDate: new Date("2025-02-27"),
-    endDate: new Date("2025-03-04"),
+    startDate: new Date("2025-01-14"),
+    endDate: new Date("2025-01-27"),
     length: 4,
   },
   {
@@ -1135,7 +1135,7 @@ const SignalCalculator = () => {
               </div>
             </StyledToggleContainer>
           </CurrencySection>
-          {/* 
+
           <CountdownGrid>
             <CountdownCard>
               <CountdownIcon>
@@ -1144,6 +1144,7 @@ const SignalCalculator = () => {
               <CountdownInfo>
                 <CountdownLabel>Days Until Birthday</CountdownLabel>
                 <CountdownValue>
+                  {/* showNumbers show else mask */}
                   {maskNumber(calculateDaysLeft("2025-08-26"))}
                 </CountdownValue>
               </CountdownInfo>
@@ -1167,7 +1168,6 @@ const SignalCalculator = () => {
               <CountdownInfo>
                 <CountdownLabel>Working Days Left</CountdownLabel>
                 <CountdownValue>
-
                   {maskNumber(countdownInfo.workingDaysLeft)}
                 </CountdownValue>
               </CountdownInfo>
@@ -1180,7 +1180,6 @@ const SignalCalculator = () => {
               <CountdownInfo>
                 <CountdownLabel>Resignation Date</CountdownLabel>
                 <CountdownValue>
-
                   {maskNumber(formatDate(new Date(resignationDate)))}
                 </CountdownValue>
               </CountdownInfo>
@@ -1193,6 +1192,7 @@ const SignalCalculator = () => {
               <CountdownInfo>
                 <CountdownLabel>Leave Days Remaining</CountdownLabel>
                 <CountdownValue>
+                  {/* showNumbers show else mask */}
 
                   {maskNumber(
                     leaveDays.reduce(
@@ -1204,7 +1204,6 @@ const SignalCalculator = () => {
               </CountdownInfo>
             </CountdownCard>
           </CountdownGrid>
-           */}
 
           {/* Enhanced Summary Section */}
           {dailyProfits.length > 0 && (
@@ -1364,22 +1363,22 @@ const SignalCalculator = () => {
                           <DayMetricLabel>Total Days</DayMetricLabel>
                           <DayMetricValue>{totalDaysInMonth}</DayMetricValue>
                         </DayMetric>
-                        {/* <DayMetric>
+                        <DayMetric>
                           <DayMetricLabel>Work Days</DayMetricLabel>
                           <DayMetricValue>{totalWorkDays}</DayMetricValue>
-                        </DayMetric> */}
+                        </DayMetric>
                         {totalHolidays > 0 && (
                           <DayMetric>
                             <DayMetricLabel>Holidays</DayMetricLabel>
                             <DayMetricValue>{totalHolidays}</DayMetricValue>
                           </DayMetric>
                         )}
-                        {/* {totalLeaves > 0 && (
+                        {totalLeaves > 0 && (
                           <DayMetric>
                             <DayMetricLabel>Leave Days</DayMetricLabel>
                             <DayMetricValue>{totalLeaves}</DayMetricValue>
                           </DayMetric>
-                        )} */}
+                        )}
                       </DaysGrid>
                       <MetricRow>
                         <MetricLabel>Signal Days:</MetricLabel>
@@ -1578,17 +1577,7 @@ const SignalCalculator = () => {
                   >
                     {"<"}
                   </PageButton>
-                  {Array.from({ length: totalPages }, (_, i) => i + 1).map(
-                    (page) => (
-                      <PageButton
-                        key={page}
-                        active={currentPage === page}
-                        onClick={() => handlePageChange(page)}
-                      >
-                        {page}
-                      </PageButton>
-                    )
-                  )}
+                  <PageButton active={true}>{currentPage}</PageButton>
                   <PageButton
                     disabled={currentPage === totalPages}
                     onClick={() => handlePageChange(currentPage + 1)}

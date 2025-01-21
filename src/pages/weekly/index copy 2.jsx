@@ -233,7 +233,7 @@ const Weekly = () => {
         const response = await getUserSignal();
         if (response?.startingCapital) {
           // Initially show Naira as primary currency
-          setWeeklyCapital(response.weeklyCapital);
+          setWeeklyCapital(response.startingCapital);
           // setBalance(dollarAmount);
         }
       } catch (error) {
@@ -387,7 +387,7 @@ const Weekly = () => {
             <WeeklySummary>
               <SummaryItem>
                 <SummaryLabel>Starting Capital</SummaryLabel>
-                <SummaryValue>{formatAmount(weeklyCapital)}</SummaryValue>
+                <SummaryValue>{formatAmount(result)}</SummaryValue>
               </SummaryItem>
 
               <SummaryItem>
