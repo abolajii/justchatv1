@@ -5,6 +5,7 @@ import MainContainer from "../future/MainContainer";
 import useSignalStore from "../future/store/useSignalStore";
 import SignalWidget from "../future/SignalWidget";
 import { getUserSignal } from "../../api/request";
+import { getCapitalForBeginningOfTheWeek } from "../../helpers";
 
 // Styled Components
 const Container = styled.div`
@@ -232,7 +233,7 @@ const Weekly = () => {
         const response = await getUserSignal();
         if (response?.startingCapital) {
           // Initially show Naira as primary currency
-          setWeeklyCapital(response.weeklyCapital);
+          setWeeklyCapital(response.startingCapital);
           // setBalance(dollarAmount);
         }
       } catch (error) {
@@ -243,9 +244,21 @@ const Weekly = () => {
     fetchSignal();
   }, []);
 
-  const { defaultValue } = useSignalStore();
+  // Test with your actual values
+  // Test with actual value
+
   const [currency, setCurrency] = useState("USD");
   const [signalsStatus, setSignalsStatus] = useState("not started");
+  const [completedSignals, setCompletedSignals] = useState(0);
+
+  const currentDate = new Date();
+  const currentDay = currentDate.getDay();
+
+  let result = getCapitalForBeginningOfTheWeek(
+    currentDay,
+    weeklyCapital,
+    completedSignals
+  );
 
   const calculateDayProfits = (initialBalance) => {
     const firstTradeTotalAmount = initialBalance * 0.01;
@@ -290,7 +303,11 @@ const Weekly = () => {
     sundayDate.setDate(currentDate.getDate() - currentDay);
 
     let weeklyData = [];
-    let runningCapital = weeklyCapital;
+    let runningCapital = getCapitalForBeginningOfTheWeek(
+      currentDay,
+      weeklyCapital,
+      completedSignals
+    );
 
     // Generate data for each day starting from Sunday
     for (let i = 0; i < 7; i++) {
@@ -301,13 +318,6 @@ const Weekly = () => {
 
       // Determine status based on comparison with current date
       let status;
-      // if (date.getTime() < currentDate.setHours(0, 0, 0, 0)) {
-      //   status = "completed";
-      // } else if (date.getTime() === currentDate.setHours(0, 0, 0, 0)) {
-      //   status = signalsStatus;
-      // } else {
-      //   status = "pending";
-      // }
 
       if (i < currentDay) {
         status = "completed";
@@ -380,12 +390,13 @@ const Weekly = () => {
           <SignalWidget
             setSignalsStatus={setSignalsStatus}
             signalsStatus={signalsStatus}
+            setCompletedSignals={setCompletedSignals}
           />
           <CardContent>
             <WeeklySummary>
               <SummaryItem>
                 <SummaryLabel>Starting Capital</SummaryLabel>
-                <SummaryValue>{formatAmount(weeklyCapital)}</SummaryValue>
+                <SummaryValue>{formatAmount(result)}</SummaryValue>
               </SummaryItem>
 
               <SummaryItem>

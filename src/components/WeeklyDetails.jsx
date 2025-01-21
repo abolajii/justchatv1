@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { ArrowTrendingUpIcon, ArrowTrendingDownIcon } from "lucide-react";
 import useSignalStore from "../pages/future/store/useSignalStore";
 import { getUserSignal } from "../api/request";
+import { getCapitalForBeginningOfTheWeek } from "../helpers";
 
 // Styled Components
 const Container = styled.div`

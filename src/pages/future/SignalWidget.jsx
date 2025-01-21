@@ -122,7 +122,7 @@ const OverallStatus = styled.div`
   font-weight: 500;
 `;
 
-const SignalWidget = ({ signalsStatus, setSignalsStatus }) => {
+const SignalWidget = ({ setCompletedSignals, setSignalsStatus }) => {
   const [signals, setSignals] = useState([
     {
       id: 1,
@@ -139,6 +139,12 @@ const SignalWidget = ({ signalsStatus, setSignalsStatus }) => {
       status: "pending",
     },
   ]);
+
+  const completedSignals = signals.filter(
+    (signal) => signal.status === "complete"
+  ).length;
+
+  setCompletedSignals(completedSignals);
 
   const getStatusIcon = (status) => {
     switch (status) {
