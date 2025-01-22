@@ -616,33 +616,7 @@ const ViewStatus = () => {
                 )}
               </div>
             </UserDetails>
-            {!isLoggedIn && (
-              <InputContainer className="footer flex">
-                <div
-                  className="center cursor"
-                  onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-                >
-                  {renderEmojiPicker()}
-                  <FaSmile color="#fbfbfb" size={24} />
-                </div>
-                <div className="input-wrapper">
-                  <textarea
-                    onFocus={() => {
-                      setIsPlaying(false);
-                      isPlayingRef.current = false;
-                    }}
-                    ref={textareaRef}
-                    placeholder="Send message"
-                    value={inputValue}
-                    onChange={handleInputChange}
-                    rows={1}
-                  />
-                </div>
-                <div className="center icon cursor">
-                  {loading ? "" : <MdSend color="#fbfbfb" size={24} />}
-                </div>
-              </InputContainer>
-            )}
+
             {renderContent()}
           </StatusInner>
         </Relative>
