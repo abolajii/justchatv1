@@ -80,9 +80,9 @@ const MainContainer = ({ children }) => {
         <Sidebar />
       </A>
       <B>{children}</B>
-      <C isDarkMode={isDarkMode}>
+      {/* <C isDarkMode={isDarkMode}>
         <AdvertWidget />
-      </C>
+      </C> */}
     </Container>
   );
 };

@@ -195,6 +195,10 @@ const ViewProfile = () => {
   const [loading, setLoading] = useState(true);
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
+  useEffect(() => {
+    setSingleUser(null);
+  }, []);
+
   const openImageModal = (imageSrc) => {
     setModalImage(imageSrc);
   };
@@ -244,12 +248,13 @@ const ViewProfile = () => {
               onClick={() => openImageModal(finalUser?.backdrop || bg)}
             />
           )}
-
-          <ProfileContainer
-            onClick={() => openImageModal(finalUser?.profilePic || bg)}
-          >
-            <ProfileImage src={finalUser?.profilePic} alt="Profile preview" />
-          </ProfileContainer>
+          {finalUser?.profilePic && (
+            <ProfileContainer
+              onClick={() => openImageModal(finalUser?.profilePic || bg)}
+            >
+              <ProfileImage src={finalUser?.profilePic} alt="Profile preview" />
+            </ProfileContainer>
+          )}
         </BackdropContainer>
         {modalImage && (
           <ModalOverlay onClick={closeModal}>

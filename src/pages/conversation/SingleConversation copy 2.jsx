@@ -11,7 +11,6 @@ import {
 import {
   getConversation,
   getUserConversationMessages,
-  sendTextMessage,
 } from "../../api/request";
 import { useParams } from "react-router-dom";
 import MessageBody from "./MessageBody";
@@ -19,8 +18,6 @@ import useThemeStore, {
   darkTheme,
   lightTheme,
 } from "../../store/useThemeStore";
-import useUserStore from "../../store/useUserStore";
-import useConversation from "./hook/useConversation";
 
 const Container = styled.div`
   display: flex;
@@ -83,7 +80,7 @@ const ChatBody = styled.div`
   flex: 1;
   overflow-y: auto;
   display: flex;
-  flex-direction: column;
+  flex-direction: column-reverse;
   overflow-y: scroll;
 `;
 
@@ -135,17 +132,11 @@ const SingleConversation = () => {
   const [selectedUser, setSelectedUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const chatBodyRef = useRef(null);
-  const { conversations, setConversations } = useConversation();
-  const { user } = useUserStore();
 
   const { isDarkMode } = useThemeStore();
   const theme = isDarkMode ? darkTheme : lightTheme;
 
   const { id } = useParams();
-
-  const sortedMessages = messages?.sort(
-    (a, b) => new Date(a.createdAt) - new Date(b.createdAt) // Changed to chronological order
-  );
 
   // Fetch messages when component mounts
   useEffect(() => {
@@ -191,73 +182,27 @@ const SingleConversation = () => {
     if (inputMessage.trim() === "") return;
 
     try {
-      // Create temporary message for optimistic update
+      // TODO: Implement actual message sending API call
+      // const newMessage = await sendMessage(id, inputMessage);
+
+      // Temporary client-side message addition
       const newMessage = {
         _id: Date.now().toString(),
         sender: {
-          _id: user.id,
-          name: user.name,
-          profilePic: user.profilePic,
+          _id: "current_user_id", // Replace with actual current user ID
+          name: "Current User",
         },
         content: inputMessage,
         createdAt: new Date().toISOString(),
       };
 
-      // Optimistically update messages
-      setMessages([...messages, newMessage]);
-
-      // Send message to server
-      const resp = await sendTextMessage({
-        content: inputMessage,
-        conversationId: id,
-        status: "pending",
-      });
-
-      // First find the current conversation
-      const currentConversation = conversations.find((conv) => conv.id === id);
-
-      if (currentConversation) {
-        // Remove the current conversation from the array
-        const otherConversations = conversations.filter(
-          (conv) => conv.id !== id
-        );
-
-        // Create updated conversation
-        const updatedConversation = {
-          ...currentConversation,
-          message: `You: ${inputMessage}`,
-          time: new Date(), // Add this if you have this field
-        };
-
-        console.log(conversations);
-
-        // Add the updated conversation at the beginning of the array
-        const updatedConversations = [
-          updatedConversation,
-          ...otherConversations,
-        ];
-
-        setConversations(updatedConversations);
-      }
-
+      setMessages((prevMessages) => [...prevMessages, newMessage]);
       setInputMessage("");
-
-      // Optional: Update message with server response if needed
-      // if (resp._id) {
-      //   setMessages((prevMessages) =>
-      //     prevMessages.map((msg) =>
-      //       msg._id === newMessage._id ? { ...msg, _id: resp._id } : msg
-      //     )
-      //   );
-      // }
     } catch (error) {
       console.error("Failed to send message:", error);
-      // Rollback the optimistic update
-      setMessages((messages) =>
-        messages.filter((msg) => msg._id !== newMessage._id)
-      );
     }
   };
+
   function formatDate(dateString) {
     const date = new Date(dateString);
 
@@ -294,7 +239,7 @@ const SingleConversation = () => {
       </Header>
 
       <ChatBody ref={chatBodyRef}>
-        <MessageBody messages={sortedMessages} />
+        <MessageBody messages={messages} />
       </ChatBody>
 
       <Footer theme={theme}>
@@ -306,7 +251,6 @@ const SingleConversation = () => {
         <IoHappyOutline size={24} color="#36bbba" style={{ marginRight: 15 }} />
         <InputContainer theme={theme}>
           <Input
-            theme={theme}
             placeholder="Type a message"
             value={inputMessage}
             onChange={(e) => setInputMessage(e.target.value)}

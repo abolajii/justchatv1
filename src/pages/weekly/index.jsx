@@ -245,11 +245,11 @@ const Weekly = () => {
   }, []);
 
   // Test with your actual values
-  // Test with actual value
+  // Test with actual values
+  console.log("Test 1:", getCapitalForBeginningOfTheWeek(2, 991.12, 2, 0));
 
   const [currency, setCurrency] = useState("USD");
   const [signalsStatus, setSignalsStatus] = useState("not started");
-  const [completedSignals, setCompletedSignals] = useState(0);
 
   const calculateDayProfits = (initialBalance) => {
     const firstTradeTotalAmount = initialBalance * 0.01;
@@ -294,11 +294,7 @@ const Weekly = () => {
     sundayDate.setDate(currentDate.getDate() - currentDay);
 
     let weeklyData = [];
-    let runningCapital = getCapitalForBeginningOfTheWeek(
-      currentDay,
-      weeklyCapital,
-      completedSignals
-    );
+    let runningCapital = getCapitalForBeginningOfTheWeek;
 
     // Generate data for each day starting from Sunday
     for (let i = 0; i < 7; i++) {
@@ -381,7 +377,6 @@ const Weekly = () => {
           <SignalWidget
             setSignalsStatus={setSignalsStatus}
             signalsStatus={signalsStatus}
-            setCompletedSignals={setCompletedSignals}
           />
           <CardContent>
             <WeeklySummary>

@@ -1,15 +1,23 @@
+const trendingWords = [
+  { word: "Artificial Intelligence", count: 1000, tag: "Technology" },
+  { word: "Blockchain", count: 800, tag: "Technology" },
+  { word: "AI Ethics", count: 700, tag: "Science/Tech" },
+  { word: "Quantum Computing", count: 600, tag: "Science/Tech" },
+  { word: "AI Safety", count: 500, tag: "Science/Tech" },
+  { word: "AI in Healthcare", count: 400, tag: "Science/Tech" },
+];
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { Search } from "../../../components";
-import { getSuggestedUsers } from "../../../api/request";
+import { Search, Spinner } from "../../../components";
+import { getSuggestedUsers, userFollow } from "../../../api/request";
 import useThemeStore from "../../../store/useThemeStore";
+import { HiCheckBadge } from "react-icons/hi2";
 
 const Container = styled.div`
   display: flex;
   flex-direction: column;
   gap: 20px;
   padding: 10px;
-
   background-color: ${(props) => (props.isDarkMode ? "#1e1e1e" : "#f9f9f9")};
   border-radius: 10px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
@@ -91,6 +99,8 @@ const UserInfo = styled.div`
 const UserName = styled.h4`
   margin: 0;
   font-size: 15px;
+  display: flex;
+  align-items: center;
   color: ${(props) => (props.isDarkMode ? "#ffffff" : "#333333")};
 `;
 
@@ -142,19 +152,17 @@ const Count = styled.div`
   color: ${(props) => (props.isDarkMode ? "#cccccc" : "#666666")};
 `;
 
-const trendingWords = [
-  { word: "Artificial Intelligence", count: 1000, tag: "Technology" },
-  { word: "Blockchain", count: 800, tag: "Technology" },
-  { word: "AI Ethics", count: 700, tag: "Science/Tech" },
-  { word: "Quantum Computing", count: 600, tag: "Science/Tech" },
-  { word: "AI Safety", count: 500, tag: "Science/Tech" },
-  { word: "AI in Healthcare", count: 400, tag: "Science/Tech" },
-];
+const ButtonContent = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+`;
 
 const Widget = () => {
   const [showMoreTrending, setShowMoreTrending] = useState(false);
   const [showMoreUsers, setShowMoreUsers] = useState(false);
   const [suggestedUsers, setSuggestedUsers] = useState([]);
+  const [connectingUsers, setConnectingUsers] = useState({});
   const { isDarkMode } = useThemeStore();
 
   const displayedTrendingWords = showMoreTrending
@@ -178,6 +186,27 @@ const Widget = () => {
     fetchSuggestions();
   }, []);
 
+  const handleConnect = async (userId, name) => {
+    setConnectingUsers((prev) => ({ ...prev, [userId]: true }));
+
+    try {
+      // Simulate API call - replace with actual connection logic
+      // await new Promise((resolve) => setTimeout(resolve, 1000));
+
+      await userFollow(name);
+
+      setSuggestedUsers((prev) => prev.filter((user) => user._id !== userId));
+    } catch (error) {
+      console.error("Error connecting to user:", error);
+    } finally {
+      setConnectingUsers((prev) => {
+        const newState = { ...prev };
+        delete newState[userId];
+        return newState;
+      });
+    }
+  };
+
   return (
     <Container isDarkMode={isDarkMode}>
       <WidgetSection isDarkMode={isDarkMode}>
@@ -196,19 +225,22 @@ const Widget = () => {
           <ViewMoreButton
             onClick={() => setShowMoreTrending(!showMoreTrending)}
           >
-            View More
+            {showMoreTrending ? "Show Less" : "View More"}
           </ViewMoreButton>
         )}
       </WidgetSection>
 
       <WidgetSection isDarkMode={isDarkMode}>
         <Title isDarkMode={isDarkMode}>Relevant Connects</Title>
-        {suggestedUsers.map((user, index) => (
-          <UserCard key={index} isDarkMode={isDarkMode}>
+        {displayedUsers.map((user) => (
+          <UserCard key={user._id} isDarkMode={isDarkMode}>
             <ProfilePic src={user.profilePic} alt={user.name} />
-            <UserInfo className="flex justify-between">
+            <UserInfo>
               <div>
-                <UserName isDarkMode={isDarkMode}>{user.name}</UserName>
+                <UserName isDarkMode={isDarkMode}>
+                  {user.name}
+                  {user.isVerified && <HiCheckBadge color="#1b9d87" />}
+                </UserName>
                 <Count isDarkMode={isDarkMode}>
                   {user.postCount === 0
                     ? "No post yet"
@@ -217,7 +249,18 @@ const Widget = () => {
                 <UserBio isDarkMode={isDarkMode}>{user.bio}</UserBio>
               </div>
               <div>
-                <Button>Connect</Button>
+                <Button
+                  onClick={() => handleConnect(user._id, user.username)}
+                  disabled={connectingUsers[user._id] || user.connected}
+                >
+                  <ButtonContent>
+                    {connectingUsers[user._id] ? (
+                      <Spinner size="20px" />
+                    ) : (
+                      "Connect"
+                    )}
+                  </ButtonContent>
+                </Button>
               </div>
             </UserInfo>
           </UserCard>

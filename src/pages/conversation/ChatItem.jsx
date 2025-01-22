@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { formatDate } from "../../utils";
 import useThemeStore from "../../store/useThemeStore"; // Import the theme store
+import useConversation from "./hook/useConversation";
 
 const Container = styled.div`
   display: flex;
@@ -100,6 +101,7 @@ const ChatItem = ({
 }) => {
   const navigate = useNavigate();
   const { isDarkMode } = useThemeStore();
+  const { sentMessage } = useConversation();
 
   const theme = isDarkMode
     ? {

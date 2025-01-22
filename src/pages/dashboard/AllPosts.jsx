@@ -4,6 +4,7 @@ import styled from "styled-components";
 import usePostStore from "../store/usePostStore";
 import Post from "../components/Post";
 import { Loader2 } from "lucide-react";
+import useThemeStore from "../../store/useThemeStore";
 
 const Container = styled.div`
   max-width: 620px;
@@ -43,6 +44,10 @@ const LoadingSpinner = styled.div`
   }
 `;
 
+const Text = styled.div`
+  color: ${(props) => (props.isDarkMode ? "#a2a2a2" : "#555")};
+`;
+
 const AllPosts = ({ posts, full, bookmarks }) => {
   const { allPosts } = usePostStore();
   const [page, setPage] = useState(1);
@@ -50,6 +55,8 @@ const AllPosts = ({ posts, full, bookmarks }) => {
   const [hasMore, setHasMore] = useState(true);
   // const observerRef = useRef(null);
   const lastPostRef = useRef(null);
+
+  const { isDarkMode } = useThemeStore();
 
   // const fetchPosts = async (pageNum) => {
   //   if (isLoading || !hasMore) return;
@@ -175,6 +182,11 @@ const AllPosts = ({ posts, full, bookmarks }) => {
 
   return (
     <Container>
+      {allPosts.length === 0 && (
+        <Text isDarkMode={isDarkMode}>
+          Create a new post. "Hello World 🤖"{" "}
+        </Text>
+      )}
       {allPosts.map((post, index) => {
         // Ensure post is valid before rendering
         if (!post || typeof post !== "object") {
