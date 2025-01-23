@@ -226,6 +226,7 @@ const formatCurrency = (amount, currency) => {
 
 const Weekly = () => {
   const { setWeeklyCapital, weeklyCapital } = useSignalStore();
+  const [completedSignals, setCompletedSignals] = useState(0);
 
   useEffect(() => {
     const fetchSignal = async () => {
@@ -289,12 +290,14 @@ const Weekly = () => {
     const currentDate = new Date();
     const currentDay = currentDate.getDay();
 
+    let runningCapital = weeklyCapital;
+
     // Get the date of the most recent Sunday
     const sundayDate = new Date(currentDate);
     sundayDate.setDate(currentDate.getDate() - currentDay);
 
     let weeklyData = [];
-    let runningCapital = getCapitalForBeginningOfTheWeek;
+    // let runningCapital = getCapitalForBeginningOfTheWeek();
 
     // Generate data for each day starting from Sunday
     for (let i = 0; i < 7; i++) {
@@ -377,6 +380,7 @@ const Weekly = () => {
           <SignalWidget
             setSignalsStatus={setSignalsStatus}
             signalsStatus={signalsStatus}
+            setCompletedSignals={setCompletedSignals}
           />
           <CardContent>
             <WeeklySummary>
