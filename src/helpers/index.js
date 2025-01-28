@@ -21,11 +21,12 @@ const getPreviousCapital = (currentCapital) => {
 };
 
 const getCapitalForBeginningOfTheWeek = (
-  presentDay,
   presentCapital,
-  numberOfSignals,
   completedSignalForTheDay
 ) => {
+  const currentDate = new Date();
+  const presentDay = currentDate.getDay();
+
   //   const dayToNumber = {
   //     sunday: 0,
   //     monday: 1,

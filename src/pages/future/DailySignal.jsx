@@ -5,6 +5,8 @@ import styled from "styled-components";
 import { MdChevronLeft } from "react-icons/md";
 import { Clock, DollarSign, TrendingUp, Eye } from "lucide-react";
 import useSignalStore from "./store/useSignalStore";
+import { updateSignalById } from "../../api/request";
+import { useAlert } from "../../context/AlertContext";
 
 const BackButton = styled.div`
   cursor: pointer;
@@ -313,9 +315,11 @@ const calculateProfit = (signal) => {
 const DailySignal = () => {
   const { day } = useParams();
   const navigate = useNavigate();
-  const { signals } = useSignalStore();
+  const { signals, setSignals } = useSignalStore();
   const [selectedSignal, setSelectedSignal] = useState(null);
   const [signalReceived, setSignalReceived] = useState(null);
+
+  const { showAlert } = useAlert();
 
   const totalCapital = signals[signals.length - 1]?.recentCapital;
 
@@ -329,8 +333,30 @@ const DailySignal = () => {
     setSignalReceived(null);
   };
 
-  const handleSignalResponse = (received) => {
+  const handleSignalResponse = async (received) => {
     setSignalReceived(received);
+    // const {}
+    if (received) {
+      console.log(signals, selectedSignal);
+
+      await updateSignalById(selectedSignal._id, received);
+      showAlert("success", "Signal updated successfully");
+
+      const updatedSignals = signals.map((signal) => {
+        if (signal._id === selectedSignal._id) {
+          return {
+            ...signal,
+            status: received ? "completed" : "pending",
+          };
+        }
+        return signal;
+      });
+      setSelectedSignal({
+        ...selectedSignal,
+        status: received ? "completed" : "pending",
+      });
+      setSignals(updatedSignals);
+    }
   };
 
   const isTimeElapsed = (signal) => {
@@ -445,10 +471,10 @@ const DailySignal = () => {
                   </NairaValue>
                 </DetailCard>
 
-                {selectedSignal.staus === "completed" && (
+                {selectedSignal.status === "completed" && (
                   <DetailCard>
                     <Label>Final Amount</Label>
-                    <Value>{formatCapital(selectedSignal.capital)}</Value>
+                    <Value>{formatCapital(selectedSignal.recentCapital)}</Value>
                     <NairaValue>
                       ₦
                       {(
@@ -488,28 +514,27 @@ const DailySignal = () => {
                   </ProfitCard>
                 )}
 
-                {isTimeElapsed(selectedSignal) &&
-                  selectedSignal.status === "pending" && (
-                    <ConfirmationContainer>
-                      <Question>Did you receive this signal?</Question>
-                      <ButtonGroup>
-                        <Button
-                          variant="yes"
-                          onClick={() => handleSignalResponse(true)}
-                          disabled={signalReceived !== null}
-                        >
-                          Yes
-                        </Button>
-                        <Button
-                          variant="no"
-                          onClick={() => handleSignalResponse(false)}
-                          disabled={signalReceived !== null}
-                        >
-                          No
-                        </Button>
-                      </ButtonGroup>
-                    </ConfirmationContainer>
-                  )}
+                {selectedSignal.status === "pending" && (
+                  <ConfirmationContainer>
+                    <Question>Did you receive this signal?</Question>
+                    <ButtonGroup>
+                      <Button
+                        variant="yes"
+                        onClick={() => handleSignalResponse(true)}
+                        disabled={signalReceived !== null}
+                      >
+                        Yes
+                      </Button>
+                      <Button
+                        variant="no"
+                        onClick={() => handleSignalResponse(false)}
+                        disabled={signalReceived !== null}
+                      >
+                        No
+                      </Button>
+                    </ButtonGroup>
+                  </ConfirmationContainer>
+                )}
                 {/* {selectedSignal.status === "failed" && (
                   <FailedSignalMessage>
                     This signal has failed. Please check the details and try

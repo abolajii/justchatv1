@@ -6,6 +6,8 @@ import useSignalStore from "../future/store/useSignalStore";
 import SignalWidget from "../future/SignalWidget";
 import { getUserSignal } from "../../api/request";
 import { getCapitalForBeginningOfTheWeek } from "../../helpers";
+import { generateWeeklyData } from "../../utils";
+import MonthlyView from "./MonthlyView";
 
 // Styled Components
 const Container = styled.div`
@@ -206,6 +208,32 @@ const StatusTag = styled.span`
   }}
 `;
 
+const NextWeekButton = styled.button`
+  background-color: #34d399;
+  color: #1e1e1e;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  &:hover {
+    background-color: #10b981;
+  }
+
+  &:active {
+    transform: translateY(1px);
+    box-shadow: 0 2px 4px rgba(52, 211, 153, 0.2);
+  }
+`;
+
+// Example usage in the component
+
 // Currency formatter utility
 const formatCurrency = (amount, currency) => {
   const conversionRate = 1656; // 1 USD = 1656 NGN
@@ -225,7 +253,7 @@ const formatCurrency = (amount, currency) => {
 };
 
 const Weekly = () => {
-  const { setWeeklyCapital, weeklyCapital } = useSignalStore();
+  const { setWeeklyCapital, weeklyCapital, setDefaultValue } = useSignalStore();
   const [completedSignals, setCompletedSignals] = useState(0);
 
   useEffect(() => {
@@ -235,6 +263,7 @@ const Weekly = () => {
         if (response?.startingCapital) {
           // Initially show Naira as primary currency
           setWeeklyCapital(response.weeklyCapital);
+          setDefaultValue(response.startingCapital);
           // setBalance(dollarAmount);
         }
       } catch (error) {
@@ -246,103 +275,28 @@ const Weekly = () => {
   }, []);
 
   // Test with your actual values
-  // Test with actual values
-  console.log("Test 1:", getCapitalForBeginningOfTheWeek(2, 991.12, 2, 0));
+  // // Test with actual values
+  // console.log("Test 1:", getCapitalForBeginningOfTheWeek(defaultValue, 1));
+
+  // const weekly = getCapitalForBeginningOfTheWeek(defaultValue, 1);
+  // console.log(weekly);
 
   const [currency, setCurrency] = useState("USD");
   const [signalsStatus, setSignalsStatus] = useState("not started");
+  const [currentWeekData, setCurrentWeekData] = useState(null);
 
-  const calculateDayProfits = (initialBalance) => {
-    const firstTradeTotalAmount = initialBalance * 0.01;
-    const firstTradeRemainingBalance = initialBalance - firstTradeTotalAmount;
-    const firstTradeProfit = firstTradeTotalAmount * 0.88;
-    const capitalAfterFirstTrade =
-      firstTradeRemainingBalance + firstTradeTotalAmount + firstTradeProfit;
+  // Track week progression
+  const [weekNumber, setWeekNumber] = useState(1);
 
-    const secondTradeTotalAmount = capitalAfterFirstTrade * 0.01;
-    const secondTradeRemainingBalance =
-      capitalAfterFirstTrade - secondTradeTotalAmount;
-    const secondTradeProfit = secondTradeTotalAmount * 0.88;
-    const finalBalance =
-      secondTradeRemainingBalance + secondTradeTotalAmount + secondTradeProfit;
+  const weeklyData = generateWeeklyData(weeklyCapital, signalsStatus);
 
-    return {
-      signal1Capital: firstTradeTotalAmount,
-      signal1Profit: firstTradeProfit,
-      signal2Capital: secondTradeTotalAmount,
-      signal2Profit: secondTradeProfit,
-      totalProfit: finalBalance - initialBalance,
-      finalBalance,
-    };
-  };
+  const [showMonthly, setShowMonthly] = useState(false);
 
-  const generateWeeklyData = () => {
-    const days = [
-      "Sunday",
-      "Monday",
-      "Tuesday",
-      "Wednesday",
-      "Thursday",
-      "Friday",
-      "Saturday",
-    ];
+  const displayData = currentWeekData || weeklyData;
 
-    const currentDate = new Date();
-    const currentDay = currentDate.getDay();
+  console.log(currentWeekData, weeklyData);
 
-    let runningCapital = weeklyCapital;
-
-    // Get the date of the most recent Sunday
-    const sundayDate = new Date(currentDate);
-    sundayDate.setDate(currentDate.getDate() - currentDay);
-
-    let weeklyData = [];
-    // let runningCapital = getCapitalForBeginningOfTheWeek();
-
-    // Generate data for each day starting from Sunday
-    for (let i = 0; i < 7; i++) {
-      const date = new Date(sundayDate);
-      date.setDate(sundayDate.getDate() + i);
-
-      const dayProfits = calculateDayProfits(runningCapital);
-
-      // Determine status based on comparison with current date
-      let status;
-
-      if (i < currentDay) {
-        status = "completed";
-      } else if (i === currentDay) {
-        status = signalsStatus; // Use the current signalsStatus for today
-      } else {
-        status = "pending";
-      }
-
-      const dayData = {
-        day: `${days[i]}, ${date.toLocaleDateString("en-US", {
-          month: "long",
-          day: "numeric",
-          year: "numeric",
-        })}`,
-        startingCapital: runningCapital,
-        totalProfit: dayProfits.totalProfit,
-        finalCapital: dayProfits.finalBalance,
-        status: status,
-        date,
-        firstSignalProfit: dayProfits.signal1Profit,
-        secondSignalProfit: dayProfits.signal2Profit,
-        differenceInProfit: dayProfits.signal2Profit - dayProfits.signal1Profit,
-      };
-
-      weeklyData.push(dayData);
-      runningCapital = dayProfits.finalBalance;
-    }
-
-    return weeklyData;
-  };
-
-  const weeklyData = generateWeeklyData();
-
-  const weeklyTotals = weeklyData.reduce(
+  const weeklyTotals = displayData.reduce(
     (totals, day) => ({
       totalProfit: totals.totalProfit + day.totalProfit,
       totalCapital: day.finalCapital,
@@ -361,6 +315,29 @@ const Weekly = () => {
     return formatCurrency(amount, currency);
   };
 
+  const generateNextWeekResult = () => {
+    // Get the last day's date from the current week's data
+    const lastDayDate = displayData[displayData.length - 1].date;
+
+    // console.log(lastDayDate);
+
+    // Generate new weekly data, passing the last day's date
+    const nextWeekData = generateWeeklyData(
+      weeklyTotals.totalCapital,
+      "not started",
+      lastDayDate
+    );
+
+    // Update state with the new week's data
+    setCurrentWeekData(nextWeekData);
+
+    // Increment week number
+    setWeekNumber((prev) => prev + 1);
+
+    // Update weekly capital in the store
+    setWeeklyCapital(weeklyTotals.totalCapital);
+  };
+
   return (
     <MainContainer>
       <Container>
@@ -377,119 +354,145 @@ const Weekly = () => {
               </CurrencyToggle>
             </HeaderContainer>
           </CardHeader>
-          <SignalWidget
-            setSignalsStatus={setSignalsStatus}
-            signalsStatus={signalsStatus}
-            setCompletedSignals={setCompletedSignals}
-          />
-          <CardContent>
-            <WeeklySummary>
-              <SummaryItem>
-                <SummaryLabel>Starting Capital</SummaryLabel>
-                <SummaryValue>{formatAmount(weeklyCapital)}</SummaryValue>
-              </SummaryItem>
 
-              <SummaryItem>
-                <SummaryLabel>Final Capital</SummaryLabel>
-                <SummaryValue>
-                  {formatAmount(weeklyTotals.totalCapital)}
-                </SummaryValue>
-              </SummaryItem>
-              <SummaryItem>
-                <SummaryLabel>Total Weekly Profit</SummaryLabel>
-                <SummaryValue>
-                  {formatAmount(weeklyTotals.totalProfit)}
-                </SummaryValue>
-              </SummaryItem>
-              <SummaryItem>
-                <SummaryLabel>Total Signal 1 Profits</SummaryLabel>
-                <SummaryValue>
-                  {formatAmount(weeklyTotals.totalFirstSignal)}
-                </SummaryValue>
-              </SummaryItem>
-              <SummaryItem>
-                <SummaryLabel>Total Signal 2 Profits</SummaryLabel>
-                <SummaryValue>
-                  {formatAmount(weeklyTotals.totalSecondSignal)}
-                </SummaryValue>
-              </SummaryItem>
-            </WeeklySummary>
+          <div className="flex justify-between align-center">
+            <SignalWidget
+              setSignalsStatus={setSignalsStatus}
+              signalsStatus={signalsStatus}
+              setCompletedSignals={setCompletedSignals}
+            />
+            <div className="mr-4 pr-3">
+              <CurrencyToggle onClick={() => setShowMonthly(true)}>
+                View Month
+              </CurrencyToggle>
+            </div>
+          </div>
+          {!showMonthly && <p>Week ({weekNumber})</p>}
+          {!showMonthly && (
+            <NextWeekButton
+              onClick={() => {
+                // get next week result start from the
+                // weeklyTotals.totalCapital , etc.
+                generateNextWeekResult();
+              }}
+            >
+              Get Next Week Result
+              <IoIosTrendingUp size={20} />
+            </NextWeekButton>
+          )}
 
-            {weeklyData.map((day, index) => {
-              const today =
-                day.date.toLocaleDateString() ===
-                new Date().toLocaleDateString();
+          {showMonthly && <MonthlyView />}
 
-              return (
-                <DayCard key={index}>
-                  <DayHeader>
-                    <div className="flex justify-between align-center">
-                      <DayTitle>{day.day}</DayTitle>
-                      {today && <StatusTag $status={"done"}>Today</StatusTag>}
-                    </div>
-                    <StatusTag $status={day.status}>
-                      {day.status.toLocaleUpperCase()}
-                    </StatusTag>
-                  </DayHeader>
+          {!showMonthly && (
+            <CardContent>
+              <WeeklySummary>
+                <SummaryItem>
+                  <SummaryLabel>Starting Capital</SummaryLabel>
+                  <SummaryValue>{formatAmount(weeklyCapital)}</SummaryValue>
+                </SummaryItem>
 
-                  <Grid>
-                    <Section>
-                      <SectionTitle>Capital</SectionTitle>
-                      <SignalGrid>
+                <SummaryItem>
+                  <SummaryLabel>Final Capital</SummaryLabel>
+                  <SummaryValue>
+                    {formatAmount(weeklyTotals.totalCapital)}
+                  </SummaryValue>
+                </SummaryItem>
+                <SummaryItem>
+                  <SummaryLabel>Total Weekly Profit</SummaryLabel>
+                  <SummaryValue>
+                    {formatAmount(weeklyTotals.totalProfit)}
+                  </SummaryValue>
+                </SummaryItem>
+                <SummaryItem>
+                  <SummaryLabel>Total Signal 1 Profits</SummaryLabel>
+                  <SummaryValue>
+                    {formatAmount(weeklyTotals.totalFirstSignal)}
+                  </SummaryValue>
+                </SummaryItem>
+                <SummaryItem>
+                  <SummaryLabel>Total Signal 2 Profits</SummaryLabel>
+                  <SummaryValue>
+                    {formatAmount(weeklyTotals.totalSecondSignal)}
+                  </SummaryValue>
+                </SummaryItem>
+              </WeeklySummary>
+
+              {displayData.map((day, index) => {
+                const today =
+                  day.date.toLocaleDateString() ===
+                  new Date().toLocaleDateString();
+
+                return (
+                  <DayCard key={index}>
+                    <DayHeader>
+                      <div className="flex justify-between align-center">
+                        <DayTitle>{day.day}</DayTitle>
+                        {today && <StatusTag $status={"done"}>Today</StatusTag>}
+                      </div>
+                      <StatusTag $status={day.status}>
+                        {day.status.toLocaleUpperCase()}
+                      </StatusTag>
+                    </DayHeader>
+
+                    <Grid>
+                      <Section>
+                        <SectionTitle>Capital</SectionTitle>
+                        <SignalGrid>
+                          <ValueText>
+                            Starting: {formatAmount(day.startingCapital)}
+                          </ValueText>
+                          <ValueText>
+                            Final: {formatAmount(day.finalCapital)}
+                          </ValueText>
+                        </SignalGrid>
+                      </Section>
+
+                      <Section>
+                        <SectionTitle>Signal Profits</SectionTitle>
+                        <SignalGrid>
+                          <ValueText>
+                            Signal 1:{" "}
+                            <ProfitText $isPositive={true}>
+                              +{formatAmount(day.firstSignalProfit)}
+                            </ProfitText>
+                          </ValueText>
+                          <ValueText>
+                            Signal 2:{" "}
+                            <ProfitText $isPositive={true}>
+                              +{formatAmount(day.secondSignalProfit)}
+                            </ProfitText>
+                          </ValueText>
+                        </SignalGrid>
+                      </Section>
+
+                      <Section>
+                        <SectionTitle>Total Profit</SectionTitle>
                         <ValueText>
-                          Starting: {formatAmount(day.startingCapital)}
-                        </ValueText>
-                        <ValueText>
-                          Final: {formatAmount(day.finalCapital)}
-                        </ValueText>
-                      </SignalGrid>
-                    </Section>
-
-                    <Section>
-                      <SectionTitle>Signal Profits</SectionTitle>
-                      <SignalGrid>
-                        <ValueText>
-                          Signal 1:{" "}
-                          <ProfitText $isPositive={true}>
-                            +{formatAmount(day.firstSignalProfit)}
+                          <ProfitText $isPositive={day.totalProfit > 0}>
+                            {day.totalProfit > 0 ? "+" : ""}
+                            {formatAmount(day.totalProfit)}
                           </ProfitText>
+                          {day.totalProfit > 0 ? (
+                            <IoIosTrendingUp size={20} color="#34D399" />
+                          ) : (
+                            <IoIosTrendingDown size={20} color="#F87171" />
+                          )}
                         </ValueText>
-                        <ValueText>
-                          Signal 2:{" "}
-                          <ProfitText $isPositive={true}>
-                            +{formatAmount(day.secondSignalProfit)}
-                          </ProfitText>
-                        </ValueText>
-                      </SignalGrid>
-                    </Section>
+                      </Section>
 
-                    <Section>
-                      <SectionTitle>Total Profit</SectionTitle>
-                      <ValueText>
-                        <ProfitText $isPositive={day.totalProfit > 0}>
-                          {day.totalProfit > 0 ? "+" : ""}
-                          {formatAmount(day.totalProfit)}
+                      <Section>
+                        <SectionTitle>Profit Difference</SectionTitle>
+                        <ProfitText $isPositive={day.differenceInProfit > 0}>
+                          {day.differenceInProfit > 0 ? "+" : ""}
+                          {formatAmount(day.differenceInProfit)}
                         </ProfitText>
-                        {day.totalProfit > 0 ? (
-                          <IoIosTrendingUp size={20} color="#34D399" />
-                        ) : (
-                          <IoIosTrendingDown size={20} color="#F87171" />
-                        )}
-                      </ValueText>
-                    </Section>
-
-                    <Section>
-                      <SectionTitle>Profit Difference</SectionTitle>
-                      <ProfitText $isPositive={day.differenceInProfit > 0}>
-                        {day.differenceInProfit > 0 ? "+" : ""}
-                        {formatAmount(day.differenceInProfit)}
-                      </ProfitText>
-                    </Section>
-                  </Grid>
-                </DayCard>
-              );
-            })}
-          </CardContent>
+                      </Section>
+                    </Grid>
+                  </DayCard>
+                );
+              })}
+            </CardContent>
+          )}
         </Card>
       </Container>
     </MainContainer>

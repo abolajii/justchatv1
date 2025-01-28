@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { ArrowTrendingUpIcon, ArrowTrendingDownIcon } from "lucide-react";
 import useSignalStore from "../pages/future/store/useSignalStore";
 import { getUserSignal } from "../api/request";
-import { getCapitalForBeginningOfTheWeek } from "../helpers";
+import { generateWeeklyData } from "../utils";
 
 // Styled Components
 const Container = styled.div`
@@ -87,29 +87,6 @@ const WeeklyDetails = () => {
   const { setWeeklyCapital, weeklyCapital } = useSignalStore();
 
   // Function to calculate profits based on initial balance
-  const calculateDayProfits = (initialBalance) => {
-    const firstTradeTotalAmount = initialBalance * 0.01;
-    const firstTradeRemainingBalance = initialBalance - firstTradeTotalAmount;
-    const firstTradeProfit = firstTradeTotalAmount * 0.88;
-    const capitalAfterFirstTrade =
-      firstTradeRemainingBalance + firstTradeTotalAmount + firstTradeProfit;
-
-    const secondTradeTotalAmount = capitalAfterFirstTrade * 0.01;
-    const secondTradeRemainingBalance =
-      capitalAfterFirstTrade - secondTradeTotalAmount;
-    const secondTradeProfit = secondTradeTotalAmount * 0.88;
-    const finalBalance =
-      secondTradeRemainingBalance + secondTradeTotalAmount + secondTradeProfit;
-
-    return {
-      signal1Capital: firstTradeTotalAmount,
-      signal1Profit: firstTradeProfit,
-      signal2Capital: secondTradeTotalAmount,
-      signal2Profit: secondTradeProfit,
-      totalProfit: finalBalance - initialBalance,
-      finalBalance,
-    };
-  };
 
   useEffect(() => {
     const fetchSignal = async () => {
@@ -127,54 +104,6 @@ const WeeklyDetails = () => {
 
     fetchSignal();
   }, []);
-
-  // Function to generate weekly data based on current date
-  const generateWeeklyData = () => {
-    const days = [
-      "Sunday",
-      "Monday",
-      "Tuesday",
-      "Wednesday",
-      "Thursday",
-      "Friday",
-      "Saturday",
-    ];
-    const currentDate = new Date("2025-01-19"); // Using the date from your example
-    const currentDay = currentDate.getDay();
-    let weeklyData = [];
-    let runningCapital = weeklyCapital; // Initial capital from your example
-
-    // Generate data for each day
-    for (let i = 0; i < 7; i++) {
-      const dayIndex = (i + currentDay) % 7;
-      const date = new Date(currentDate);
-      date.setDate(date.getDate() - (currentDay - i));
-
-      // Calculate profits for the day
-      const dayProfits = calculateDayProfits(runningCapital);
-
-      // Create day data
-      const dayData = {
-        day: `${days[dayIndex]}, ${date.toLocaleDateString("en-US", {
-          month: "long",
-          day: "numeric",
-          year: "numeric",
-        })}`,
-        startingCapital: runningCapital,
-        totalProfit: dayProfits.totalProfit,
-        finalCapital: dayProfits.finalBalance,
-        status: i <= currentDay ? "Complete" : "Pending",
-        firstSignalProfit: dayProfits.signal1Profit,
-        secondSignalProfit: dayProfits.signal2Profit,
-        differenceInPofiit: dayProfits.signal2Profit - dayProfits.signal1Profit,
-      };
-
-      weeklyData.push(dayData);
-      runningCapital = dayProfits.finalBalance;
-    }
-
-    return weeklyData;
-  };
 
   const weeklyData = generateWeeklyData();
 
